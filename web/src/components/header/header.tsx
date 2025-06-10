@@ -1,134 +1,93 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import React, { useState } from "react";
 import Image from "next/image";
-import { useUser } from "@/modules/auth/hooks/use-user";
-import { X } from "lucide-react";
-// import { useLanguage } from "@/hooks/LanguageContext";
-import "./header.css";
+import Link from "next/link";
+import logo from "../../assets/Images/logo.png";
+import { CartIcon } from "@/modules/cart/components/cart-icon";
+import "./header.scss";
+import UserMenu from "./user-menu";
+import { LanguageSwitcher } from "@/components/language-switcher/language-switcher";
+import { useLanguage } from "@/hooks/LanguageContext";
+import { Home, ShoppingBag, Star } from "lucide-react";
+import SearchBox from "../SearchBox/search-box";
+
 
 export default function Header() {
-  const { user } = useUser();
-  // const { t, language, changeLanguage } = useLanguage();
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const { t } = useLanguage();
 
-  const toggleNavbar = () => {
-    setIsNavbarOpen(!isNavbarOpen);
-  };
-
-  const closeNavbar = () => {
-    setIsNavbarOpen(false);
+  const toggleNav = () => {
+    setIsNavOpen((prevState) => !prevState);
   };
 
   return (
-    <>
-      <header className="main-header">
-        <div className="header-container">
-          <div className="logo-container">
-            <Link href="/">
-              <Image
-                src="/logo.png"
-                alt="SSBB Market"
-                width={80}
-                height={40}
-                className="logo-image"
-              />
-            </Link>
-          </div>
-
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="ძიება..."
-              className="search-input"
+    <header
+      className={`header wireframe-style ${
+        isNavOpen ? "mobile-nav-active" : ""
+      }`}
+    >
+      <div className="header-container">
+        <div className="logo-container">
+          <Link href="/">
+            <Image
+              src={logo}
+              width={125}
+              height={80}
+              alt="Russana logo"
+              className="header-logo"
             />
-          </div>
+          </Link>
+        </div>
 
-          <div className="menu-button" onClick={toggleNavbar}>
-            <div className="hamburger-icon">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+        <div className="search-container">
+          <div className="search-box">
+            <SearchBox />
           </div>
         </div>
-      </header>
 
-      {/* Mobile Navigation Menu */}
-      {isNavbarOpen && (
-        <div className="mobile-navbar">
-          <div className="mobile-navbar-header">
-            <div className="close-button" onClick={closeNavbar}>
-              <X size={24} />
-            </div>
-            <div className="auth-status">
-              {user ? `თავა` : "თავა"}
-              <div className="user-avatar">
-                <Image
-                  src={user?.avatar || "/default-avatar.png"}
-                  alt="User"
-                  width={30}
-                  height={30}
-                  className="avatar-image"
-                />
-              </div>
-            </div>
-          </div>
+        {/* Mobile Navigation Toggle */}
+        <div className="mobile-nav-btn" onClick={toggleNav}>
+          <span className={`hamburger-icon ${isNavOpen ? "close" : ""}`}>
+            {isNavOpen ? "×" : "☰"}
+          </span>
+        </div>
 
-          <nav className="mobile-nav-links">
-            <Link href="/products" className="nav-item" onClick={closeNavbar}>
-              <span className="nav-icon">🔫</span>
-              <span className="nav-text">ნადირობა</span>
-            </Link>
-            <Link href="/fishing" className="nav-item" onClick={closeNavbar}>
-              <span className="nav-icon">🎣</span>
-              <span className="nav-text">თევზაობა</span>
-            </Link>
-            <Link href="/camping" className="nav-item" onClick={closeNavbar}>
-              <span className="nav-icon">⛺</span>
-              <span className="nav-text">ქემპინგი</span>
-            </Link>
-            <Link href="/cart" className="nav-item" onClick={closeNavbar}>
-              <span className="nav-icon">🛒</span>
-              <span className="nav-text">კალათა</span>
-            </Link>
-            <Link href="/contact" className="nav-item" onClick={closeNavbar}>
-              <span className="nav-icon">🎯</span>
-              <span className="nav-text">ჩვენს შესახებ & საკონტაქტო</span>
-            </Link>
-          </nav>
-
-          <div className="auth-buttons">
-            {user ? (
-              <Link
-                href="/profile"
-                className="auth-button register-button"
-                onClick={closeNavbar}
-              >
-                პროფილი
+        {/* Navigation is positioned absolutely so it doesn't affect layout */}
+        <nav className="main-nav">
+          <ul>
+            <li>
+              <Link href="/" className="nav-link">
+                <Home size={16} className="nav-icon" />
+                <span>{t("navigation.home")}</span>
               </Link>
-            ) : (
-              <>
-                <Link
-                  href="/register"
-                  className="auth-button register-button"
-                  onClick={closeNavbar}
-                >
-                  რეგისტრაცია
-                </Link>
-                <Link
-                  href="/login"
-                  className="auth-button login-button"
-                  onClick={closeNavbar}
-                >
-                  ავტორიზაცია
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-    </>
+            </li>
+            <li>
+              <Link href="/shop?page=1" className="nav-link">
+                <ShoppingBag size={16} className="nav-icon" />
+                <span>{t("navigation.shop")}</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="nav-link">
+                <Star size={16} className="nav-icon" />
+                <span>{t("navigation.about")}</span>
+              </Link>
+            </li>
+
+            {/* Add user actions to mobile menu */}
+            <li className="mobile-menu-user-actions">
+              <div className="user-menu">
+                <UserMenu />
+              </div>
+              <CartIcon />
+              <div className="language-switcher-container">
+                <LanguageSwitcher />
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
   );
 }

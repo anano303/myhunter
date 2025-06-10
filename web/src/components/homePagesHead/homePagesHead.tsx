@@ -1,31 +1,46 @@
-// import { useLanguage } from "@/hooks/LanguageContext";
-// import Image from "next/image";
-// import russanaLogo from "../../assets/Images/Layer_1.png";
+import React from "react";
+
+import Link from "next/link";
 import "./homePagesHead.css";
-import FlyingHeartWithWings from "../flyingHeartWithWings/FlyingHeartWithWings";
 
 const HomePagesHead = () => {
-  // const { t } = useLanguage();
-
   return (
     <div className="home-pages-head">
-      <h1 className="main-slogan">მოგესალმებით საპიპინეთშიიიიიიიიიი !!! </h1>
-      <div className="logo-containerHome">
-        <p className="sub-slogan">პიიიპ პიიიიპ!</p>
-        {/* <Image
-          src={russanaLogo}
-          alt="Russana Logo"
-          width={400}
-          height={400}
-          className="large-logo"
-          priority
-        /> */}
-        {/* <FlyingHeartWithWings size={200}/>    */}
-        <div className="FlyingHeartWithWings-container">
-          <FlyingHeartWithWings size={200} />
+      <div className="rifle-banner">
+        {/* Hero image is set as background in CSS */}
+        <div className="action-buttons">
+          <button className="registration-btn">რეგისტრაცია</button>
+          <button className="auth-btn">ავტორიზაცია</button>
         </div>
 
-        <p className="sub-slogan slogan2">პიიიპ პიიიიპ!</p>
+        <div className="navigation-icons">
+          <Link href="/guns" className="nav-icon">
+            <div className="icon-container">
+              <svg viewBox="0 0 24 24" className="icon gun-icon">
+                <path d="M21,7h-2V6h-2V5H9v1H7v1H5v1H3V9h2v1h2v7h1v1h2v1h8v-1h2v-1h1V9h2V7z M12,16c-1.657,0-3-1.343-3-3s1.343-3,3-3s3,1.343,3,3S13.657,16,12,16z" />
+              </svg>
+              ცეცხლსასროლი
+            </div>
+          </Link>
+
+          <Link href="/ammunition" className="nav-icon">
+            <div className="icon-container">
+              <svg viewBox="0 0 24 24" className="icon ammo-icon">
+                <path d="M19,8V5h-2v3h-3v2h3v3h2v-3h3V8H19z M3,7h3V4h2v3h3v2H8v3H6v-3H3V7z M15,15H9v-2h6V15z M15,17H9v2h6V17z" />
+              </svg>
+              საბრძოლო მასალები
+            </div>
+          </Link>
+
+          <Link href="/camping" className="nav-icon">
+            <div className="icon-container">
+              <svg viewBox="0 0 24 24" className="icon camp-icon">
+                <path d="M12,3L1,22h22L12,3z M12,7l6.92,11H5.08L12,7z" />
+              </svg>
+              კემპინგი
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );

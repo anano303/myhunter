@@ -9,16 +9,14 @@ import { satoshi } from "./(pages)/fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/header/header";
-import SiteTimer from "@/components/SiteTimer/SiteTimer";
-// import { LandingPage } from "./(pages)/landingPage/LandingPage";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_CLIENT_URL || "https://russana.ge"
   ),
   title: "Russana",
-  description:
-    "Russana - დააპიპინეეეეეე",
+  description: "Russana - დააპიპინეეეეეე",
   openGraph: {
     type: "website",
     locale: "ka_GE",
@@ -37,8 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Russana",
-    description:
-      "Russana - შეიძინე და აპიპინეეეე.",
+    description: "Russana - შეიძინე და აპიპინეეეე.",
     images: ["/van%20gog.jpg"],
   },
 };
@@ -69,7 +66,7 @@ export default function RootLayout({
             <CartProvider>
               <CheckoutProvider>
                 <LanguageProvider>
-                  <SiteTimer />
+                  {/* <SiteTimer /> */}
                   <Header />
                   <main className="flex-1">{children}</main>
                   <Footer />

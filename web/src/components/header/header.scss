@@ -4,7 +4,6 @@
 @font-face {
   font-family: "ALK Katerina";
   src: url("../../app/fonts/ALK-Katerina.ttf") format("truetype");
-
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
@@ -15,12 +14,17 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // padding: 10px 20px;
-  background-color: rgba(249, 249, 249, 1);
-  color: rgba(30, 30, 30, 1);
-  font-family: ALK Katerina;
-  box-shadow: 0px 4px 25px 0px rgba(207, 10, 10, 0.25);
-  // max-height: 100px;
+  background-color: rgba(10, 10, 10, 1);
+  color: rgba(232, 232, 232, 1);
+  font-family: FiraGo;
+
+  position: relative;
+
+  /* Make sure other text elements have proper contrast too */
+  a,
+  span {
+    color: rgba(232, 232, 232, 1);
+  }
 
   .logo {
     margin-right: 5%;
@@ -34,254 +38,128 @@ header {
   }
 
   .main-nav {
-    ul {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      justify-content: flex-start;
-      width: 40%;
-      list-style: none;
-      gap: min(10%);
-      .mobileAuth {
-        display: none;
-      }
-      a {
-        text-decoration: none;
-        color: rgba(30, 30, 30, 1);
-        white-space: nowrap;
-      }
-    }
+    position: absolute; /* Position the nav absolutely */
+    width: 100%;
+    left: 0;
+    top: 100%; /* Place it just below the header */
+    z-index: 998; /* Lower than the hamburger button */
   }
 
-  .auth-cart {
+  .main-nav ul {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column;
+    background-color: rgba(249, 249, 249, 0.95);
+    position: fixed;
+    top: 11%;
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0px 4px 25px 0px rgba(207, 10, 10, 0.25);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.3s ease;
+    z-index: 999;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    list-style: none;
 
-    .language-switcher-container {
-      margin-right: 8px;
-    }
-
-    a {
-      white-space: nowrap;
-      text-decoration: none;
-      color: rgba(30, 30, 30, 1);
-    }
-    .d-none {
-      margin-right: 20px;
-    }
-  }
-
-  .mobile-nav-btn {
-    display: none;
-  }
-
-  .shop-dropdown {
-    position: relative;
-
-    .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: rgba(255, 229, 232, 1);
-      min-width: 180px;
-      border-radius: 0 0 8px 8px;
-      box-shadow: rgb(249, 210, 215);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      z-index: 100;
-      overflow: hidden;
-
-      a {
-        display: block;
-        padding: 12px 20px;
-        color: rgba(
-          30,
-          30,
-          30,
-          1
-        ); /* Match the same color as other header links */
-        border-bottom: none;
-        width: 100%;
-        text-align: left;
-        font-family: "firaGo", sans-serif; /* Use firaGo font */
-        font-size: inherit; /* Inherit font size from parent */
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.1); /* Subtle hover background */
-          color: #e0d849; /* Change text color on hover to match other links */
-        }
-      }
-    }
-
-    &:hover .dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-  }
-
-  .mobile-only-nav {
-    display: none;
-  }
-
-  /* Mobile responsiveness */
-  @media (max-width: 900px) {
-    .main-nav ul {
-      display: flex;
-      flex-direction: column;
-      background-color: rgba(249, 249, 249, 0.95);
-      position: fixed;
-      top: 11%;
-      right: 0;
-      left: 0;
-      width: 100%;
-      border-radius: 0 0 5px 5px;
-      box-shadow: 0px 4px 25px 0px rgba(207, 10, 10, 0.25);
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease, padding 0.3s ease;
-      z-index: 999;
-      padding: 0;
-      margin: 0;
-      opacity: 0;
-      visibility: hidden;
-
-      li {
-        padding: 15px 20px;
-        width: 100%;
-        box-sizing: border-box;
-
-        .nav-link {
-          display: flex;
-          align-items: center;
-          text-decoration: none;
-          color: #37241e;
-          padding-bottom: 5px;
-          border-bottom: 3px solid #eaeeea;
-          gap: 10px;
-          font-family: "ALK Katerina", sans-serif;
-          font-size: 16px;
-
-          &:hover {
-            color: #19100d;
-            border-bottom: 3px solid #a5bda5;
-          }
-
-          .nav-icon {
-            min-width: 20px;
-          }
-        }
-      }
-
-      .mobile-menu-user-actions {
-        display: flex !important;
-        width: 100%;
-        justify-content: space-around;
-        gap: 15px;
-        margin-top: 20px;
-        padding: 15px;
-        box-sizing: border-box;
-        border-top: 3px solid #eaeeea;
-        flex-wrap: wrap;
-      }
-    }
-
-    .auth-cart {
-      display: none;
-    }
-
-    /* Mobile menu icon (Hamburger) */
-    .mobile-nav-btn {
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
-      width: 1.625rem;
-      font-size: 24px;
-      z-index: 10;
-      margin-right: 10px;
-    }
-
-    .hamburger-icon {
-      font-size: 30px;
-      transition: transform 0.3s ease-in-out;
-      color: black;
-    }
-
-    .hamburger-icon.close {
-      transform: rotate(90deg); /* Rotation effect for X */
-    }
-
-    /* Toggle navigation when active */
-    &.mobile-nav-active .main-nav ul {
-      max-height: calc(100vh - 120px); /* Limit height for better animation */
-      padding: 15px 0;
-      opacity: 1;
-      visibility: visible;
-      overflow-y: auto; /* Allow scrolling if content is too tall */
-    }
-
-    .auth-cart {
-      display: flex;
-      .d-none {
-        display: none;
-      }
-      a {
-        padding: 10px;
-        font-size: 1.875rem;
-      }
-    }
-
-    .shop-dropdown .dropdown-menu {
-      display: none;
-    }
-
-    .mobile-only-nav {
+    .mobileAuth {
       display: block;
     }
 
-    /* Hide desktop user actions on mobile */
-    .user-actions {
-      display: none;
+    a {
+      text-decoration: none;
+      color: rgba(30, 30, 30, 1);
+      white-space: nowrap;
+    }
+
+    li {
+      padding: 15px 20px;
+      width: 100%;
+      box-sizing: border-box;
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #37241e;
+        padding-bottom: 5px;
+        border-bottom: 3px solid #eaeeea;
+        gap: 10px;
+        font-family: "ALK Katerina", sans-serif;
+        font-size: 16px;
+
+        &:hover {
+          color: #19100d;
+          border-bottom: 3px solid #a5bda5;
+        }
+
+        .nav-icon {
+          min-width: 20px;
+        }
+      }
+    }
+
+    .mobile-menu-user-actions {
+      display: flex !important;
+      width: 100%;
+      justify-content: space-around;
+      gap: 15px;
+      margin-top: 20px;
+      padding: 15px;
+      box-sizing: border-box;
+      border-top: 3px solid #eaeeea;
+      flex-wrap: wrap;
     }
   }
-}
 
-// Mobile support for language switcher
-@media (max-width: 900px) {
   .auth-cart {
-    .language-switcher-container {
-      margin-right: 4px;
-    }
+    display: none;
   }
 
-  header .header-container .user-actions {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    position: absolute !important;
-    pointer-events: none !important;
+  /* Mobile menu icon (Hamburger) */
+  .mobile-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    width: 1.625rem;
+    font-size: 24px;
+    z-index: 10;
   }
-}
 
-@media screen and (max-width: 480px) {
-  .logo {
-    img {
-      width: 160px;
-    }
+  .hamburger-icon {
+    font-size: 30px;
+    transition: transform 0.3s ease-in-out;
+    color: rgba(232, 232, 232, 1); /* Changed from black to light gray/white */
+  }
+
+  .hamburger-icon.close {
+    transform: rotate(90deg); /* Rotation effect for X */
+  }
+
+  /* Toggle navigation when active */
+  &.mobile-nav-active .main-nav ul {
+    max-height: calc(100vh - 120px); /* Limit height for better animation */
+    padding: 15px 0;
+    opacity: 1;
+    visibility: visible;
+    overflow-y: auto; /* Allow scrolling if content is too tall */
+  }
+
+  .shop-dropdown .dropdown-menu {
+    display: none;
+  }
+
+  .mobile-only-nav {
+    display: block;
   }
 }
 
 .wireframe-style {
-  // background-color: white;
-  // box-shadow: none;
-  // border-bottom: 1px solid #eaeaea;
-  // padding: 10px 0;
+  position: relative;
 
   .header-container {
     width: 100%;
@@ -293,47 +171,10 @@ header {
     padding: 0 20px;
   }
 
-  .main-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 30px;
-    margin: 0;
-    padding: 0;
-
-    li {
-      margin: 0;
-
-      .nav-link {
-        display: flex;
-        align-items: center;
-        color: #37241e;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        font-family: "ALK Katerina", sans-serif;
-        padding-bottom: 5px;
-        border-bottom: 3px solid transparent;
-        transition: all 0.3s ease;
-
-        &:hover {
-          color: #19100d;
-          border-bottom: 3px solid #a5bda5;
-        }
-
-        .nav-icon {
-          margin-right: 8px;
-        }
-      }
-    }
-
-    .mobile-menu-user-actions {
-      display: none; /* Hide by default on desktop */
-    }
-  }
-
   .logo-container {
     display: flex;
     justify-content: center;
+    // flex-grow: 1;
 
     .header-logo {
       height: auto;
@@ -343,95 +184,44 @@ header {
   .user-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 35%;
     gap: 20px;
   }
-
-  /* Make sure mobile menu is positioned correctly */
-  position: relative; /* Add this to ensure absolute positioning works correctly */
 
   .mobile-nav-btn {
     position: relative;
     z-index: 1000;
   }
 
-  @media (max-width: 768px) {
-    .main-nav ul {
-      position: absolute;
-      top: 100%;
-      left: 0;
+  .main-nav ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 999;
+
+    li {
       width: 100%;
       box-sizing: border-box;
-      z-index: 999;
-
-      li {
-        width: 100%;
-        box-sizing: border-box;
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-      }
-
-      .mobile-menu-user-actions {
-        display: flex !important; /* Force show in mobile menu */
-        width: 100%;
-        margin-top: 20px;
-        padding: 15px 0;
-        justify-content: space-around;
-        align-items: center;
-      }
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    &.mobile-nav-active .main-nav ul li {
-      opacity: 1;
-      transform: translateY(0);
-      transition-delay: 0.2s;
+    .mobile-menu-user-actions {
+      display: flex !important;
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px 0;
+      justify-content: space-around;
+      align-items: center;
     }
   }
-}
 
-@media (max-width: 900px) {
-  .wireframe-style {
-    .header-container {
-      flex-wrap: wrap;
-    }
-
-    .main-nav {
-      order: 2;
-      width: 100%;
-      margin-top: 10px;
-
-      ul {
-        justify-content: center;
-        width: 100%;
-        transition: max-height 0.5s ease, padding 0.3s ease, opacity 0.4s ease,
-          visibility 0.4s ease;
-
-        .mobile-menu-user-actions {
-          display: flex !important;
-          width: 100%;
-          margin-top: 20px;
-          padding: 15px 0;
-          justify-content: space-around;
-          align-items: center;
-        }
-      }
-
-      &.mobile-nav-active ul li {
-        opacity: 1;
-        transform: translateY(0);
-        transition-delay: 0.2s;
-      }
-    }
-
-    .user-actions {
-      order: 1;
-    }
-
-    .logo-container {
-      order: 1;
-    }
+  &.mobile-nav-active .main-nav ul li {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
   }
 
   .user-actions,
@@ -447,4 +237,67 @@ header {
     position: relative;
     z-index: 1001;
   }
+
+  .search-container {
+    flex-grow: 1;
+    margin: 0 15px;
+    max-width: 400px;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .wireframe-style {
+    .header-container {
+      flex-wrap: wrap;
+    }
+
+    .search-container {
+      order: 3;
+      max-width: 100%;
+      width: 100%;
+      margin: 10px 0 5px 0;
+    }
+
+    .logo-container {
+      order: 1;
+    }
+
+    .mobile-nav-btn {
+      order: 2;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .logo {
+    img {
+      width: 160px;
+    }
+  }
+
+  .wireframe-style {
+    .search-container {
+      max-width: 100%;
+      width: 100%;
+      margin: 10px 0 5px 0;
+    }
+  }
+}
+
+/* Add this to the SCSS file */
+
+.user-actions {
+  display: none !important; /* Completely hide the desktop user actions */
+}
+
+/* And make sure the mobile button is always visible */
+.mobile-nav-btn {
+  display: inline-flex !important;
 }
