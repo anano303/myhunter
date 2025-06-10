@@ -19,14 +19,17 @@
   align-self: center;
   top: 2px;
   padding: 15px;
-  padding-bottom: 20px; /* Added extra padding for diamonds */
-  background: #fff5f6;
-  border-bottom: 2px solid #cf0a0a;
+  padding-bottom: 20px;
+  background-color: #1a1a1a; /* Dark background to match site theme */
+  border-bottom: 2px solid #4b5320; /* Hunting green color */
   position: relative;
-  margin-bottom: 10px; /* Added margin to prevent diamonds from being hidden */
-  padding-top: 50px; /* Add space for close button */
+  margin-bottom: 10px;
+  padding-top: 50px;
   animation: slideDown 0.5s ease-out;
   transform-origin: top;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  color: #e6cd9f; /* Hunting theme text color */
 }
 
 /* Opening animation */
@@ -85,20 +88,20 @@
   }
 }
 
-/* Left diamond - repositioned */
+/* Left diamond - repositioned with hunting theme color */
 .additional-filters::before {
   content: "";
   position: absolute;
-  bottom: -5px; /* Changed from top to bottom */
-  left: -5px; /* Changed from right to left */
+  bottom: -5px;
+  left: -5px;
   width: 8px;
   height: 8px;
-  background-color: #cf0a0a;
+  background-color: #4b5320; /* Changed to hunting green */
   transform: rotate(45deg);
-  z-index: 10; /* Increased z-index */
+  z-index: 10;
 }
 
-/* Right diamond - repositioned */
+/* Right diamond - repositioned with hunting theme color */
 .additional-filters::after {
   content: "";
   position: absolute;
@@ -106,9 +109,9 @@
   right: -5px;
   width: 8px;
   height: 8px;
-  background-color: #cf0a0a;
+  background-color: #4b5320; /* Changed to hunting green */
   transform: rotate(45deg);
-  z-index: 10; /* Increased z-index */
+  z-index: 10;
 }
 
 /* Filter toggle button */
@@ -244,19 +247,19 @@
 
 /* Price apply button */
 .price-apply-btn {
-  background-color: #fff;
-  color: #000;
+  background-color: #4b5320;
+  color: white;
   border: none;
   padding: 8px 15px;
   border-radius: 4px;
   font-size: 16px;
-  font-family: "ALK Katerina", sans-serif;
+
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .price-apply-btn:hover {
-  background-color: #ffcad4;
+  background-color:#5c6525;
 }
 
 /* Sort select specific styles */
@@ -319,8 +322,8 @@
 /* Price apply button */
 .price-apply-btn {
   padding: 8px 12px;
-  background-color: #ffe5e8;
-  color: #cf0a0a;
+  background-color: #4b5320;
+  color: white;
   border-radius: 4px;
   font-size: 16px;
   margin-left: auto;
@@ -394,7 +397,7 @@
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .additional-filters {
-    width: 40%;
+    width: 80%;
   }
 }
 
@@ -405,6 +408,15 @@
     position: relative;
     height: auto;
     top: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    box-shadow: none;
+    border-bottom: 1px solid #4b5320;
+  }
+
+  .additional-filters::before,
+  .additional-filters::after {
+    display: none; /* Hide diamonds on mobile */
   }
 }
 
@@ -504,21 +516,21 @@
 
 .main-category-option:nth-child(3n + 3) {
   background: url("../../../assets/Images/bgImg.jpg") center/90% no-repeat;
-transform: scale(1.05); 
-transition: transform 0.8s ease;
+  transform: scale(1.05);
+  transition: transform 0.8s ease;
 }
 
 /* Background image styling - hover states */
 .main-category-option:nth-child(3n + 1):hover {
   background: url("../../../assets/Images/bgImg.jpg") center/100% no-repeat;
-transform: scale(1.05); 
-transition: transform 0.8s ease;
+  transform: scale(1.05);
+  transition: transform 0.8s ease;
 }
 
 .main-category-option:nth-child(3n + 2):hover {
   background: url("../../../assets/Images/bgImg.jpg") center/100% no-repeat;
-transform: scale(1.05); 
-transition: transform 0.8s ease;
+  transform: scale(1.05);
+  transition: transform 0.8s ease;
 }
 
 .main-category-option:nth-child(3n + 3):hover {
@@ -628,8 +640,8 @@ transition: transform 0.8s ease;
 
 .price-apply-btn {
   padding: 8px 12px;
-  background-color: #ffcad4;
-  color: black;
+  background-color: #4b5320;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -657,8 +669,8 @@ transition: transform 0.8s ease;
 .clear-filters-btn {
   width: 100%;
   padding: 10px;
-  background-color: #ffcad4;
-  color: black;
+  background-color: #4b5320;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
