@@ -284,8 +284,6 @@ const ShopContent = () => {
 
   return (
     <div className="shop-container default">
-      
-
       <div className="content">
         {/* <h1
           className="title"
