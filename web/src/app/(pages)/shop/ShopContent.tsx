@@ -284,20 +284,7 @@ const ShopContent = () => {
 
   return (
     <div className="shop-container default">
-      {/* {renderAnimatedIcons()} */}
-
-      {/* Add 3D decorative elements */}
-      {/* <div className="shop-3d-cube">
-        <div className="face front"></div>
-        <div className="face back"></div>
-        <div className="face right"></div>
-        <div className="face left"></div>
-        <div className="face top"></div>
-        <div className="face bottom"></div>
-      </div> */}
-
-      {/* <div className="shop-3d-sphere"></div>
-      <div className="shop-3d-pyramid"></div> */}
+      
 
       <div className="content">
         {/* <h1
