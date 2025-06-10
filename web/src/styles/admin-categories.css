@@ -1,0 +1,75 @@
+/* Main admin categories page styles */
+.responsive-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  font-family: "ALK Life", "Georgia", serif;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  color: #e50000;
+  font-size: 24px;
+}
+
+/* Global form styles */
+input,
+textarea,
+select,
+button {
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+button {
+  cursor: pointer;
+  font-family: "ALK Katerina", sans-serif;
+}
+
+/* Animation for loader */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Add font faces */
+@font-face {
+  font-family: "ALK Life";
+  src: url("/fonts/ALK-Life.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ALK Katerina";
+  src: url("/fonts/ALK-Katerina.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .responsive-container {
+    padding: 20px 12px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-container {
+    padding: 16px 10px;
+  }
+}

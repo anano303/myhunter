@@ -1,0 +1,59 @@
+.auth-layout {
+  background: url("/logo.png") no-repeat center center;
+  background-size: 80% auto;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-layout::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 1;
+}
+
+.auth-layout-inner {
+  padding: 2rem;
+  width: 100%;
+
+  position: relative;
+  z-index: 2;
+}
+
+.auth-layout-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-layout-title {
+  color: rgba(207, 10, 10, 1);
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.auth-layout-subtitle {
+  color: #666;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.auth-layout-children {
+  width: 100%;
+      display: flex
+;
+    justify-content: center;
+}

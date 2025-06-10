@@ -1,0 +1,98 @@
+.home-pages-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+
+  position: relative;
+}
+.home-pages-head h1 {
+  text-align: center;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 10%;
+  margin: 5px;
+}
+
+.logo-containerHome {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* gap: 50px; */
+}
+
+.logo-containerHome p {
+  white-space: nowrap;
+  font-family: ALK Life;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 10%;
+  margin-top: 280px;
+}
+.large-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.slogan-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.main-slogan {
+  font-size: 36px;
+  font-weight: bold;
+  color: #e50000;
+  margin-bottom: 20px;
+}
+
+.sub-slogan-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.sub-slogan {
+  font-size: 24px;
+  font-weight: 500;
+  color: #e50000;
+  margin: 0 80px;
+}
+
+/* For smaller screens */
+@media (max-width: 1000px) {
+  .main-slogan {
+    font-size: 28px;
+  }
+  .logo-containerHome {
+    display: flex;
+    flex-direction: column;
+  }
+  .logo-containerHome p {
+    margin-top: 30px;
+  }
+  .slogan2 {
+    margin-top: 15% !important;
+  }
+  .sub-slogan {
+    font-size: 18px;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 600px) {
+  .sub-slogan {
+    display: none;
+  }
+  .home-pages-head h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+}

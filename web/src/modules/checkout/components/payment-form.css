@@ -1,0 +1,267 @@
+.card {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(229, 0, 0, 0.08);
+  border: 1px solid #f5f5f5;
+  font-family: "ALK Life", "Georgia", serif;
+  color: #333;
+  max-width: 800px;
+  margin: 2rem auto;
+  position: relative;
+  width: 90%;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #e50000, #ff5252, #e50000);
+  background-size: 200% 100%;
+  animation: gradientAnimation 3s infinite alternate;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.text-2xl {
+  font-size: 2rem;
+  font-weight: normal;
+  color: #e50000;
+  letter-spacing: 1px;
+  font-family: "ALK Life", "Georgia", serif;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #f5f5f5;
+  padding-bottom: 0.75rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-muted-foreground {
+  color: #666;
+}
+
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+.form-item {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #e50000;
+}
+
+.form-control {
+  display: block;
+}
+
+input[type="radio"].sr-only {
+  display: none;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(90deg, #e50000, #e91e63);
+  color: white;
+  padding: 0.75rem;
+  font-family: "ALK Katerina", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0.1em;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #e91e63, #e50000);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+}
+
+.border {
+  border: 1px solid #f0f0f0;
+}
+
+.rounded-lg {
+  border-radius: 8px;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover\:border-primary:hover {
+  border-color: #e91e63;
+  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+}
+
+.block {
+  display: block;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+/* Payment method options */
+.payment-option {
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+  background-color: #f5f5f5;
+}
+
+.payment-option.selected {
+  background-color: #ffeef2;
+  border-color: #e91e63;
+}
+
+.payment-option-title {
+  color: #e50000;
+  font-weight: 600;
+}
+
+.payment-option-description {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 95%;
+    max-width: 95%;
+    margin: 1.5rem auto;
+  }
+
+  .text-2xl {
+    font-size: 1.75rem;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-primary {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+    width: 90%;
+    margin: 1rem auto;
+    border-radius: 8px;
+  }
+
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.6rem;
+  }
+
+  .btn-primary {
+    font-size: 16px;
+    padding: 0.6rem;
+  }
+
+  .card::before {
+    height: 4px;
+  }
+}
+
+@media (max-width: 320px) {
+  .card {
+    width: 90%;
+    padding: 0.75rem;
+    margin: 0.5rem auto;
+  }
+
+  .text-2xl {
+    font-size: 1.3rem;
+  }
+
+  .btn,
+  .btn-primary {
+    padding: 0.5rem;
+    font-size: 15px;
+  }
+}

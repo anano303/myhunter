@@ -1,0 +1,502 @@
+.landing-container {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  background: linear-gradient(135deg, #ffe5e8 0%, #fff5f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 3000px; /* Increased perspective for deeper effect */
+  transform-style: preserve-3d;
+}
+
+/* Create a deeper tunneling effect */
+.landing-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 229, 232, 0.8) 0%,
+    rgba(255, 245, 246, 0) 70%
+  );
+  transform-style: preserve-3d;
+  z-index: -4;
+  transform: translateZ(-2000px) scale(3); /* Start much deeper */
+  animation: central-glow 20s infinite alternate ease-in-out;
+}
+
+/* Improved tunnel effect with central point */
+.landing-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800%; /* Much wider for stronger convergence */
+  height: 800%;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 245, 246, 0),
+    rgba(255, 245, 246, 0) 20px,
+    rgba(233, 30, 99, 0.03) 20px,
+    rgba(233, 30, 99, 0.03) 40px
+  );
+  transform: translate(-50%, -50%) perspective(3000px) translateZ(-3000px)
+    rotateX(80deg);
+  opacity: 0.5;
+  animation: central-tunnel-zoom 40s infinite linear;
+  z-index: -5;
+}
+
+/* Add multiple depth layers for enhanced perspective */
+.landing-depth-layer-1,
+.landing-depth-layer-2,
+.landing-depth-layer-3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(233, 30, 99, 0.05),
+    rgba(233, 30, 99, 0) 70%
+  );
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.landing-depth-layer-1 {
+  transform: translateZ(-1500px) scale(2);
+  opacity: 0.7;
+  animation: pulse-layer-1 15s infinite alternate ease-in-out;
+  z-index: -2;
+}
+
+.landing-depth-layer-2 {
+  transform: translateZ(-1000px) scale(1.5);
+  opacity: 0.5;
+  animation: pulse-layer-2 18s infinite alternate-reverse ease-in-out;
+  z-index: -1;
+}
+
+.landing-depth-layer-3 {
+  transform: translateZ(-500px) scale(1.2);
+  opacity: 0.3;
+  animation: pulse-layer-3 20s infinite alternate ease-in-out;
+  z-index: -1;
+}
+
+@keyframes pulse-layer-1 {
+  0% {
+    transform: translateZ(-1500px) scale(2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateZ(-1300px) scale(1.8);
+    opacity: 0.6;
+  }
+}
+
+@keyframes pulse-layer-2 {
+  0% {
+    transform: translateZ(-1000px) scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateZ(-800px) scale(1.3);
+    opacity: 0.4;
+  }
+}
+
+@keyframes pulse-layer-3 {
+  0% {
+    transform: translateZ(-500px) scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateZ(-400px) scale(1.1);
+    opacity: 0.2;
+  }
+}
+
+@keyframes central-glow {
+  0% {
+    transform: translateZ(-2000px) scale(3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateZ(-1500px) scale(2.5);
+    opacity: 0.6;
+  }
+}
+
+@keyframes central-tunnel-zoom {
+  0% {
+    transform: translate(-50%, -50%) perspective(3000px) translateZ(-3000px)
+      rotateX(80deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-50%, -50%) perspective(3000px) translateZ(-500px)
+      rotateX(80deg);
+    opacity: 0.5;
+  }
+}
+
+/* Enhanced particle movement to come from center/back */
+@keyframes particle-depth {
+  0% {
+    transform: translate(-50%, -50%) translateZ(var(--z-start)) scale(0.1);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--opacity);
+  }
+  90% {
+    opacity: var(--opacity);
+  }
+  100% {
+    transform: translateZ(var(--z-end)) translateX(var(--x-end))
+      translateY(var(--y-end)) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Center all particles initially */
+.landing-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateZ(-1500px) scale(0.1);
+  width: 6px;
+  height: 6px;
+  background-color: rgba(233, 30, 99, 0.3);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  animation: particle-depth 30s infinite linear;
+  will-change: transform;
+}
+
+.landing-content {
+  text-align: center;
+  z-index: 2;
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1200px;
+}
+
+.landing-contents {
+  display: flex;
+  transform-style: preserve-3d;
+  transform: translateZ(20px);
+}
+
+.landing-contents-logo {
+  /* margin: -390px;
+  margin-top: -500px; */
+  transform-style: preserve-3d;
+  animation: float-logo 8s infinite alternate ease-in-out;
+  position: relative;
+  z-index: 5;
+  /* filter: drop-shadow(0 10px 30px rgba(233, 30, 99, 0.5)); */
+}
+
+@keyframes float-logo {
+  0% {
+    transform: translateZ(80px) rotateY(-5deg);
+  }
+  100% {
+    transform: translateZ(150px) rotateY(5deg);
+  }
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  /* left: 50%; */
+  transform: translateX(-50%);
+  color: #e91e63;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+  padding: 8px 15px;
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.scroll-indicator:hover {
+  transform: translateX(-50%) translateY(-5px);
+  animation: none;
+}
+
+.scroll-indicator p {
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+  color: #e91e63;
+  letter-spacing: 0.5px;
+}
+
+.scroll-indicator .scroll-icon {
+  color: #e91e63;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse-highlight {
+  0% {
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.2);
+  }
+  100% {
+    box-shadow: 0 5px 25px rgba(233, 30, 99, 0.5);
+  }
+}
+
+/* 3D Floating Objects - improved responsiveness */
+.floating-3d-objects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  transform-style: preserve-3d;
+}
+
+.floating-object {
+  position: absolute;
+  transform-style: preserve-3d;
+  opacity: 0.2;
+  will-change: transform;
+}
+
+/* Scale up objects on larger screens */
+@media (min-width: 1200px) {
+  .floating-heart {
+    width: 50px;
+    height: 50px;
+  }
+
+  .floating-ball {
+    width: 40px;
+    height: 40px;
+  }
+
+  .floating-tshirt {
+    width: 60px;
+    height: 55px;
+  }
+
+  .floating-bag {
+    width: 50px;
+    height: 55px;
+  }
+}
+
+/* Normal sizes for medium screens */
+.floating-heart {
+  width: 30px;
+  height: 30px;
+  background-color: #e91e63;
+  clip-path: path(
+    "M15,5 C15,5 14,0 9,0 C4,0 0,5 0,10 C0,20 15,30 15,30 C15,30 30,20 30,10 C30,5 26,0 21,0 C16,0 15,5 15,5"
+  );
+  animation: float-heart-3d 20s ease-in-out infinite alternate;
+}
+
+.floating-ball {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.5),
+    #e91e63
+  );
+  box-shadow: inset -2px -2px 10px rgba(0, 0, 0, 0.1);
+  animation: float-ball-3d 25s ease-in-out infinite alternate;
+}
+
+.floating-tshirt {
+  width: 40px;
+  height: 35px;
+  background-color: #ff9a9e;
+  clip-path: path(
+    "M10,0 L30,0 L35,10 L40,5 L40,10 L35,15 L35,35 L5,35 L5,15 L0,10 L0,5 L5,10 L10,0"
+  );
+  animation: float-tshirt-3d 27s ease-in-out infinite alternate;
+}
+
+.floating-bag {
+  width: 30px;
+  height: 35px;
+  background-color: #ffc1cc;
+  clip-path: path(
+    "M5,10 L25,10 L25,5 L20,0 L10,0 L5,5 L5,10 L0,15 L0,35 L30,35 L30,15 L25,10"
+  );
+  animation: float-bag-3d 23s ease-in-out infinite alternate;
+}
+
+/* Responsive adjustments for desktop */
+@media (min-width: 800px) {
+  .landing-contents {
+    gap: 40vw;
+  }
+
+  /* Enhance 3D effect for desktop */
+  .landing-depth-layer-1,
+  .landing-depth-layer-2,
+  .landing-depth-layer-3 {
+    transform-origin: center;
+    transform-style: preserve-3d;
+  }
+
+  .landing-depth-layer-1 {
+    transform: translateZ(-2000px) scale(2.5);
+  }
+
+  .landing-depth-layer-2 {
+    transform: translateZ(-1300px) scale(1.8);
+  }
+
+  .landing-depth-layer-3 {
+    transform: translateZ(-700px) scale(1.4);
+  }
+
+  /* Enhance particle count for desktop */
+  .landing-particle {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .floating-heart,
+  .floating-ball {
+    width: 20px;
+    height: 20px;
+  }
+
+  .floating-tshirt {
+    width: 30px;
+    height: 25px;
+  }
+
+  .floating-bag {
+    width: 25px;
+    height: 30px;
+  }
+}
+
+@keyframes float-heart-3d {
+  0%,
+  100% {
+    transform: translateX(calc(var(--x) * 1px)) translateY(calc(var(--y) * 1px))
+      translateZ(calc(var(--z) * 1px)) rotate(0deg);
+  }
+  25% {
+    transform: translateX(calc((var(--x) + 50) * 1px))
+      translateY(calc((var(--y) - 30) * 1px))
+      translateZ(calc((var(--z) + 100) * 1px)) rotate(45deg);
+  }
+  50% {
+    transform: translateX(calc((var(--x) + 20) * 1px))
+      translateY(calc((var(--y) + 50) * 1px))
+      translateZ(calc((var(--z) - 50) * 1px)) rotate(90deg);
+  }
+  75% {
+    transform: translateX(calc((var(--x) - 30) * 1px))
+      translateY(calc((var(--y) + 20) * 1px))
+      translateZ(calc((var(--z) + 20) * 1px)) rotate(45deg);
+  }
+}
+
+@keyframes float-ball-3d {
+  0%,
+  100% {
+    transform: translateX(calc(var(--x) * 1px)) translateY(calc(var(--y) * 1px))
+      translateZ(calc(var(--z) * 1px)) rotateY(0deg);
+  }
+  33% {
+    transform: translateX(calc((var(--x) - 40) * 1px))
+      translateY(calc((var(--y) + 40) * 1px))
+      translateZ(calc((var(--z) + 60) * 1px)) rotateY(180deg);
+  }
+  66% {
+    transform: translateX(calc((var(--x) + 40) * 1px))
+      translateY(calc((var(--y) - 20) * 1px))
+      translateZ(calc((var(--z) - 30) * 1px)) rotateY(360deg);
+  }
+}
+
+@keyframes float-tshirt-3d {
+  0%,
+  100% {
+    transform: translateX(calc(var(--x) * 1px)) translateY(calc(var(--y) * 1px))
+      translateZ(calc(var(--z) * 1px)) rotate(0deg);
+  }
+  33% {
+    transform: translateX(calc((var(--x) + 60) * 1px))
+      translateY(calc((var(--y) - 20) * 1px))
+      translateZ(calc((var(--z) - 70) * 1px)) rotate(-15deg);
+  }
+  66% {
+    transform: translateX(calc((var(--x) - 30) * 1px))
+      translateY(calc((var(--y) + 60) * 1px))
+      translateZ(calc((var(--z) + 40) * 1px)) rotate(15deg);
+  }
+}
+
+@keyframes float-bag-3d {
+  0%,
+  100% {
+    transform: translateX(calc(var(--x) * 1px)) translateY(calc(var(--y) * 1px))
+      translateZ(calc(var(--z) * 1px)) rotateZ(0deg);
+  }
+  20% {
+    transform: translateX(calc((var(--x) - 50) * 1px))
+      translateY(calc((var(--y) - 30) * 1px))
+      translateZ(calc((var(--z) + 80) * 1px)) rotateZ(-10deg);
+  }
+  40% {
+    transform: translateX(calc((var(--x) + 20) * 1px))
+      translateY(calc((var(--y) + 40) * 1px))
+      translateZ(calc((var(--z) - 20) * 1px)) rotateZ(5deg);
+  }
+  60% {
+    transform: translateX(calc((var(--x) + 70) * 1px))
+      translateY(calc((var(--y) - 10) * 1px))
+      translateZ(calc((var(--z) + 30) * 1px)) rotateZ(0deg);
+  }
+  80% {
+    transform: translateX(calc((var(--x) - 20) * 1px))
+      translateY(calc((var(--y) + 20) * 1px))
+      translateZ(calc((var(--z) - 60) * 1px)) rotateZ(-5deg);
+  }
+}

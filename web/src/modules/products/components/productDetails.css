@@ -1,0 +1,681 @@
+/* Modern Product Details Page Styling - Improved layout */
+
+.container {
+  max-width: 92%;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  font-family: "ALK Katerina", sans-serif;
+}
+
+/* Modern grid layout with sidebar for thumbnails */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(80px, auto) 2fr 3fr;
+  gap: 2rem;
+}
+
+/* Image Section */
+.image-section {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Vertical thumbnail strip */
+.thumbnail-container {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: fit-content;
+  align-self: flex-start;
+  position: sticky;
+  top: 100px;
+  padding-right: 1rem;
+}
+
+.thumbnail {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.thumbnail.active {
+  border-color: rgba(207, 10, 10, 0.6);
+}
+
+.thumbnail:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.image-container {
+  position: relative;
+  background: url("/cardBg.png") no-repeat center center;
+  background-size: contain; /* Changed from cover to contain */
+  width: 500px; /* Fixed width */
+  height: 500px; /* Fixed height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto; /* Center the container */
+}
+
+.image-wrapper {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* Make the wrapper clickable */
+}
+
+.details-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* Product Info Section */
+.product-info-details {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+  justify-self: center;
+  align-items: center;
+}
+
+.brand-container {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.text-muted {
+  color: #666;
+  font-size: 0.9rem;
+  background-color: #f3f3f3;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.product-title {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #37241e;
+  margin-bottom: 1.2rem;
+  line-height: 1.2;
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.price {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: rgba(207, 10, 10, 0.85);
+}
+
+.original-price {
+  font-size: 1.3rem;
+  text-decoration: line-through;
+  color: #888;
+}
+
+.discount-badge {
+  background-color: rgba(207, 10, 10, 0.85);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 1rem 0;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+}
+
+.rating-stars svg {
+  fill: rgba(207, 10, 10, 0.85);
+  color: rgba(207, 10, 10, 0.85);
+}
+
+.review-count {
+  font-size: 0.9rem;
+  color: #666;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Product info cards */
+.product-card {
+  /* background-color: #fafafa; */
+  /* padding: 1.5rem; */
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid rgba(207, 10, 10, 0.5); */
+}
+
+.dimensions-info,
+.delivery-info {
+  margin-bottom: 1.5rem;
+}
+
+.info-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #37241e;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-title svg {
+  color: rgba(207, 10, 10, 0.85);
+}
+
+.dimensions-details,
+.delivery-details {
+  color: #37241e;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
+  margin: 1.5rem 0;
+}
+
+.stock-info {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.in-stock {
+  background-color: rgba(165, 189, 165, 0.2);
+  color: #2e8b57;
+}
+
+.out-of-stock {
+  background-color: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 0.85);
+}
+
+.select-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+
+select {
+  /* padding: 0.7rem 1.2rem; */
+  border: 2px solid #eee;
+  border-radius: 8px;
+  background-color: white;
+  color: #37241e;
+  font-size: 1rem;
+  font-family: "ALK Katerina", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+select:hover,
+select:focus {
+  border-color: #ddd;
+  outline: none;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.quantity-btn {
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.quantity-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.quantity-input {
+  width: 50px;
+  text-align: center;
+  border: none;
+  font-size: 1.1rem;
+  padding: 0.5rem 0;
+  background-color: white;
+}
+
+.quantity-input:focus {
+  outline: none;
+}
+
+/* Custom style for Add to Cart button */
+.custom-style-2 {
+  background-color: rgba(207, 10, 10, 0.85) !important;
+  color: white !important;
+  padding: 1rem 2rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  cursor: pointer !important;
+  margin: 1.5rem 0 !important;
+  text-align: center !important;
+  display: block !important;
+  width: auto !important;
+  box-shadow: 0 4px 12px rgba(207, 10, 10, 0.2) !important;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 1);
+}
+.product-options-container {
+  display: flex;
+
+  gap: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.option-select {
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(207, 10, 10, 1);
+  background-color: rgba(255, 229, 232, 1);
+}
+.option-select2 {
+  font-family: Roboto;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(207, 10, 10, 1);
+  background-color: rgba(255, 229, 232, 1);
+}
+.custom-style-2:hover {
+  background-color: rgba(207, 10, 10, 0.95) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 15px rgba(207, 10, 10, 0.25) !important;
+}
+
+.custom-style-2:disabled {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Share buttons moved up and made more visible */
+.share-buttons {
+  display: flex;
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+}
+
+.share-buttons button {
+  background-color: #303030;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.share-buttons button:hover {
+  background-color: #404040;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Remove action buttons section */
+.action-buttons {
+  display: none;
+}
+
+.tabs h3 {
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 1);
+}
+/* Tabs */
+.tabs p {
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(0, 0, 0, 1);
+}
+
+.tabs-list {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.tabs-trigger {
+  padding: 1rem 2rem;
+  background-color: white;
+  border: none;
+  border-top: 2px solid transparent;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.tabs-trigger:hover {
+  color: rgba(207, 10, 10, 0.85);
+}
+
+.tabs-trigger.active {
+  color: rgba(207, 10, 10, 0.85);
+  border-top-color: rgba(207, 10, 10, 0.85);
+}
+
+.tab-content {
+  display: none;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.prose {
+  line-height: 1.7;
+  color: #37241e;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+/* Full screen image modal */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fullscreen-image-container {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fullscreen-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  border: none;
+  z-index: 1001;
+}
+
+/* Add new styles for age group tags */
+.age-group-info {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.age-group-info label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.age-group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.age-group-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 0.9);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .image-section {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 1rem;
+  }
+
+  .thumbnail-container {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-direction: row;
+    justify-content: center;
+    position: static;
+    padding-right: 0;
+    padding-bottom: 1rem;
+  }
+
+  .product-info-details {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    padding: 0;
+    margin-top: 1rem;
+    justify-self: center;
+    align-items: center;
+  }
+
+  /* Ensure images are properly centered and sized on tablets */
+  .image-wrapper img {
+    object-fit: contain !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 1rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .image-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+  .image-container {
+    width: 400px; /* Even smaller on mobile */
+    height: 400px;
+  }
+
+  /* Fix thumbnails on mobile */
+  .thumbnail-container {
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.5rem;
+  }
+
+  .thumbnail {
+    scroll-snap-align: start;
+    width: 60px;
+    height: 60px;
+  }
+
+  .tabs-trigger {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  /* Ensure image displays correctly on small screens */
+  .image-container {
+    width: 280px; /* Smallest on small mobile */
+    height: 280px;
+  }
+  .image-wrapper {
+    width: 150px;
+    height: 150px;
+  }
+
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+
+  .product-title,
+  .price {
+    font-size: 1.8rem;
+    font-family: ALK Katerina;
+    font-weight: 400;
+
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(207, 10, 10, 1);
+  }
+
+  .price {
+    font-size: 1.8rem;
+    color: rgba(0, 0, 0, 1);
+  }
+
+  .tabs-list {
+    flex-wrap: wrap;
+  }
+
+  .tabs-trigger {
+    flex: 1 0 auto;
+    text-align: center;
+  }
+}
