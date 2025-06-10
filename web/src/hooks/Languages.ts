@@ -30,6 +30,8 @@ export const TRANSLATIONS: Translations = {
     // Shop
     shop: {
       allArtworks: "ყველა პროდუქტი",
+      shop: "პროდუქტები",
+      Artworks:"პროდუქტები",
       artistWorks: "-ის პროდუქტები",
       loading: "იტვირთება...",
       filters: "ფილტრები",
@@ -205,7 +207,7 @@ export const TRANSLATIONS: Translations = {
       privacyPolicy: "კონფიდენციალურობის პოლიტიკა",
       contact: "კონტაქტი",
       address: "მისამართი: თბილისი, საქართველო",
-      email: "ელ-ფოსტა: info@russana.ge",
+      email: "ელ-ფოსტა: info@myhunter.ge",
       phone: "ტელეფონი: +995 XXX XXX XXX",
       socialMedia: "სოციალური ქსელები",
       follow: "მოგვყევით",
@@ -452,7 +454,7 @@ export const TRANSLATIONS: Translations = {
     // Navigation
     navigation: {
       home: "Home",
-      shop: "Shop Artwork",
+      shop: "Shop ",
       auction: "Auction",
       myOrders: "My Orders",
       forum: "Forum",
