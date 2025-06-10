@@ -104,9 +104,7 @@ export function LoginForm() {
         </button>
       </form>
 
-      <div className="login-divider">
-        <span>ან შედით </span>
-      </div>
+     
 
       <div className="social-login">
         <button
@@ -133,7 +131,7 @@ export function LoginForm() {
         <Link href="/register" className="register-link">
           დარეგისტრირდი
         </Link>
-        ახლავე რათა დააპიპინოოო{" "}
+      
       </div>
     </div>
   );

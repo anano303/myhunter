@@ -9,9 +9,8 @@ import "./header.scss";
 import UserMenu from "./user-menu";
 import { LanguageSwitcher } from "@/components/language-switcher/language-switcher";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Home, ShoppingBag, Star } from "lucide-react";
+import { Home, ShoppingBag, Star, X } from "lucide-react";
 import SearchBox from "../SearchBox/search-box";
-
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -48,12 +47,61 @@ export default function Header() {
 
         {/* Mobile Navigation Toggle */}
         <div className="mobile-nav-btn" onClick={toggleNav}>
-          <span className={`hamburger-icon ${isNavOpen ? "close" : ""}`}>
-            {isNavOpen ? "×" : "☰"}
-          </span>
+          {isNavOpen ? (
+            <X className="nav-close-icon" size={24} />
+          ) : (
+            <span className="hamburger-icon">☰</span>
+          )}
         </div>
 
-        {/* Navigation is positioned absolutely so it doesn't affect layout */}
+        {/* New side navigation menu with your original links */}
+        <nav className={`side-nav ${isNavOpen ? "open" : ""}`}>
+          <div className="side-nav-header">
+            <div className="nav-user">
+              <UserMenu />
+            </div>
+            <div className="language-switcher-container">
+              <LanguageSwitcher />
+            </div>
+            <button className="nav-close-btn" onClick={toggleNav}>
+              <X size={20} />
+            </button>
+          </div>
+
+          <ul className="side-nav-links">
+            <li className="nav-item">
+              <Link href="/" className="nav-link">
+                <Home size={20} className="nav-icon" />
+                <span>{t("navigation.home")}</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/shop?page=1" className="nav-link">
+                <ShoppingBag size={20} className="nav-icon" />
+                <span>{t("navigation.shop")}</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/about" className="nav-link">
+                <Star size={20} className="nav-icon" />
+                <span>{t("navigation.about")}</span>
+              </Link>
+            </li>
+          </ul>
+
+          <div className="side-nav-footer">
+            <div className="side-nav-actions">
+              <CartIcon />
+            </div>
+          </div>
+        </nav>
+
+        {/* Overlay for side navigation */}
+        {isNavOpen && (
+          <div className="side-nav-overlay" onClick={toggleNav}></div>
+        )}
+
+        {/* Keep your original nav for reference, but hidden via CSS */}
         <nav className="main-nav">
           <ul>
             <li>
@@ -75,7 +123,6 @@ export default function Header() {
               </Link>
             </li>
 
-            {/* Add user actions to mobile menu */}
             <li className="mobile-menu-user-actions">
               <div className="user-menu">
                 <UserMenu />

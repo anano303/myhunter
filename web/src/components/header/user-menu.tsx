@@ -9,6 +9,11 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/hooks/LanguageContext";
 import iconAuth from "../../assets/Images/Vector.png";
 
+// Add a style object for the FiraGo font
+const userMenuStyles = {
+  fontFamily: '"FiraGo", sans-serif',
+};
+
 export default function UserMenu() {
   const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
@@ -63,95 +68,101 @@ export default function UserMenu() {
   }
 
   return (
-    <div className="dropdown" ref={menuRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="button"
-        aria-label="Toggle user menu"
-      >
-        <div className="user-avatar">
-          <Image
-            src={profileImage || "/avatar.jpg"}
-            alt={user.name}
-            width={32}
-            height={32}
-            className="avatar-image"
-          />
-        </div>
-        <span className="username">{user.name || t("navigation.profile")}</span>
-        <span className="icon">▼</span>
-      </button>
-      {isOpen && (
-        <div className="dropdown-menu">
-          <div className="dropdown-label">{t("navigation.profile")}</div>
-          <hr />
-          <Link
-            href="/profile"
-            className="dropdown-item"
-            onClick={() => setIsOpen(false)}
-          >
-            {t("navigation.profile")}
-          </Link>
-          <Link
-            href="/profile/orders"
-            className="dropdown-item"
-            onClick={() => setIsOpen(false)}
-          >
-            {t("navigation.orders")}
-          </Link>
+    <div className="user-menu-container" style={userMenuStyles}>
+      <div className="dropdown" ref={menuRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="button"
+          aria-label="Toggle user menu"
+        >
+          <div className="user-avatar">
+            <Image
+              src={profileImage || "/avatar.jpg"}
+              alt={user.name}
+              width={32}
+              height={32}
+              className="avatar-image"
+            />
+          </div>
+          <span className="username">
+            {user.name || t("navigation.profile")}
+          </span>
+          <span className="icon">▼</span>
+        </button>
+        {isOpen && (
+          <div className="dropdown-menu">
+            <div className="dropdown-label">{t("navigation.profile")}</div>
+            <hr />
+            <Link
+              href="/profile"
+              className="dropdown-item"
+              onClick={() => setIsOpen(false)}
+            >
+              {t("navigation.profile")}
+            </Link>
+            <Link
+              href="/profile/orders"
+              className="dropdown-item"
+              onClick={() => setIsOpen(false)}
+            >
+              {t("navigation.orders")}
+            </Link>
 
-          {(user.role === Role.Admin || user.role === Role.Seller) && (
-            <>
-              <hr />
-              <div className="dropdown-label">{t("navigation.adminPanel")}</div>
-              <Link
-                href="/admin/products"
-                className="dropdown-item"
-                onClick={() => setIsOpen(false)}
-              >
-                {t("navigation.products")}
-              </Link>
-            </>
-          )}
+            {(user.role === Role.Admin || user.role === Role.Seller) && (
+              <>
+                <hr />
+                <div className="dropdown-label">
+                  {t("navigation.adminPanel")}
+                </div>
+                <Link
+                  href="/admin/products"
+                  className="dropdown-item"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t("navigation.products")}
+                </Link>
+              </>
+            )}
 
-          {user.role === Role.Admin && (
-            <>
-              <Link
-                href="/admin/categories"
-                className="dropdown-item"
-                onClick={() => setIsOpen(false)}
-              >
-                კატეგორიები
-              </Link>
-              <Link
-                href="/admin/users"
-                className="dropdown-item"
-                onClick={() => setIsOpen(false)}
-              >
-                {t("navigation.users")}
-              </Link>
-              <Link
-                href="/admin/orders"
-                className="dropdown-item"
-                onClick={() => setIsOpen(false)}
-              >
-                {t("navigation.orders")}
-              </Link>
-            </>
-          )}
+            {user.role === Role.Admin && (
+              <>
+                <Link
+                  href="/admin/categories"
+                  className="dropdown-item"
+                  onClick={() => setIsOpen(false)}
+                >
+                  კატეგორიები
+                </Link>
+                <Link
+                  href="/admin/users"
+                  className="dropdown-item"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t("navigation.users")}
+                </Link>
+                <Link
+                  href="/admin/orders"
+                  className="dropdown-item"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t("navigation.orders")}
+                </Link>
+              </>
+            )}
 
-          <hr />
-          <button
-            onClick={() => {
-              setIsOpen(false);
-              logout();
-            }}
-            className="dropdown-item logout-button"
-          >
-            {t("navigation.logout")}
-          </button>
-        </div>
-      )}
+            <hr />
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                logout();
+              }}
+              className="dropdown-item logout-button"
+            >
+              {t("navigation.logout")}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

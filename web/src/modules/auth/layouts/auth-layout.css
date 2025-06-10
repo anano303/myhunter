@@ -1,6 +1,6 @@
 .auth-layout {
-  background: url("/logo.png") no-repeat center center;
-  background-size: 80% auto;
+  background: url("/hunting-bg.jpg") no-repeat center center;
+  background-size: cover;
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -17,15 +17,20 @@
   left: 0;
   right: 0;
   bottom: 0;
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.4);
+  background: radial-gradient(
+      100% 253.65% at 100% 0%,
+      #2b4226 5%,
+      #4b5320 50.11%,
+      #0f1b0d 86.44%
+    )
+    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+
   z-index: 1;
 }
 
 .auth-layout-inner {
   padding: 2rem;
   width: 100%;
-
   position: relative;
   z-index: 2;
 }
@@ -38,22 +43,24 @@
 }
 
 .auth-layout-title {
-  color: rgba(207, 10, 10, 1);
-  font-size: 28px;
-  font-weight: bold;
+  color: #f5e9d1; /* Lighter color */
+  font-size: 32px;
+  font-weight: 600;
   margin-bottom: 0.5rem;
   text-align: center;
+  font-family: "FiraGo", sans-serif;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .auth-layout-subtitle {
-  color: #666;
+  color: #f0e0c0; /* Lighter color */
   text-align: center;
   margin-bottom: 1rem;
+  font-family: "FiraGo", sans-serif;
 }
 
 .auth-layout-children {
   width: 100%;
-      display: flex
-;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }

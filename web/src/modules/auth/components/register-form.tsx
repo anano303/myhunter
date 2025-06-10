@@ -146,9 +146,7 @@ export function RegisterForm() {
         </button>
       </form>
 
-      <div className="register-divider">
-        <span>ან</span>
-      </div>
+ 
 
       <div className="social-login">
         <button
@@ -172,7 +170,7 @@ export function RegisterForm() {
       </div>
 
       <div className="login-prompt">
-        თუ ჩვენთან უკვე დააპიპინე გაიარე
+       
         <Link href="/login" className="login-link">
           ავტორიზაცია
         </Link>

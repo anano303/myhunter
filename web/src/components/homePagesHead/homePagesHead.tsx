@@ -9,8 +9,12 @@ const HomePagesHead = () => {
       <div className="rifle-banner">
         {/* Hero image is set as background in CSS */}
         <div className="action-buttons">
-          <button className="registration-btn">რეგისტრაცია</button>
-          <button className="auth-btn">ავტორიზაცია</button>
+          <Link href="/register" className="registration-btn">
+            რეგისტრაცია
+          </Link>
+          <Link href="/login" className="auth-btn">
+            ავტორიზაცია
+          </Link>
         </div>
 
         <div className="navigation-icons">

@@ -490,6 +490,25 @@ input:focus {
   max-width: 400px;
   position: relative;
   z-index: 2;
+  background: rgba(58, 72, 39, 0.8); /* Lighter background */
+  border: 1px solid rgba(245, 233, 209, 0.4); /* Lighter border */
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  color: #f5e9d1; /* Lighter text */
+  backdrop-filter: blur(10px);
+}
+
+.register-content::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  width: 60px;
+  height: 60px;
+  background: url("/target-icon.png") no-repeat center center;
+  background-size: contain;
+  opacity: 0.6;
+  z-index: -1;
 }
 
 .register-header {
@@ -498,26 +517,13 @@ input:focus {
 }
 
 .register-title {
-  color: rgba(207, 10, 10, 1);
-  font-size: 24px;
-  font-weight: bold;
+  color: #f5e9d1; /* Lighter color */
+  font-size: 28px;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 3.5rem;
-  font-family: ALK Katerina;
-  font-weight: 400;
-  font-size: 40px;
-  line-height: 100%;
-  letter-spacing: 0%;
-}
-
-.register-title::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 40%;
-  height: 3px;
-  background: linear-gradient(to right, #e91e63, transparent);
+  margin-bottom: 2rem;
+  font-family: "FiraGo", sans-serif;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .register-subtitle {
@@ -541,25 +547,25 @@ input:focus {
 
 .register-field input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid rgba(207, 10, 10, 1);
-  border-radius: 8px;
-  background-color: rgba(255, 229, 232, 0.7);
+  padding: 12px 16px;
+  border: 1px solid rgba(245, 233, 209, 0.3); /* Lighter border */
+  border-radius: 6px;
+  background-color: rgba(48, 60, 32, 0.8); /* Lighter input background */
   transition: border-color 0.3s;
   box-sizing: border-box;
-  font-family: Roboto;
+  font-family: "FiraGo", sans-serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
-  color: rgba(207, 10, 10, 1);
+  color: #f5e9d1; /* Lighter text */
 }
 
 .register-field input::placeholder {
-  color: rgba(207, 10, 10, 0.7);
-  font-family: Roboto;
+  color: #d9c9a3; /* Lighter placeholder */
+  font-family: "FiraGo", sans-serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
 }
@@ -569,55 +575,51 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-text-fill-color: rgba(207, 10, 10, 1) !important;
+  -webkit-text-fill-color: #f5e9d1 !important; /* Lighter text */
+  -webkit-box-shadow: 0 0 0 30px #3a4827 inset !important; /* Lighter background */
   transition: background-color 5000s ease-in-out 0s;
 }
 
-input:-internal-autofill-selected {
-  background-color: rgba(255, 229, 232, 0.7) !important;
-  appearance: none;
-}
-
 .register-field input:focus {
-  border-color: rgba(207, 10, 10, 1);
-  outline: none;
+  border-color: #d9c9a3; /* Lighter border on focus */
+  box-shadow: 0 0 0 1px rgba(245, 233, 209, 0.5); /* Lighter shadow */
 }
 
 .error-text {
-  color: rgba(207, 10, 10, 1);
+  color: #ff9a80; /* Lighter error text */
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
 
 .register-button {
-  background-color: rgba(207, 10, 10, 1);
-  color: white;
+  background-color: #6b5c35; /* Lighter button */
+  color: #f5e9d1; /* Lighter text */
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 12px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
-  width: 60%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   align-self: center;
   margin: 1rem 0;
-  font-family: ALK Katerina;
-  font-weight: 400;
-  font-size: 20px;
+  font-family: "FiraGo", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
   line-height: 100%;
-  letter-spacing: 10%;
+  letter-spacing: 0%;
 }
 
 .register-button:hover {
-  background-color: rgba(177, 8, 8, 1);
+  background-color: #7d6c40; /* Lighter hover */
 }
 
 .register-button:disabled {
-  background-color: #ccc;
+  background-color: #3d3523;
   cursor: not-allowed;
 }
 
@@ -625,7 +627,7 @@ input:-internal-autofill-selected {
   display: flex;
   align-items: center;
   text-align: center;
-  color: #777;
+  color: #d9c9a3; /* Lighter text */
   font-size: 0.875rem;
   margin: 1rem 0;
 }
@@ -634,7 +636,7 @@ input:-internal-autofill-selected {
 .register-divider::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid rgba(255, 229, 232, 0.7);
+  border-bottom: 1px solid rgba(245, 233, 209, 0.3); /* Lighter divider */
 }
 
 .register-divider span {
@@ -656,56 +658,58 @@ input:-internal-autofill-selected {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  background-color: white;
+  background-color: #4d5c35; /* Lighter background */
+  border: 1px solid rgba(245, 233, 209, 0.3); /* Lighter border */
+  color: #f5e9d1; /* Lighter text */
   transition: all 0.3s ease;
-  width: 60%;
-  border: 1px solid #ddd;
-  font-family: ALK Katerina;
+  width: 100%;
+  font-family: "FiraGo", sans-serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 100%;
   letter-spacing: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #fff;
 }
 
 .social-button:hover {
-  background-color: rgba(255, 229, 232, 0.7);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #5b6a41; /* Lighter hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .social-button svg {
-  color: #000;
+  color: #fff;
 }
 
 .google-button {
   position: relative;
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: #222;
+  border: 1px solid #333;
 }
 
 .google-brand {
   font-weight: 500;
-  letter-spacing: 2px;
-  color: #000;
+  letter-spacing: 1px;
+  color: #fff;
 }
 
 .google-blue,
 .google-red,
 .google-yellow,
 .google-green {
-  color: #000;
+  color: #fff;
 }
 
 .login-prompt {
   text-align: center;
   margin-top: 1.5rem;
-  color: #555;
+  color: #d9c9a3; /* Lighter text */
   font-size: 0.875rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  font-family: Roboto;
+  font-family: "FiraGo", sans-serif;
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
@@ -713,17 +717,18 @@ input:-internal-autofill-selected {
 }
 
 .login-link {
-  color: rgba(207, 10, 10, 1);
+  color: #e6d5b0; /* Lighter link */
   text-decoration: none;
   font-weight: 500;
 }
 
 .login-link:hover {
   text-decoration: underline;
+  color: #f5e9d1; /* Lighter hover */
 }
 
 .register-error-message {
-  color: rgba(207, 10, 10, 1);
+  color: #ff6b6b;
   text-align: center;
   margin-bottom: 1rem;
   font-size: 0.875rem;
@@ -750,24 +755,24 @@ input:-internal-autofill-selected {
 
 .register-success {
   text-align: center;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .register-success-icon {
-  color: rgba(207, 10, 10, 1);
+  color: #8a7d52;
   font-size: 3rem;
   margin-bottom: 1rem;
 }
 
 .register-success-title {
-  color: rgba(207, 10, 10, 1);
-  font-family: ALK Katerina;
-  font-size: 32px;
+  color: #e6cd9f;
+  font-family: "FiraGo", sans-serif;
+  font-size: 24px;
   margin-bottom: 1rem;
 }
 
 .register-success-text {
-  color: #555;
+  color: #a09272;
   margin-bottom: 0.5rem;
   font-size: 16px;
 }
