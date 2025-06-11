@@ -8,7 +8,8 @@ import "./productDetails.css";
 import { Product } from "@/types";
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { useLanguage } from "@/hooks/LanguageContext";
-
+import { ProductReviews } from "./product-reviews";
+import { ReviewForm } from "./review-form";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
@@ -103,6 +104,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<"description" | "reviews">(
+    "description"
+  );
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   const availableQuantity = useMemo(() => {
     // Calculate available quantity based on selected attributes
@@ -163,32 +168,40 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     setIsFullscreenOpen(false);
   };
 
+  const handleReviewSuccess = () => {
+    setShowReviewForm(false);
+    toast({
+      title: "შეფასება დაემატა",
+      description: "თქვენი შეფასება წარმატებით დაემატა",
+    });
+    // Refresh the page to show the new review
+    window.location.reload();
+  };
+
   return (
     <div className="container">
       <div className="grid">
-        {/* Left Column - Thumbnails */}
-        <div className="thumbnail-container">
-          {product.images.map((image, index) => (
-            <motion.button
-              key={image}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`thumbnail ${
-                index === currentImageIndex ? "active" : ""
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Image
-                src={image}
-                alt={`${displayName} view ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </motion.button>
-          ))}
+        {/* Title Section - Now on the left side above the image */}
+        <div className="product-title-section">
+          <h1 className="product-title">{displayName}</h1>
+          {product.brand && (
+            <div className="brand-badge">
+              {product.brandLogo ? (
+                <Image
+                  src={product.brandLogo}
+                  alt={product.brand}
+                  width={24}
+                  height={24}
+                  className="brand-logo"
+                />
+              ) : (
+                product.brand
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Center Column - Main Image */}
+        {/* Main Image Section */}
         <div className="image-section">
           <div className="image-container">
             <AnimatePresence mode="wait">
@@ -214,18 +227,62 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
         </div>
 
-        {/* Right Column - Product Info */}
+        {/* Thumbnails - Below the main image on the left side */}
+        <div className="thumbnail-container">
+          {product.images.map((image, index) => (
+            <motion.button
+              key={image}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`thumbnail ${
+                index === currentImageIndex ? "active" : ""
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Image
+                src={image}
+                alt={`${displayName} view ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+            </motion.button>
+          ))}
+        </div>
+        <div>
+          <div className="rating-container">
+            <div className="rating-stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg
+                  key={star}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  className={`star-icon ${
+                    star <= Math.round(product.rating) ? "filled" : ""
+                  }`}
+                >
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+              ))}
+            </div>
+            <span
+              className="review-count"
+              onClick={() => setActiveTab("reviews")}
+            >
+              ({product.numReviews} შეფასება)
+            </span>
+          </div>
+          <ShareButtons
+            url={typeof window !== "undefined" ? window.location.href : ""}
+            title={`Check out ${displayName} by ${product.brand} on MyHunter`}
+          />
+        </div>
+        {/* Product Info Section - On the right side */}
         <div className="product-info-details">
-          <h1 className="product-title">{displayName}</h1>
-
           <div className="price-section">
             <span className="price">{product.price} ლარი </span>
           </div>
-
-          <ShareButtons
-            url={typeof window !== "undefined" ? window.location.href : ""}
-            title={`Check out ${displayName} by ${product.brand} on Russana`}
-          />
 
           {!isOutOfStock && (
             <div className="product-options-container">
@@ -316,29 +373,86 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           )}
 
           <div className="tabs">
-            <h3>{t("product.details") || "აღწერა"} : </h3>
-            <p>{displayDescription}</p>
+            <div className="tabs-list">
+              <button
+                className={`tabs-trigger ${
+                  activeTab === "description" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("description")}
+              >
+                აღწერა
+              </button>
+              <button
+                className={`tabs-trigger ${
+                  activeTab === "reviews" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("reviews")}
+              >
+                შეფასებები ({product.numReviews})
+              </button>
+            </div>
 
-            <AddToCartButton
-              productId={product._id}
-              countInStock={availableQuantity}
-              className="custom-style-2"
-              selectedSize={selectedSize}
-              selectedColor={selectedColor}
-              selectedAgeGroup={selectedAgeGroup}
-              quantity={quantity}
-              disabled={
-                availableQuantity <= 0 ||
-                (product.sizes && product.sizes.length > 0 && !selectedSize) ||
-                (product.colors &&
-                  product.colors.length > 0 &&
-                  !selectedColor) ||
-                (product.ageGroups &&
-                  product.ageGroups.length > 0 &&
-                  !selectedAgeGroup)
-              }
-            />
+            <div
+              className={`tab-content ${
+                activeTab === "description" ? "active" : ""
+              }`}
+            >
+              <div className="product-description">
+                {displayDescription || "ამ პროდუქტს არ აქვს აღწერა"}
+              </div>
+            </div>
+
+            <div
+              className={`tab-content ${
+                activeTab === "reviews" ? "active" : ""
+              }`}
+            >
+              <div className="reviews-container">
+                <ProductReviews product={product} />
+
+                {!showReviewForm ? (
+                  <button
+                    className="add-review-button"
+                    onClick={() => setShowReviewForm(true)}
+                  >
+                    დაამატე შეფასება
+                  </button>
+                ) : (
+                  <div className="review-form-container">
+                    <h3 className="review-form-title">დაამატე შეფასება</h3>
+                    <ReviewForm
+                      productId={product._id}
+                      onSuccess={handleReviewSuccess}
+                    />
+                    <button
+                      className="cancel-review-button"
+                      onClick={() => setShowReviewForm(false)}
+                    >
+                      გაუქმება
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+
+          <AddToCartButton
+            productId={product._id}
+            countInStock={availableQuantity}
+            className="custom-style-2"
+            selectedSize={selectedSize}
+            selectedColor={selectedColor}
+            selectedAgeGroup={selectedAgeGroup}
+            quantity={quantity}
+            disabled={
+              availableQuantity <= 0 ||
+              (product.sizes && product.sizes.length > 0 && !selectedSize) ||
+              (product.colors && product.colors.length > 0 && !selectedColor) ||
+              (product.ageGroups &&
+                product.ageGroups.length > 0 &&
+                !selectedAgeGroup)
+            }
+          />
 
           {/* Fullscreen Image Modal */}
           {isFullscreenOpen && (
