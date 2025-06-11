@@ -76,7 +76,7 @@
 .product-sections {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+
   width: 100%;
   position: relative;
   z-index: 5;
@@ -88,11 +88,11 @@
 }
 
 .section-title {
-  font-family: ALK Life;
+  font-family: firaGo;
   margin-left: 2%;
   color: #ffffff;
   font-size: 1.8rem;
-  font-weight: 400;
+  font-weight: 700;
   margin-bottom: 1.5rem;
   text-align: left;
   border-bottom: 1px solid #303030;

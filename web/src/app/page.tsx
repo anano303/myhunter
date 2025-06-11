@@ -1,20 +1,22 @@
 import HomePagesHead from "@/components/homePagesHead/homePagesHead";
 import HomePageShop from "@/components/homePageShop/homePageShop";
 import HuntingBanner from "@/components/huntingBanner/hunting-banner";
-// import Navbar from "@/components/navbar/navbar";
 import TopItems from "@/components/TopItems/TopItems";
+import BrandLogos from "@/components/BrandLogos/BrandLogos";
+
 const Home = () => {
   return (
     <div>
       <HomePagesHead />
       <TopItems />
       <HuntingBanner />
-      <div
+      {/* <div
         className="site-timer-container"
         style={{ position: "relative", zIndex: 20 }}
-      ></div>
+      ></div> */}
       {/* <Navbar/> */}
       <HomePageShop />
+      <BrandLogos />
     </div>
   );
 };

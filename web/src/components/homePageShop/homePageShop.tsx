@@ -139,20 +139,6 @@ export default function HomePageShop() {
       {renderAnimatedIcons()}
 
       <div className="content">
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <h1
-            className="title"
-            style={{
-              marginBottom: 40,
-              marginTop: 70,
-              zIndex: 9,
-              textAlign: "left",
-            }}
-          >
-            {t("shop.allArtworks")}
-          </h1>
-        </div>
-
         {isLoading ? (
           <div className="loading-container">
             <p>{t("shop.loading")}</p>
@@ -162,23 +148,32 @@ export default function HomePageShop() {
             {categoryProducts.length > 0 ? (
               categoryProducts.map((categoryData, index) => (
                 <div key={index} className="product-section">
-                  <h2 className="section-title">
-                    {t("shop.newest")} {categoryData.category}
-                  </h2>
+                  <div
+                    className="titleContainer"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <h2 className="section-title">
+                      {t("shop.newest")} {categoryData.category}
+                    </h2>
+                    <div className="see-more">
+                      <Link
+                        href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
+                      >
+                        <button className="see-more-btn">
+                          {t("shop.seeAll")}
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
                   <ProductGrid
                     products={categoryData.products}
                     theme="default"
                     isShopPage={false}
                   />
-                  <div className="see-more">
-                    <Link
-                      href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
-                    >
-                      <button className="see-more-btn">
-                        {t("shop.seeAll")}
-                      </button>
-                    </Link>
-                  </div>
                 </div>
               ))
             ) : (
