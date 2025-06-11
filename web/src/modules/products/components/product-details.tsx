@@ -13,6 +13,9 @@ import { ReviewForm } from "./review-form";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { ProductCard } from "./product-card";
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -177,6 +180,39 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     // Refresh the page to show the new review
     window.location.reload();
   };
+
+  // Fetch similar products from the same category
+  const { data: similarProducts = [] } = useQuery<Product[]>({
+    queryKey: ["similarProducts", product.category, product._id],
+    queryFn: async () => {
+      try {
+        const categoryId =
+          typeof product.category === "object"
+            ? product.category._id || product.category.id
+            : product.category;
+
+        const response = await fetchWithAuth(
+          `/products?category=${categoryId}&limit=4`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch similar products");
+        }
+
+        const data = await response.json();
+        // Get items/products array and filter out the current product
+        const products = (data.items || data.products || [])
+          .filter((p: Product) => p._id !== product._id)
+          .slice(0, 3); // Limit to 3 products
+
+        return products;
+      } catch (error) {
+        console.error("Error fetching similar products:", error);
+        return [];
+      }
+    },
+    enabled: !!product.category,
+  });
 
   return (
     <div className="container">
@@ -453,36 +489,48 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 !selectedAgeGroup)
             }
           />
-
-          {/* Fullscreen Image Modal */}
-          {isFullscreenOpen && (
-            <div className="fullscreen-modal" onClick={closeFullscreen}>
-              <button
-                className="fullscreen-close"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closeFullscreen();
-                }}
-              >
-                <X />
-              </button>
-              <div
-                className="fullscreen-image-container"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Image
-                  src={product.images[currentImageIndex]}
-                  alt={displayName}
-                  width={1200}
-                  height={1200}
-                  quality={100}
-                  className="fullscreen-image"
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Similar Products Section */}
+      {similarProducts && similarProducts.length > 0 && (
+        <div className="similar-products-section">
+          <h2 className="similar-products-title">მსგავსი პროდუქტები</h2>
+          <div className="similar-products-grid">
+            {similarProducts.map((similarProduct) => (
+              <ProductCard key={similarProduct._id} product={similarProduct} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Image Modal */}
+      {isFullscreenOpen && (
+        <div className="fullscreen-modal" onClick={closeFullscreen}>
+          <button
+            className="fullscreen-close"
+            onClick={(e) => {
+              e.stopPropagation();
+              closeFullscreen();
+            }}
+          >
+            <X />
+          </button>
+          <div
+            className="fullscreen-image-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={product.images[currentImageIndex]}
+              alt={displayName}
+              width={1200}
+              height={1200}
+              quality={100}
+              className="fullscreen-image"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
