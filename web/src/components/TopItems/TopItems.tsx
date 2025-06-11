@@ -76,7 +76,7 @@ const TopItems: React.FC = () => {
   return (
     <div className="top-items-container">
       <div className="top-items-title-container">
-        <h2 className="top-items-title">ყველაზე პოპულარული</h2>
+        <h2 className="top-items-title">პოპულარული პროდუქტები</h2>
       </div>
 
       <div
