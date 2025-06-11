@@ -31,7 +31,7 @@ export const TRANSLATIONS: Translations = {
     shop: {
       allArtworks: "ყველა პროდუქტი",
       shop: "პროდუქტები",
-      Artworks:"პროდუქტები",
+      Artworks: "პროდუქტები",
       artistWorks: "-ის პროდუქტები",
       loading: "იტვირთება...",
       filters: "ფილტრები",
@@ -448,6 +448,14 @@ export const TRANSLATIONS: Translations = {
       // Swimwear subcategories
       "საცურაო კოსტუმები": "საცურაო კოსტუმები",
     },
+
+    // Hunting Banner
+    huntingBanner: {
+      title: "რომელია ყველაზე პოპულარული იარაღი ნადირობისთვის?",
+      description:
+        "ადმოაჩინეთ ჩვენს მაღაზიაში ყველაზე პოპულარული და საუკეთესო ხარისხის იარაღი ნადირობისთვის",
+      cta: "აღმოაჩინე ჩვენი მაღაზია",
+    },
   },
 
   en: {
@@ -852,6 +860,14 @@ export const TRANSLATIONS: Translations = {
 
       // Swimwear subcategories
       "საცურაო კოსტუმები": "Swimsuits",
+    },
+
+    // Hunting Banner
+    huntingBanner: {
+      title: "How to buy the most popular hunting weapons?",
+      description:
+        "Discover the most popular and highest quality hunting weapons in our store",
+      cta: "Discover our shop",
     },
   },
 };

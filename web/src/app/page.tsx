@@ -1,5 +1,6 @@
 import HomePagesHead from "@/components/homePagesHead/homePagesHead";
 import HomePageShop from "@/components/homePageShop/homePageShop";
+import HuntingBanner from "@/components/huntingBanner/hunting-banner";
 // import Navbar from "@/components/navbar/navbar";
 import TopItems from "@/components/TopItems/TopItems";
 const Home = () => {
@@ -7,12 +8,11 @@ const Home = () => {
     <div>
       <HomePagesHead />
       <TopItems />
+      <HuntingBanner />
       <div
         className="site-timer-container"
         style={{ position: "relative", zIndex: 20 }}
-      >
-        {/* ...existing site-timer code... */}
-      </div>
+      ></div>
       {/* <Navbar/> */}
       <HomePageShop />
     </div>
