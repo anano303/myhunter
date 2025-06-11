@@ -1,7 +1,7 @@
 .top-items-container {
   width: 100%;
   justify-self: center;
-  margin-top: 10%;
+  margin-top: 5%;
   overflow: hidden; /* Prevent any potential overflow issues */
 }
 
