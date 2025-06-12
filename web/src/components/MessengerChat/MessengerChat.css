@@ -104,4 +104,16 @@ iframe[data-testid="bubble_iframe"] {
     width: 30px;
     height: 30px;
   }
+
+  .chatIcon {
+    width: 50px !important;
+    height: 50px !important;
+    bottom: 20px !important;
+    right: 20px !important;
+  }
+
+  .chatIcon svg {
+    width: 28px;
+    height: 28px;
+  }
 }
