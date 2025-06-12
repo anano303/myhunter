@@ -1,0 +1,120 @@
+/* Common animation styles for section transitions */
+.section-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.reveal-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animations for children elements */
+.reveal-section.reveal-visible > * {
+  animation: stagger-in 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.reveal-section.reveal-visible > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.reveal-section.reveal-visible > *:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.reveal-section.reveal-visible > *:nth-child(3) {
+  animation-delay: 0.5s;
+}
+.reveal-section.reveal-visible > *:nth-child(4) {
+  animation-delay: 0.7s;
+}
+.reveal-section.reveal-visible > *:nth-child(5) {
+  animation-delay: 0.9s;
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide-in animations from different directions */
+.slide-left {
+  transform: translateX(-100px);
+}
+
+.slide-right {
+  transform: translateX(100px);
+}
+
+.slide-up {
+  transform: translateY(100px);
+}
+
+.slide-down {
+  transform: translateY(-100px);
+}
+
+.slide-left.reveal-visible,
+.slide-right.reveal-visible,
+.slide-up.reveal-visible,
+.slide-down.reveal-visible {
+  transform: translate(0);
+  opacity: 1;
+}
+
+/* Fade-in animation */
+.fade-in {
+  opacity: 0;
+  transition: opacity 1.2s ease-out;
+}
+
+.fade-in.reveal-visible {
+  opacity: 1;
+}
+
+/* Scale animation */
+.scale-in {
+  transform: scale(0.8);
+  opacity: 0;
+  transition: transform 1s ease-out, opacity 1s ease-out;
+}
+
+.scale-in.reveal-visible {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Special animation for product items */
+.product-item-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease-out;
+}
+
+.product-item-animation.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animation for brand logos */
+.brand-animation {
+  opacity: 0;
+  filter: grayscale(100%);
+  transition: all 0.8s ease-out;
+}
+
+.brand-animation.reveal-visible {
+  opacity: 1;
+  filter: grayscale(0%);
+}
