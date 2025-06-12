@@ -9,7 +9,7 @@ import { satoshi } from "./(pages)/fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/header/header";
-
+import MessengerChatWrapper from "@/components/MessengerChat/MessengerChatWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -42,9 +42,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <head>
@@ -75,6 +75,7 @@ export default function RootLayout({
             </CartProvider>
           </AuthProvider>
         </Providers>
+        <MessengerChatWrapper />
       </body>
     </html>
   );
