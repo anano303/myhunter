@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import "./homePageShop.css";
 import "../../app/(pages)/shop/ShopPage.css";
@@ -25,6 +25,8 @@ export default function HomePageShop() {
   const [categoryProducts, setCategoryProducts] = useState<CategoryProducts[]>(
     []
   );
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
 
   // Fetch all categories first
   const { data: categories = [] } = useQuery<Category[]>({
@@ -43,6 +45,43 @@ export default function HomePageShop() {
     refetchOnWindowFocus: false,
   });
 
+  useEffect(() => {
+    // Animation observer
+    const observeElements = () => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("animate-visible");
+              // Once animation is triggered, stop observing this element
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
+      );
+
+      // Observe section elements
+      sectionRefs.current.forEach((el) => {
+        if (el) observer.observe(el);
+      });
+
+      // Observe title elements separately for different animation
+      titleRefs.current.forEach((el) => {
+        if (el) observer.observe(el);
+      });
+
+      return observer;
+    };
+
+    const observer = observeElements();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [categoryProducts.length]);
+
+  // Rest of the fetch logic
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -118,7 +157,7 @@ export default function HomePageShop() {
 
   const renderAnimatedIcons = () => {
     return (
-      <div className="shop-animated-icons-container">
+      <div className="shop-animated-icons-container animate-element fade-up">
         <div className="shop-animated-icons modern">
           <div className="icon clothing-icon">
             <Shirt />
@@ -147,7 +186,13 @@ export default function HomePageShop() {
           <div className="product-sections">
             {categoryProducts.length > 0 ? (
               categoryProducts.map((categoryData, index) => (
-                <div key={index} className="product-section">
+                <div
+                  key={index}
+                  className="product-section animate-element fade-up"
+                  ref={(el) => {
+                    sectionRefs.current[index] = el;
+                  }}
+                >
                   <div
                     className="titleContainer"
                     style={{
@@ -156,10 +201,17 @@ export default function HomePageShop() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <h2 className="section-title">
+                    <h2
+                      className={`section-title animate-element slide-${
+                        index % 2 === 0 ? "right" : "left"
+                      }`}
+                      ref={(el) => {
+                        titleRefs.current[index] = el;
+                      }}
+                    >
                       {t("shop.newest")} {categoryData.category}
                     </h2>
-                    <div className="see-more">
+                    <div className="see-more animate-element fade-in">
                       <Link
                         href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
                       >
