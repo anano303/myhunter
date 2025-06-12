@@ -4,23 +4,25 @@ import { ArrowLeft } from "lucide-react";
 import type { ProductsResponse } from "@/modules/products/api/get-products";
 
 interface SearchPageProps {
-  params: {
-    keyword?: string;
-  };
-  searchParams: { page?: string };
+  params: Promise<{
+    keyword: string;
+  }>;
+  searchParams: Promise<{
+    page?: string;
+  }>;
 }
 
 export default async function SearchPage({
   searchParams,
   params,
 }: SearchPageProps) {
-  const { keyword } = params;
-  const { page } = searchParams;
+  // Await both params and searchParams
+  const { keyword } = await params;
+  const { page } = await searchParams;
   const currentPage = Number(page) || 1;
 
   // Server-side fetch instead of using the client function
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1";
   const searchParams2 = new URLSearchParams({
     page: String(currentPage),
     limit: "12",
