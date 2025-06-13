@@ -118,13 +118,38 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
     // If product has variants, adjust stock based on selected attributes
     if (product.variants && product.variants.length > 0) {
-      const variant = product.variants.find(
-        (v) =>
-          v.size === selectedSize &&
-          v.color === selectedColor &&
-          v.ageGroup === selectedAgeGroup
-      );
-      stock = variant ? variant.stock : 0;
+      // Check if we have size and color selected
+      if (
+        (product.sizes && !selectedSize) ||
+        (product.colors && !selectedColor)
+      ) {
+        // If required attributes not selected, show base stock or 0
+        return product.countInStock || 0;
+      }
+
+      const matchingVariant = product.variants.find((v) => {
+        // Match based on available attributes
+        const sizeMatch = !selectedSize || v.size === selectedSize;
+        const colorMatch = !selectedColor || v.color === selectedColor;
+        const ageGroupMatch =
+          !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
+
+        return sizeMatch && colorMatch && ageGroupMatch;
+      });
+
+      // Use variant stock if found, otherwise use product's countInStock as fallback
+      stock = matchingVariant
+        ? matchingVariant.stock || 0
+        : product.countInStock || 0;
+
+      // Debug log
+      console.log("Selected variant:", {
+        size: selectedSize,
+        color: selectedColor,
+        ageGroup: selectedAgeGroup,
+        matchingVariant,
+        stock,
+      });
     }
 
     return stock;
@@ -145,20 +170,28 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   // Initialize default selections based on product data
   useEffect(() => {
-    // Set default size if sizes array exists
+    // Set default size if sizes array exists and not empty
     if (product.sizes && product.sizes.length > 0) {
       setSelectedSize(product.sizes[0]);
     }
 
-    // Set default color if colors array exists
+    // Set default color if colors array exists and not empty
     if (product.colors && product.colors.length > 0) {
       setSelectedColor(product.colors[0]);
     }
 
-    // Set default age group if ageGroups array exists
+    // Set default age group if ageGroups array exists and not empty
     if (product.ageGroups && product.ageGroups.length > 0) {
       setSelectedAgeGroup(product.ageGroups[0]);
     }
+
+    // Debug log
+    console.log("Product data:", {
+      countInStock: product.countInStock,
+      variants: product.variants,
+      sizes: product.sizes,
+      colors: product.colors,
+    });
   }, [product]);
 
   // Function to open fullscreen image
@@ -388,7 +421,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     disabled={availableQuantity <= 0}
                   >
                     {Array.from(
-                      { length: availableQuantity },
+                      { length: Math.min(availableQuantity, 10) },
                       (_, i) => i + 1
                     ).map((num) => (
                       <option key={num} value={num}>
@@ -399,14 +432,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               )}
 
-              {/* Stock Status */}
-              {availableQuantity <= 0 && (
-                <div className="out-of-stock-message">
-                  {t("shop.outOfStock") || "არ არის მარაგში"}
-                </div>
-              )}
+              {/* Stock Status - Always show this section */}
+              <div className="stock-status">
+                {availableQuantity > 0 ? (
+                  <span className="in-stock-message">
+                    {t("shop.inStock") || "მარაგშია"} ({availableQuantity})
+                  </span>
+                ) : (
+                  <div className="out-of-stock-message">
+                    {t("shop.outOfStock") || "არ არის მარაგში"}
+                  </div>
+                )}
+              </div>
             </div>
           )}
+
+          {/* Add the description section back */}
+          <div className="product-description-section">
+            <h3>{t("product.details") || "აღწერა"} : </h3>
+            <p>{displayDescription}</p>
+          </div>
 
           <div className="tabs">
             <div className="tabs-list">
@@ -489,6 +534,34 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 !selectedAgeGroup)
             }
           />
+
+          {/* Fullscreen Image Modal */}
+          {isFullscreenOpen && (
+            <div className="fullscreen-modal" onClick={closeFullscreen}>
+              <button
+                className="fullscreen-close"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeFullscreen();
+                }}
+              >
+                <X />
+              </button>
+              <div
+                className="fullscreen-image-container"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Image
+                  src={product.images[currentImageIndex]}
+                  alt={displayName}
+                  width={1200}
+                  height={1200}
+                  quality={100}
+                  className="fullscreen-image"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
