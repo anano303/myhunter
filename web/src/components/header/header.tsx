@@ -33,7 +33,7 @@ export default function Header() {
               src={logo}
               width={125}
               height={80}
-              alt="Russana logo"
+              alt="Myhunter logo"
               className="header-logo"
             />
           </Link>

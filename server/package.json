@@ -1,8 +1,8 @@
 {
   "name": "server",
   "version": "0.0.1",
-  "description": "E-commerce Russana Server",
-  "author": "Russana",
+  "description": "E-commerce Myhunter Server",
+  "author": "Myhunter",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

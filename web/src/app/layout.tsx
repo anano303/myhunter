@@ -13,30 +13,30 @@ import MessengerChatWrapper from "@/components/MessengerChat/MessengerChatWrappe
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_CLIENT_URL || "https://russana.ge"
+    process.env.NEXT_PUBLIC_CLIENT_URL || "https://myhunter.ge"
   ),
-  title: "Russana",
-  description: "Russana - დააპიპინეეეეეე",
+  title: "MyHunter",
+  description: "საუკეთესო სანადირო და სათევზაო აღჭურვილობა",
   openGraph: {
     type: "website",
     locale: "ka_GE",
-    url: "https://russana.ge/",
-    siteName: "Russana",
-    title: "Russana",
+    url: "https://myhunter.ge/",
+    siteName: "MyHunter",
+    title: "MyHunter",
     images: [
       {
         url: "/van%20gog.jpg",
         width: 1200,
         height: 630,
-        alt: "Russana Sharing Image",
+        alt: "MyHunter Sharing Image",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Russana",
-    description: "Russana - შეიძინე და აპიპინეეეე.",
-    images: ["/van%20gog.jpg"],
+    title: "MyHunter",
+    description: "სანადირო და სათევზაო აღჭურვილობის საუკეთესო არჩევანი",
+    images: ["/mainImage.png"],
   },
 };
 

@@ -32,7 +32,7 @@ export default function Footer() {
           <div className="footer-logo">
             <Image
               src={logo}
-              alt="Russana Logo"
+              alt="MyHunter Logo"
               width={160}
               height={95}
               className="footer-logo-image"

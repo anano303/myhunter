@@ -621,7 +621,7 @@ export const TRANSLATIONS: Translations = {
       privacyPolicy: "Privacy Policy",
       contact: "Contact",
       address: "Address: Tbilisi, Georgia",
-      email: "Email: info@russana.ge",
+      email: "Email: info@Myhunter.ge",
       phone: "Phone: +995 XXX XXX XXX",
       socialMedia: "Social Media",
       follow: "Follow us",
