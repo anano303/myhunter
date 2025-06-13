@@ -1,6 +1,6 @@
 .categories-container {
   padding: 20px 0;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
   width: 100%;
   box-sizing: border-box;
 }
@@ -14,11 +14,11 @@
 
 .categories-title {
   font-size: 1.75rem;
-  color: #e50000;
+  color: #ffffff;
   margin: 0;
-  font-weight: normal;
-  letter-spacing: 1px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-family: "FiraGO", sans-serif;
 }
 
 .categories-actions {
@@ -28,16 +28,17 @@
 }
 
 .btn-add {
-  background: linear-gradient(90deg, #e50000, #e91e63);
+  background: linear-gradient(90deg, #4b5320, #5c6525);
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGO", sans-serif;
+  font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -63,9 +64,9 @@
 }
 
 .btn-add:hover {
-  background: linear-gradient(90deg, #e91e63, #e50000);
+  background: linear-gradient(90deg, #5c6525, #4b5320);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 .show-inactive {
@@ -73,32 +74,32 @@
   align-items: center;
   gap: 10px;
   font-size: 15px;
-  color: #666;
+  color: #cccccc;
 }
 
 .show-inactive input[type="checkbox"] {
-  accent-color: #e50000;
+  accent-color: #4b5320;
   width: 18px;
   height: 18px;
 }
 
 .category-form-container {
-  background-color: #fff;
+  background-color: #222222;
   padding: 24px;
   border-radius: 10px;
   margin-bottom: 28px;
-  border: 1px solid #f0f0f0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #333333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .category-form-container h3 {
-  color: #e50000;
+  color: #4b5320;
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 1.5rem;
-  font-weight: normal;
+  font-weight: 500;
   letter-spacing: 0.5px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
 }
 
 .category-form {
@@ -115,27 +116,28 @@
 
 .form-group label {
   font-size: 15px;
-  color: #666;
+  color: #cccccc;
   font-weight: normal;
 }
 
 .form-group input[type="text"],
 .form-group textarea {
   padding: 12px 14px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #444444;
   border-radius: 8px;
   font-size: 15px;
   width: 100%;
-  background-color: white;
+  background-color: #333333;
+  color: #ffffff;
   transition: all 0.2s;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
 }
 
 .form-group input[type="text"]:focus,
 .form-group textarea:focus {
-  border-color: #e91e63;
+  border-color: #4b5320;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+  box-shadow: 0 0 0 3px rgba(75, 83, 32, 0.2);
 }
 
 .form-group textarea {
@@ -150,7 +152,7 @@
 }
 
 .form-group.checkbox input[type="checkbox"] {
-  accent-color: #e50000;
+  accent-color: #4b5320;
   width: 18px;
   height: 18px;
   margin-right: 10px;
@@ -163,7 +165,7 @@
 }
 
 .btn-submit {
-  background: linear-gradient(90deg, #e50000, #e91e63);
+  background: linear-gradient(90deg, #4b5320, #5c6525);
   color: white;
   border: none;
   padding: 12px 20px;
@@ -172,7 +174,8 @@
   font-size: 15px;
   transition: all 0.3s ease;
   flex: 1;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGO", sans-serif;
+  font-weight: 500;
   position: relative;
   overflow: hidden;
 }
@@ -198,40 +201,41 @@
 }
 
 .btn-submit:hover {
-  background: linear-gradient(90deg, #e91e63, #e50000);
+  background: linear-gradient(90deg, #5c6525, #4b5320);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-submit:disabled {
-  background: #f0f0f0;
-  color: #999;
+  background: #333333;
+  color: #666666;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .btn-cancel {
-  background-color: white;
-  color: #666;
-  border: 1px solid #e5e7eb;
+  background-color: #333333;
+  color: #cccccc;
+  border: 1px solid #444444;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
   transition: all 0.2s;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGO", sans-serif;
+  font-weight: 500;
 }
 
 .btn-cancel:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background-color: #3a3a3a;
+  border-color: #555555;
 }
 
 .loading-container {
   display: flex;
   justify-content: center;
   padding: 60px 0;
-  color: #e50000;
+  color: #4b5320;
 }
 
 .categories-list {
@@ -241,17 +245,17 @@
 }
 
 .category-item {
-  border: 1px solid #f0f0f0;
+  border: 1px solid #333333;
   border-radius: 10px;
   padding: 24px;
-  background-color: white;
+  background-color: #222222;
   transition: all 0.2s;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .category-item:hover {
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.1);
-  border-color: #ffcdd2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: #4b5320;
 }
 
 .category-header {
@@ -261,17 +265,47 @@
   margin-bottom: 16px;
 }
 
+.category-title-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.category-title-section:hover {
+  background-color: #2a2a2a;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #4b5320;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.toggle-btn:hover {
+  color: #5c6525;
+}
+
 .category-name {
   font-size: 1.25rem;
-  color: white;
+  color: #ffffff;
   margin: 0;
-  font-weight: normal;
+  font-weight: 500;
   letter-spacing: 0.5px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
 }
 
 .inactive-label {
-  color: #9ca3af;
+  color: #888888;
   font-style: italic;
   font-weight: normal;
 }
@@ -282,43 +316,45 @@
 }
 
 .btn-edit {
-  background-color: white;
-  color: #666;
-  border: 1px solid #e5e7eb;
+  background-color: #333333;
+  color: #cccccc;
+  border: 1px solid #444444;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGO", sans-serif;
+  font-weight: 500;
 }
 
 .btn-edit:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background-color: #3a3a3a;
+  border-color: #555555;
 }
 
 .btn-delete {
-  background-color: white;
-  color: #e50000;
-  border: 1px solid #ffcdd2;
+  background-color: #333333;
+  color: #ff6b6b;
+  border: 1px solid #444444;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGO", sans-serif;
+  font-weight: 500;
 }
 
 .btn-delete:hover {
-  background-color: #ffeef2;
-  border-color: #ffcdd2;
+  background-color: #3a3a3a;
+  border-color: #ff6b6b;
 }
 
 .category-description {
   margin-top: 10px;
   font-size: 15px;
-  color: #666;
+  color: #aaaaaa;
   line-height: 1.5;
   margin-bottom: 16px;
 }
@@ -326,23 +362,40 @@
 .no-categories {
   text-align: center;
   padding: 60px 0;
-  color: #9ca3af;
+  color: #888888;
   font-size: 16px;
   font-style: italic;
+  background-color: #222222;
+  border-radius: 8px;
+  border: 1px dashed #333333;
 }
 
 .subcategories-container {
   margin-top: 20px;
-  padding-top: 0;
+  padding-top: 20px;
+  border-top: 1px dashed #333333;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .category-item.inactive {
   opacity: 0.75;
+  background-color: #1a1a1a;
 }
 
 .category-item.selected {
-  border-color: #e91e63;
-  box-shadow: 0 0 0 1px #e91e63;
+  border-color: #4b5320;
+  box-shadow: 0 0 0 1px #4b5320;
 }
 
 /* Responsive adjustments */
@@ -362,6 +415,10 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .category-title-section {
+    width: 100%;
   }
 
   .category-actions {

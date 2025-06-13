@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "FiraGO";
+  src: url("/fonts/FiraGO-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .dropdown .button {
   display: flex;
   align-items: center;
@@ -44,7 +51,7 @@
 .dropdown-menu {
   position: absolute;
   top: 45px;
-  
+
   width: 250px;
   background: #1a1a1a; /* Dark background */
   border: 1px solid #4b5320; /* Military green border */
@@ -101,8 +108,15 @@
   background-color: #333333;
 }
 
+/* Either remove the .loader class if not needed or add properties */
 .loader {
-  /* ...existing code... */
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #a5bda5;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {

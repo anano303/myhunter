@@ -10,7 +10,7 @@ import {
   SubCategoryUpdateInput,
   Category,
 } from "../hook/use-categories";
-import { Loader } from "lucide-react";
+import { Loader, ChevronDown, ChevronUp } from "lucide-react";
 import "./styles/subcategories-list.css";
 
 interface SubcategoriesListProps {
@@ -44,6 +44,11 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
   const createSubCategory = useCreateSubCategory();
   const updateSubCategory = useUpdateSubCategory();
   const deleteSubCategory = useDeleteSubCategory();
+
+  // State to track expanded subcategories
+  const [expandedSubcategories, setExpandedSubcategories] = useState<
+    Record<string, boolean>
+  >({});
 
   useEffect(() => {
     console.log(`SubcategoriesList mounted with categoryId: ${categoryId}`);
@@ -279,6 +284,14 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     );
   }
 
+  // Function to toggle subcategory expansion
+  const toggleSubcategoryExpansion = (subcategoryId: string) => {
+    setExpandedSubcategories((prev) => ({
+      ...prev,
+      [subcategoryId]: !prev[subcategoryId],
+    }));
+  };
+
   return (
     <div className="subcategories-list-container">
       <div className="subcategories-header">
@@ -472,55 +485,81 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
               ) : (
                 <>
                   <div className="subcategory-header">
-                    <h4 className="subcategory-name">
-                      {subcategory.name}
-                      {!subcategory.isActive && (
-                        <span className="inactive-label"> (არააქტიური)</span>
-                      )}
-                    </h4>
+                    <div
+                      className="subcategory-title-section"
+                      onClick={() => toggleSubcategoryExpansion(subcategory.id)}
+                    >
+                      <h4 className="subcategory-name">
+                        {subcategory.name}
+                        {!subcategory.isActive && (
+                          <span className="inactive-label"> (არააქტიური)</span>
+                        )}
+                      </h4>
+                      <button className="toggle-btn">
+                        {expandedSubcategories[subcategory.id] ? (
+                          <ChevronUp size={16} />
+                        ) : (
+                          <ChevronDown size={16} />
+                        )}
+                      </button>
+                    </div>
                     <div className="subcategory-actions">
                       <button
                         className="btn-edit"
-                        onClick={() => startEditing(subcategory)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          startEditing(subcategory);
+                        }}
                       >
                         რედაქტირება
                       </button>
                       <button
                         className="btn-delete"
-                        onClick={() => handleDelete(subcategory.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(subcategory.id);
+                        }}
                       >
                         წაშლა
                       </button>
                     </div>
                   </div>
 
-                  {subcategory.description && (
-                    <p className="subcategory-description">
-                      {subcategory.description}
-                    </p>
-                  )}
-
-                  <div className="subcategory-attributes">
-                    {subcategory.ageGroups &&
-                      subcategory.ageGroups.length > 0 && (
-                        <div className="attribute-list">
-                          <strong>ასაკობრივი ჯგუფები:</strong>{" "}
-                          {subcategory.ageGroups.join(", ")}
-                        </div>
+                  {/* Show details only when expanded */}
+                  {expandedSubcategories[subcategory.id] && (
+                    <>
+                      {subcategory.description && (
+                        <p className="subcategory-description">
+                          {subcategory.description}
+                        </p>
                       )}
 
-                    {subcategory.sizes && subcategory.sizes.length > 0 && (
-                      <div className="attribute-list">
-                        <strong>ზომები:</strong> {subcategory.sizes.join(", ")}
-                      </div>
-                    )}
+                      <div className="subcategory-attributes">
+                        {subcategory.ageGroups &&
+                          subcategory.ageGroups.length > 0 && (
+                            <div className="attribute-list">
+                              <strong>ასაკობრივი ჯგუფები:</strong>{" "}
+                              {subcategory.ageGroups.join(", ")}
+                            </div>
+                          )}
 
-                    {subcategory.colors && subcategory.colors.length > 0 && (
-                      <div className="attribute-list">
-                        <strong>ფერები:</strong> {subcategory.colors.join(", ")}
+                        {subcategory.sizes && subcategory.sizes.length > 0 && (
+                          <div className="attribute-list">
+                            <strong>ზომები:</strong>{" "}
+                            {subcategory.sizes.join(", ")}
+                          </div>
+                        )}
+
+                        {subcategory.colors &&
+                          subcategory.colors.length > 0 && (
+                            <div className="attribute-list">
+                              <strong>ფერები:</strong>{" "}
+                              {subcategory.colors.join(", ")}
+                            </div>
+                          )}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  )}
                 </>
               )}
             </div>

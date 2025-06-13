@@ -1,47 +1,44 @@
 .attributes-manager {
   padding: 20px 0;
-  background-color: white;
-  border-radius: 10px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
 }
 
 .attributes-tabs {
   display: flex;
   margin-bottom: 24px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 2px solid #333333;
 }
 
 .attributes-tabs .tab-button {
-  padding: 14px 24px;
+  padding: 12px 24px;
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 15px;
-  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+  color: #cccccc;
   position: relative;
   transition: all 0.2s ease;
-  font-weight: normal;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
 }
 
 .attributes-tabs .tab-button.active {
-  color: #e50000;
-  font-weight: bold;
+  color: #4b5320;
+  font-weight: 600;
 }
 
 .attributes-tabs .tab-button.active::after {
   content: "";
   position: absolute;
-  bottom: -1px;
+  bottom: -2px;
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #e50000;
+  background-color: #4b5320;
 }
 
 .attributes-tabs .tab-button:hover {
-  color: #e91e63;
-  background-color: #ffeef2;
+  color: #5c6525;
 }
 
 .attributes-header {
@@ -49,55 +46,153 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  padding: 0 16px;
 }
 
 .attributes-title {
-  font-size: 1.4rem;
-  color: #e50000;
+  font-size: 22px;
+  font-weight: 500;
+  color: #ffffff;
   margin: 0;
-  font-weight: normal;
-  letter-spacing: 0.5px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
+}
+
+.attributes-content .btn-add {
+  background-color: #4b5320;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(75, 83, 32, 0.3);
+}
+
+.attributes-content .btn-add:hover {
+  background-color: #5c6525;
+  box-shadow: 0 4px 8px rgba(75, 83, 32, 0.4);
 }
 
 .attribute-form {
-  background-color: #fff;
+  background-color: #222222;
   padding: 24px;
-  border-radius: 10px;
-  margin: 0 16px 24px;
-  border: 1px solid #f0f0f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #333333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.attribute-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.attribute-form .form-group label {
+  font-size: 15px;
+  color: #cccccc;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
+}
+
+.attribute-form .form-group input[type="text"] {
+  padding: 12px 14px;
+  border: 1px solid #444444;
+  border-radius: 6px;
+  font-size: 15px;
+  width: 100%;
+  background-color: #333333;
+  color: #ffffff;
+  font-family: "FiraGO", sans-serif;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.attribute-form .form-group input[type="text"]:focus {
+  border-color: #4b5320;
+  box-shadow: 0 0 0 2px rgba(75, 83, 32, 0.2);
+  outline: none;
+}
+
+.attribute-form .form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.attribute-form .btn-submit {
+  background-color: #4b5320;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.attribute-form .btn-submit:hover {
+  background-color: #5c6525;
+  box-shadow: 0 2px 6px rgba(75, 83, 32, 0.3);
+}
+
+.attribute-form .btn-submit:disabled {
+  background-color: #3a4119;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.attribute-form .btn-cancel {
+  background-color: #333333;
+  color: #cccccc;
+  border: 1px solid #444444;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
+  transition: all 0.2s ease;
+}
+
+.attribute-form .btn-cancel:hover {
+  background-color: #3a3a3a;
 }
 
 .attributes-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 0 16px;
 }
 
 .attribute-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background-color: #fff;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
-  transition: all 0.2s;
+  padding: 14px 18px;
+  background-color: #222222;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .attribute-item:hover {
-  border-color: #ffcdd2;
-  box-shadow: 0 2px 6px rgba(233, 30, 99, 0.05);
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-color: #4b5320;
 }
 
 .attribute-value {
-  font-size: 15px;
-  color: #333;
-  font-weight: normal;
-  font-family: "ALK Life", "Georgia", serif;
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
 }
 
 .attribute-actions {
@@ -106,20 +201,20 @@
 }
 
 .attribute-actions .btn-edit {
-  background-color: white;
-  color: #666;
-  border: 1px solid #e5e7eb;
+  background-color: #333333;
+  color: #cccccc;
+  border: 1px solid #444444;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s;
-  font-family: "ALK Katerina", sans-serif;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
+  transition: all 0.2s ease;
 }
 
 .attribute-actions .btn-edit:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background-color: #3a3a3a;
 }
 
 .attribute-actions .btn-edit:disabled {
@@ -128,20 +223,21 @@
 }
 
 .attribute-actions .btn-delete {
-  background-color: white;
-  color: #e50000;
-  border: 1px solid #ffcdd2;
+  background-color: #222222;
+  color: #ff6b6b;
+  border: 1px solid #333333;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s;
-  font-family: "ALK Katerina", sans-serif;
+  font-weight: 500;
+  font-family: "FiraGO", sans-serif;
+  transition: all 0.2s ease;
 }
 
 .attribute-actions .btn-delete:hover {
-  background-color: #ffeef2;
-  border-color: #ffcdd2;
+  background-color: #2a2a2a;
+  border-color: #ff6b6b;
 }
 
 .attribute-actions .btn-delete:disabled {
@@ -151,28 +247,31 @@
 
 .no-attributes {
   text-align: center;
-  padding: 50px 0;
-  color: #9ca3af;
-  font-style: italic;
-  font-size: 15px;
+  padding: 40px 0;
+  color: #888888;
+  font-size: 16px;
+  background-color: #222222;
+  border-radius: 8px;
+  border: 1px dashed #333333;
+  font-family: "FiraGO", sans-serif;
 }
 
-/* Responsive adjustments */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+  color: #4b5320;
+}
+
 @media (max-width: 768px) {
-  .attributes-tabs {
-    flex-wrap: wrap;
-  }
-
-  .attributes-tabs .tab-button {
-    flex-grow: 1;
-    text-align: center;
-    padding: 12px 16px;
-  }
-
   .attributes-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 12px;
+  }
+
+  .attributes-content {
+    width: 100%;
   }
 
   .attribute-item {

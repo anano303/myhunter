@@ -3,7 +3,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 32px 16px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", sans-serif;
   color: #333;
   width: 100%;
   box-sizing: border-box;
@@ -14,8 +14,9 @@
   justify-content: center;
   align-items: center;
   height: 80vh;
-  color: #e50000;
+  color: #4b5320;
   font-size: 24px;
+  font-family: "FiraGO", sans-serif;
 }
 
 /* Global form styles */
@@ -23,12 +24,13 @@ input,
 textarea,
 select,
 button {
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGO", system-ui, sans-serif;
 }
 
 button {
   cursor: pointer;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGO", system-ui, sans-serif;
+  font-weight: 500;
 }
 
 /* Animation for loader */
@@ -45,18 +47,42 @@ button {
   }
 }
 
-/* Add font faces */
+/* Remove the local font declarations that aren't working */
+/* Instead, we'll use system fonts as fallback */
+/* Add an import link in the HTML head for FiraGO if needed */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .responsive-container {
+    padding: 20px 12px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-container {
+    padding: 16px 10px;
+  }
+}
+
 @font-face {
-  font-family: "ALK Life";
-  src: url("/fonts/ALK-Life.ttf") format("truetype");
+  font-family: "FiraGO";
+  src: url("/fonts/FiraGO-Regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "ALK Katerina";
-  src: url("/fonts/ALK-Katerina.ttf") format("truetype");
-  font-weight: normal;
+  font-family: "FiraGO";
+  src: url("/fonts/FiraGO-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "FiraGO";
+  src: url("/fonts/FiraGO-Bold.woff2") format("woff2");
+  font-weight: bold;
   font-style: normal;
 }
 

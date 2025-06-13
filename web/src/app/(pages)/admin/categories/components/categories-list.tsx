@@ -9,7 +9,7 @@ import {
   CategoryUpdateInput,
 } from "../hook/use-categories";
 import { SubcategoriesList } from "./subcategories-list";
-import { Loader } from "lucide-react";
+import { Loader, ChevronDown, ChevronUp } from "lucide-react";
 import "./styles/categories-list.css";
 
 export const CategoriesList = () => {
@@ -29,6 +29,10 @@ export const CategoriesList = () => {
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
+
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >({});
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,6 +100,13 @@ export const CategoriesList = () => {
         console.error("Delete category error:", error);
       }
     }
+  };
+
+  const toggleCategoryExpansion = (categoryId: string) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId],
+    }));
   };
 
   return (
@@ -273,12 +284,27 @@ export const CategoriesList = () => {
                 ) : (
                   <>
                     <div className="category-header">
-                      <h3 className="category-name">
-                        {category.name}
-                        {!category.isActive && (
-                          <span className="inactive-label"> (არააქტიური)</span>
-                        )}
-                      </h3>
+                      <div
+                        className="category-title-section"
+                        onClick={() => toggleCategoryExpansion(category.id)}
+                      >
+                        <h3 className="category-name">
+                          {category.name}
+                          {!category.isActive && (
+                            <span className="inactive-label">
+                              {" "}
+                              (არააქტიური)
+                            </span>
+                          )}
+                        </h3>
+                        <button className="toggle-btn">
+                          {expandedCategories[category.id] ? (
+                            <ChevronUp size={18} />
+                          ) : (
+                            <ChevronDown size={18} />
+                          )}
+                        </button>
+                      </div>
                       <div className="category-actions">
                         <button
                           className="btn-edit"
@@ -306,10 +332,12 @@ export const CategoriesList = () => {
                       </p>
                     )}
 
-                    {/* Always show subcategories */}
-                    <div className="subcategories-container">
-                      <SubcategoriesList categoryId={category.id} />
-                    </div>
+                    {/* Show subcategories only when category is expanded */}
+                    {expandedCategories[category.id] && (
+                      <div className="subcategories-container">
+                        <SubcategoriesList categoryId={category.id} />
+                      </div>
+                    )}
                   </>
                 )}
               </div>

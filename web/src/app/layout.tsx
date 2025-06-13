@@ -56,6 +56,11 @@ export default function RootLayout({
           src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appId=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
         />
         {/* Remove the problematic prefetch links */}
+        {/* Add Google Fonts link */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body
         className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
