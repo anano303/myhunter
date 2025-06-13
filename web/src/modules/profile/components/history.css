@@ -3,7 +3,7 @@
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  overflow-x: auto;
+  overflow-x: auto; /* Ensure horizontal scrolling is always available */
   position: relative;
   font-family: "FiraGO", sans-serif;
   border: 1px solid #333333;
@@ -61,7 +61,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px;
+  min-width: 800px; /* Ensures minimum width even on small screens */
 }
 
 .table th,

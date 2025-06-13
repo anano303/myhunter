@@ -881,7 +881,7 @@ export function CreateProductForm({
             id="countInStock"
             name="countInStock"
             type="number"
-            disabled
+            // disabled
             value={totalCount}
             onChange={handleChange}
             min={0}

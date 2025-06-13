@@ -1,8 +1,75 @@
 .space-x-2 {
   display: flex;
-  gap: 5px;
+  gap: 8px;
+  justify-content: flex-end;
 }
+
 .space-x-2 button {
   background-color: transparent;
-border: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.space-x-2 button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.prd-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.prd-action-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.actions {
+  width: 18px;
+  height: 18px;
+  transition: color 0.2s ease;
+}
+
+.actions.edit {
+  color: #a5bda5;
+}
+
+.actions.edit:hover {
+  color: #4b5320;
+}
+
+.actions.approve {
+  color: #a5bda5;
+}
+
+.actions.approve:hover {
+  color: #4b5320;
+}
+
+.actions.reject {
+  color: #ff6b6b;
+}
+
+.actions.reject:hover {
+  color: #e53e3e;
+}
+
+.actions.trash {
+  color: #ff6b6b;
+}
+
+.actions.trash:hover {
+  color: #e53e3e;
 }
