@@ -209,7 +209,7 @@ export default function HomePageShop() {
                         titleRefs.current[index] = el;
                       }}
                     >
-                      {t("shop.newest")} {categoryData.category}
+                      კატეგორია: {categoryData.category}
                     </h2>
                     <div className="see-more animate-element fade-in">
                       <Link
