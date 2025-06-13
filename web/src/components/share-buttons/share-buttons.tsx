@@ -58,7 +58,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
         url: url,
         quote: title,
         hashtag: "#Myhunter",
-        appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "",
+        appid: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "",
       },
     },
     {
