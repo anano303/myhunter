@@ -222,91 +222,65 @@ export function ProductFilters({
 
   return (
     <div className="product-filters">
-      {/* Categories section */}
-      <div className="categories-section">
-        {error && (
-          <div className="filter-error">
-            <p>{error}</p>
-            <button onClick={() => setError(null)}>დახურვა</button>
-          </div>
-        )}
-
-        <div className="filter-section">
-          <div className="filter-header">
-            {/* <h3 className="filter-title">კატეგორიები</h3> */}
-            {selectedCategoryId && (
-              <button
-                className="filter-clear-btn"
-                onClick={clearCategoryFilter}
-                aria-label="Clear category filter"
+      <div className="filters-top-section">
+        <button
+          className="filter-toggle-btn"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          ფილტრი
+        </button>
+        <div className="main-categories-grid">
+          {isCategoriesLoading ? (
+            <div className="loading">იტვირთება...</div>
+          ) : categories.length > 0 ? (
+            categories.map((category) => (
+              <div
+                key={category.id || category._id}
+                className={`main-category-option ${
+                  selectedCategoryId === category.id ||
+                  selectedCategoryId === category._id
+                    ? "selected"
+                    : ""
+                }`}
+                onClick={() =>
+                  onCategoryChange(category.id || category._id || "")
+                }
               >
-                გასუფთავება
-              </button>
-            )}
-          </div>
-          <div className="filter-options">
-            <div className="main-categories-grid">
-              {isCategoriesLoading ? (
-                <div className="loading">იტვირთება...</div>
-              ) : categories.length > 0 ? (
-                categories.map((category) => (
-                  <div
-                    key={category.id || category._id}
-                    className={`main-category-option ${
-                      selectedCategoryId === category.id ||
-                      selectedCategoryId === category._id
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      onCategoryChange(category.id || category._id || "")
-                    }
-                  >
-                    <div className="category-content">
-                      <span className="category-name">
-                        {getLocalizedName(category.name, category)}
-                      </span>
-                    </div>
-                    {subcategories.length > 0 &&
-                      selectedCategoryId === (category.id || category._id) && (
-                        <div className="subcategories-overlay">
-                          {isSubcategoriesLoading ? (
-                            <div className="loading">იტვირთება...</div>
-                          ) : (
-                            subcategories.map((sub) => (
-                              <div
-                                key={sub.id || sub._id}
-                                className="subcategory-item"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onSubCategoryChange(sub.id || sub._id || "");
-                                }}
-                              >
-                                {getLocalizedName(sub.name, sub)}
-                              </div>
-                            ))
-                          )}
-                        </div>
+                <div className="category-content">
+                  <span className="category-name">
+                    {getLocalizedName(category.name, category)}
+                  </span>
+                </div>
+                {subcategories.length > 0 &&
+                  selectedCategoryId === (category.id || category._id) && (
+                    <div className="subcategories-overlay">
+                      {isSubcategoriesLoading ? (
+                        <div className="loading">იტვირთება...</div>
+                      ) : (
+                        subcategories.map((sub) => (
+                          <div
+                            key={sub.id || sub._id}
+                            className="subcategory-item"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSubCategoryChange(sub.id || sub._id || "");
+                            }}
+                          >
+                            {getLocalizedName(sub.name, sub)}
+                          </div>
+                        ))
                       )}
-                  </div>
-                ))
-              ) : (
-                <div className="no-data">კატეგორიები არ მოიძებნა</div>
-              )}
-            </div>
-          </div>
+                    </div>
+                  )}
+              </div>
+            ))
+          ) : (
+            <div className="no-data">კატეგორიები არ მოიძებნა</div>
+          )}
         </div>
       </div>
 
       {/* Filter toggle button */}
-      {!showFilters && (
-        <button
-          className="filter-toggle-btn"
-          onClick={() => setShowFilters(true)}
-        >
-          ფილტრი
-        </button>
-      )}
 
       {/* Additional filters section */}
       {showFilters && (
