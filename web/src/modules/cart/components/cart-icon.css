@@ -30,6 +30,9 @@ a {
   font-size: 12px;
   font-weight: bold;
 }
+.cart-icon-container {
+  position: relative;
+}
 
 .cart-icon {
   display: flex;
@@ -45,9 +48,8 @@ a {
   display: inline-block;
   margin-left: 5px;
   font-size: 14px;
-    font-weight: 500;
-    font-family: "ALK Katerina", sans-serif;
-
+  font-weight: 500;
+  font-family: "ALK Katerina", sans-serif;
 }
 
 /* Hide text on mobile */

@@ -1,15 +1,17 @@
+/* Payment Form Component - Hunting/Fishing Theme */
 .card {
   padding: 2rem;
-  background-color: white;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(229, 0, 0, 0.08);
-  border: 1px solid #f5f5f5;
-  font-family: "ALK Life", "Georgia", serif;
-  color: #333;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  border: 2px solid #4b5320;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  color: #e6cd9f;
   max-width: 800px;
   margin: 2rem auto;
   position: relative;
   width: 90%;
+  overflow: hidden;
 }
 
 .card::before {
@@ -18,10 +20,35 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 6px;
-  background: linear-gradient(90deg, #e50000, #ff5252, #e50000);
+  height: 4px;
+  background: linear-gradient(90deg, #4b5320, #f48c06, #4b5320);
   background-size: 200% 100%;
   animation: gradientAnimation 3s infinite alternate;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(75, 83, 32, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(244, 140, 6, 0.05) 0%,
+      transparent 50%
+    );
+  z-index: 1;
+}
+
+.card > * {
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes gradientAnimation {
@@ -35,12 +62,12 @@
 
 .text-2xl {
   font-size: 2rem;
-  font-weight: normal;
-  color: #e50000;
+  font-weight: 500;
+  color: #f48c06;
   letter-spacing: 1px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
   margin-bottom: 0.5rem;
-  border-bottom: 2px solid #f5f5f5;
+  border-bottom: 2px solid #4b5320;
   padding-bottom: 0.75rem;
 }
 
@@ -49,7 +76,8 @@
 }
 
 .text-muted-foreground {
-  color: #666;
+  color: #e6cd9f;
+  opacity: 0.8;
 }
 
 .space-y-6 > * + * {
@@ -64,11 +92,25 @@
   display: block;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: #e50000;
+  color: #f48c06;
 }
 
 .form-control {
   display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #4b5320;
+  border-radius: 6px;
+  background: #333;
+  color: #e6cd9f;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #f48c06;
+  box-shadow: 0 0 0 3px rgba(244, 140, 6, 0.2);
 }
 
 input[type="radio"].sr-only {
@@ -99,16 +141,16 @@ input[type="radio"].sr-only {
 
 .btn-primary {
   width: 100%;
-  background: linear-gradient(90deg, #e50000, #e91e63);
-  color: white;
-  padding: 0.75rem;
-  font-family: "ALK Katerina", sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 100%;
-  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
+  color: #e6cd9f;
+  padding: 1rem;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 1px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary::before {
@@ -121,7 +163,7 @@ input[type="radio"].sr-only {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(244, 140, 6, 0.2),
     transparent
   );
   transition: all 0.6s ease;
@@ -132,13 +174,14 @@ input[type="radio"].sr-only {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(90deg, #e91e63, #e50000);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 6px 15px rgba(244, 140, 6, 0.3);
+  color: #f48c06;
 }
 
 .border {
-  border: 1px solid #f0f0f0;
+  border: 1px solid #4b5320;
 }
 
 .rounded-lg {
@@ -154,8 +197,8 @@ input[type="radio"].sr-only {
 }
 
 .hover\:border-primary:hover {
-  border-color: #e91e63;
-  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+  border-color: #f48c06;
+  box-shadow: 0 0 0 2px rgba(244, 140, 6, 0.2);
 }
 
 .block {
@@ -176,27 +219,31 @@ input[type="radio"].sr-only {
 
 /* Payment method options */
 .payment-option {
-  background-color: #fafafa;
+  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
   transition: all 0.3s ease;
+  border: 2px solid #4b5320;
 }
 
 .payment-option:hover {
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a);
+  border-color: #f48c06;
 }
 
 .payment-option.selected {
-  background-color: #ffeef2;
-  border-color: #e91e63;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
+  border-color: #f48c06;
+  box-shadow: 0 4px 8px rgba(244, 140, 6, 0.3);
 }
 
 .payment-option-title {
-  color: #e50000;
+  color: #f48c06;
   font-weight: 600;
 }
 
 .payment-option-description {
-  color: #666;
+  color: #e6cd9f;
   font-size: 0.9rem;
+  opacity: 0.8;
 }
 
 /* Responsive adjustments */

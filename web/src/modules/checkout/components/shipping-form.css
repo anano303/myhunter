@@ -1,17 +1,20 @@
+/* Shipping Form Component - Hunting/Fishing Theme */
 .shipping-form-card {
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(229, 0, 0, 0.08);
-  background-color: white;
-  color: #333;
-  font-family: "ALK Life", "Georgia", serif;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  color: #e6cd9f;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
   max-width: 800px;
   margin: 2rem auto;
   position: relative;
   width: 90%;
+  border: 2px solid #4b5320;
+  overflow: hidden;
 }
 
 .shipping-form-card::before {
@@ -20,10 +23,35 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 6px;
-  background: linear-gradient(90deg, #e50000, #ff5252, #e50000);
+  height: 4px;
+  background: linear-gradient(90deg, #4b5320, #f48c06, #4b5320);
   background-size: 200% 100%;
   animation: gradientAnimation 3s infinite alternate;
+}
+
+.shipping-form-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(75, 83, 32, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(244, 140, 6, 0.05) 0%,
+      transparent 50%
+    );
+  z-index: 1;
+}
+
+.shipping-form-card > * {
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes gradientAnimation {
@@ -37,18 +65,19 @@
 
 .shipping-form-header h1 {
   font-size: 2rem;
-  font-weight: normal;
-  color: #e50000;
+  font-weight: 500;
+  color: #f48c06;
   letter-spacing: 1px;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
   margin-bottom: 0.5rem;
-  border-bottom: 2px solid #f5f5f5;
+  border-bottom: 2px solid #4b5320;
   padding-bottom: 0.75rem;
 }
 
 .shipping-form-header p {
   font-size: 1rem;
-  color: #666;
+  color: #e6cd9f;
+  opacity: 0.8;
 }
 
 .shipping-form {
@@ -68,37 +97,50 @@
   display: block;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: #e50000;
+  color: #f48c06;
   width: 100%;
 }
 
 .shipping-form input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #4b5320;
   border-radius: 6px;
-  background-color: #fff;
-  color: #333;
+  background: #333;
+  color: #e6cd9f;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box; /* Ensure padding is included in width */
-  margin: 0; /* Remove any default margins */
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.shipping-form input:focus {
+  outline: none;
+  border-color: #f48c06;
+  box-shadow: 0 0 0 3px rgba(244, 140, 6, 0.2);
 }
 
 .shipping-form select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #4b5320;
   border-radius: 6px;
-  background-color: #fff;
-  color: #333;
+  background: #333;
+  color: #e6cd9f;
   font-family: inherit;
   max-height: 300px;
   background-size: 12px;
   height: auto;
   appearance: menulist-button;
-  box-sizing: border-box; /* Ensure padding is included in width */
-  margin: 0; /* Remove any default margins */
+  box-sizing: border-box;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+.shipping-form select:focus {
+  outline: none;
+  border-color: #f48c06;
+  box-shadow: 0 0 0 3px rgba(244, 140, 6, 0.2);
 }
 
 /* Control the dropdown width specifically */
@@ -119,6 +161,8 @@
   max-width: 100%;
   width: 100%;
   box-sizing: border-box;
+  background: #333;
+  color: #e6cd9f;
 }
 
 /* Remove the browser-specific styles that were targeting height */
@@ -151,20 +195,19 @@
 
 .shipping-form .error-text {
   font-size: 0.9rem;
-  color: #e53e3e;
+  color: #ff6b6b;
 }
 
 .shipping-form-button {
   width: 100%;
-  background: linear-gradient(90deg, #e50000, #e91e63);
-  color: white;
-  padding: 0.75rem;
-  font-family: "ALK Katerina", sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 100%;
-  letter-spacing: 0.1em; /* 10% as a decimal */
-  border-radius: 6px;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
+  color: #e6cd9f;
+  padding: 1rem;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 1px;
+  border-radius: 8px;
   text-align: center;
   border: none;
   cursor: pointer;
@@ -172,6 +215,7 @@
   margin-top: 0.5rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .shipping-form-button::before {
@@ -184,7 +228,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(244, 140, 6, 0.2),
     transparent
   );
   transition: all 0.6s ease;
@@ -200,9 +244,10 @@
 }
 
 .shipping-form-button:hover:not(:disabled) {
-  background: linear-gradient(90deg, #e91e63, #e50000);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 6px 15px rgba(244, 140, 6, 0.3);
+  color: #f48c06;
 }
 
 /* Responsive adjustments */
