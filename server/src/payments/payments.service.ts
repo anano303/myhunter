@@ -20,7 +20,7 @@ export class PaymentsService {
         throw new Error('BOG credentials are not configured');
       }
 
-      const response = await axios.post(
+      const response: any = await axios.post(
         'https://oauth2.bog.ge/auth/realms/bog/protocol/openid-connect/token',
         new URLSearchParams({
           grant_type: 'client_credentials',
@@ -36,7 +36,7 @@ export class PaymentsService {
       );
 
       return response.data.access_token;
-    } catch (error) {
+    } catch (error: any) {
       console.error('BOG Token Error:', error.message);
       throw error;
     }
@@ -92,7 +92,7 @@ export class PaymentsService {
         },
       };
 
-      const response = await axios.post(
+      const response: any = await axios.post(
         'https://api.bog.ge/payments/v1/ecommerce/orders',
         payload,
         {
@@ -111,7 +111,7 @@ export class PaymentsService {
         token,
         uniqueId: externalOrderId,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('BOG Service Error:', error.message);
       throw error;
     }
@@ -119,7 +119,7 @@ export class PaymentsService {
 
   async getPaymentStatus(orderId: string): Promise<any> {
     const token = await this.getToken();
-    const response = await axios.get(
+    const response: any = await axios.get(
       `https://api.bog.ge/payments/v1/receipt/${orderId}`,
       {
         headers: {
@@ -164,7 +164,7 @@ export class PaymentsService {
             JSON.stringify(paymentStatus, null, 2),
           );
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log(
           'Error fetching payment status from BOG API:',
           error.message,
@@ -206,7 +206,7 @@ export class PaymentsService {
             success: true,
             message: 'Payment processed successfully and order updated',
           };
-        } catch (error) {
+        } catch (error: any) {
           console.error(
             'Error updating order with payment result:',
             error.message,
@@ -226,7 +226,7 @@ export class PaymentsService {
           message: 'Payment was not successful',
         };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error processing payment callback:', error.message);
       return {
         success: false,
@@ -245,7 +245,7 @@ export class PaymentsService {
         order.externalOrderId = externalOrderId;
         await order.save();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating order with external ID:', error);
       throw error;
     }

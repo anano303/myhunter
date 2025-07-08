@@ -38,7 +38,7 @@ export interface PaymentResult {
   status: string;
   update_time: string;
   email_address: string;
-  provider?: 'PayPal' | 'Stripe';
+  provider?: 'PayPal' | 'Stripe'| 'Bog';
 }
 
 export interface CartItem {
