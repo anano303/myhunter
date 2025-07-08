@@ -25,7 +25,7 @@ export default function AuthCallback() {
         }
         
         // Successfully authenticated
-        router.push('/home');
+        router.push('/');
       } else {
         console.log('❌ Missing tokens in callback');
         setError('Authentication failed. Please try again.');

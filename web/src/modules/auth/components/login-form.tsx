@@ -15,7 +15,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 export function LoginForm() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/home";
+  const redirect = searchParams.get("redirect") || "/";
   const router = useRouter();
 
   const [loginError, setLoginError] = useState<string | null>(null);
