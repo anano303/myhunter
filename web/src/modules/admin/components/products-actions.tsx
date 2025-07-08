@@ -8,7 +8,6 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import { Role } from "@/types/role";
 import Link from "next/link";
 
-
 interface ProductsActionsProps {
   product: Product;
   onStatusChange?: (productId: string, newStatus: ProductStatus) => void;
@@ -109,7 +108,7 @@ export function ProductsActions({
     <div className="space-x-2">
       <Link
         href={{
-          pathname: `/admin/products/${product._id}/edit`,
+          pathname: `/admin/products/edit`,
           query: { id: product._id, refresh: Date.now() }, // Add a timestamp to force refresh
         }}
         className="prd-action-link prd-action-edit"
