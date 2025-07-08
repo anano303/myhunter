@@ -3,7 +3,6 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import "./page.css";
 
 function CheckoutSuccessContent() {
@@ -23,16 +22,10 @@ function CheckoutSuccessContent() {
 
           <h1 className="success-title">გადახდა წარმატებით დასრულდა!</h1>
           <div className="success-icon-container">
-            <Image
-              src="/ok.png"
-              alt="Success Icon"
-              width={30}
-              height={30}
-              className="success-icon"
-            />
+            <div className="success-icon">✓</div>
           </div>
 
-          <p className="success-description">პიიიიიიიიიიპ!</p>
+          <p className="success-description"> მადლობა შეძენისთვის ! </p>
 
           {orderId && (
             <div className="order-info">

@@ -1,23 +1,47 @@
+/* Checkout Fail Page - Hunting/Fishing Theme */
 .checkout-fail-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  font-family: "ALK Life", "Georgia", serif;
+  background: linear-gradient(135deg, #121212, #1a1a1a);
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.checkout-fail-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(75, 83, 32, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(244, 140, 6, 0.1) 0%,
+      transparent 50%
+    );
+  z-index: 1;
 }
 
 .fail-card {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(229, 0, 0, 0.1);
-  border: 1px solid #f5f5f5;
-  max-width: 500px;
-  width: 100%;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 2px solid #8b4513;
+  max-width: 600px;
+  width: 90%;
   padding: 3rem 2rem;
   text-align: center;
   position: relative;
+  z-index: 2;
   overflow: hidden;
 }
 
@@ -27,8 +51,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 6px;
-  background: linear-gradient(90deg, #e50000, #ff5252, #e50000);
+  height: 4px;
+  background: linear-gradient(90deg, #8b4513, #cd853f, #8b4513);
   background-size: 200% 100%;
   animation: gradientAnimation 3s infinite alternate;
 }
@@ -49,51 +73,55 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  border: 3px solid #e50000;
+  background: linear-gradient(135deg, #8b4513, #a0522d);
+  border: 3px solid #cd853f;
   margin: 0 auto 2rem;
   position: relative;
+  box-shadow: 0 4px 16px rgba(205, 133, 63, 0.3);
 }
 
 .fail-icon {
   width: 40px;
   height: 40px;
-  color: #e50000;
+  color: #cd853f;
   stroke-width: 3;
 }
 
 .fail-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #1a1a1a;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #cd853f;
   margin: 1.5rem 0 1rem;
   letter-spacing: 0.5px;
   line-height: 1.2;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .fail-description {
   font-size: 1.1rem;
-  color: #666;
+  color: #e6cd9f;
   margin-bottom: 2rem;
   line-height: 1.6;
+  opacity: 0.9;
 }
 
 .order-info {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
   border-radius: 12px;
   padding: 1.5rem;
   margin: 2rem 0;
-  border-left: 4px solid #e50000;
+  border-left: 4px solid #cd853f;
+  border: 1px solid #8b4513;
 }
 
 .order-info-text {
   font-size: 1rem;
-  color: #333;
+  color: #e6cd9f;
 }
 
 .order-info-label {
   font-weight: 600;
-  color: #e50000;
+  color: #cd853f;
 }
 
 .buttons-container {
@@ -105,10 +133,10 @@
 
 .btn-primary {
   width: 100%;
-  background: linear-gradient(90deg, #e50000, #e91e63);
-  color: white;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
+  color: #e6cd9f;
   padding: 1rem 2rem;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
   font-weight: 600;
   font-size: 1.1rem;
   border: none;
@@ -122,6 +150,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary::before {
@@ -134,7 +163,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(244, 140, 6, 0.2),
     transparent
   );
   transition: all 0.6s ease;
@@ -145,19 +174,20 @@
 }
 
 .btn-primary:hover {
-  background: linear-gradient(90deg, #e91e63, #e50000);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(233, 30, 99, 0.4);
+  box-shadow: 0 6px 15px rgba(244, 140, 6, 0.3);
+  color: #f48c06;
 }
 
 .btn-secondary {
-  background: white;
-  color: #333;
+  background: linear-gradient(135deg, #333, #444);
+  color: #e6cd9f;
   padding: 1rem 2rem;
-  font-family: "ALK Life", "Georgia", serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
   font-weight: 500;
   font-size: 1rem;
-  border: 2px solid #e5e5e5;
+  border: 2px solid #4b5320;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -166,14 +196,15 @@
   align-items: center;
   justify-content: center;
   letter-spacing: 0.3px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-secondary:hover {
-  background: #f8f9fa;
-  border-color: #e50000;
-  color: #e50000;
+  background: linear-gradient(135deg, #444, #555);
+  border-color: #f48c06;
+  color: #f48c06;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(229, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(244, 140, 6, 0.2);
 }
 
 /* Responsive Design */
