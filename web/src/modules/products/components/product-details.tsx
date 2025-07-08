@@ -8,13 +8,13 @@ import "./productDetails.css";
 import { Product } from "@/types";
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { ProductReviews } from "./product-reviews";
-import { ReviewForm } from "./review-form";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Color, AgeGroupItem } from "@/types";
+
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
-import { useQuery } from "@tanstack/react-query";
-import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { ProductCard } from "./product-card";
 
 // Custom AddToCartButton component that uses the cart context
@@ -38,9 +38,9 @@ function AddToCartButton({
   disabled?: boolean;
 }) {
   const [pending, setPending] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { addToCart } = useCart();
   const { t } = useLanguage();
-
   const handleClick = async () => {
     setPending(true);
     try {
@@ -51,18 +51,15 @@ function AddToCartButton({
         selectedSize,
         selectedColor,
         selectedAgeGroup
-      );
-      toast({
-        title: "პროდუქტი დაემატა",
-        description: "პროდუქტი წარმატებით დაემატა კალათაში",
-      });
+      ); // Show success message
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000); // Hide after 3 seconds
     } catch (error) {
+      console.error("Add to cart error:", error); // Debug log
       toast({
-        title: "Error",
+        title: t("product.errorTitle"),
         description:
-          error instanceof Error
-            ? error.message
-            : "Failed to add product to cart",
+          error instanceof Error ? error.message : t("product.addToCartError"),
         variant: "destructive",
       });
     } finally {
@@ -80,19 +77,139 @@ function AddToCartButton({
       </button>
     );
   }
+  return (
+    <>
+      {/* Success Message */}
+      {showSuccessMessage && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "15px 20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 9999,
+            fontSize: "16px",
+            fontWeight: "500",
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          ✅ {t("product.addToCartSuccess")}
+        </div>
+      )}
+
+      <button
+        className={`add-to-cart-button ${className}`}
+        onClick={handleClick}
+        disabled={pending}
+      >
+        {pending ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          t("cart.addToCart") || "კალათაში დამატება"
+        )}
+      </button>
+
+      {/* Add CSS animation */}
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
+    </>
+  );
+}
+
+// Similar Products Component
+function SimilarProducts({
+  currentProductId,
+  subCategoryId,
+}: {
+  currentProductId: string;
+  subCategoryId: string;
+}) {
+  const { t } = useLanguage();
+
+  // Fetch products filtered by subcategory using the same API as the shop page
+  const { data: productsResponse, isLoading } = useQuery({
+    queryKey: ["similarProducts", subCategoryId],
+    queryFn: async () => {
+      try {
+        if (!subCategoryId) {
+          return { items: [] };
+        }
+
+        // Use the same getProducts API that the shop page uses
+        const searchParams = new URLSearchParams({
+          page: "1",
+          limit: "10", // Fetch more than 3 in case current product is included
+          subCategory: subCategoryId,
+        });
+
+        const response = await fetchWithAuth(
+          `/products?${searchParams.toString()}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching similar products:", error);
+        return { items: [] };
+      }
+    },
+    enabled: !!subCategoryId, // Only run query if subCategoryId exists
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Filter out current product and take only 3
+  const allProducts = productsResponse?.items || [];
+  const similarProducts = allProducts
+    .filter((product: Product) => product._id !== currentProductId)
+    .slice(0, 3);
+
+  // Don't render if loading
+  if (isLoading) {
+    return (
+      <div className="similar-products-section">
+        <h2 className="similar-products-title">
+          {t("product.similarProducts")}
+        </h2>
+        <div className="similar-products-loading">
+          <p>{t("shop.loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if no subcategory or no similar products found
+  if (!subCategoryId || similarProducts.length === 0) {
+    return null;
+  }
 
   return (
-    <button
-      className={`add-to-cart-button ${className}`}
-      onClick={handleClick}
-      disabled={pending}
-    >
-      {pending ? (
-        <Loader2 className="animate-spin" />
-      ) : (
-        t("cart.addToCart") || "კალათაში დამატება"
-      )}
-    </button>
+    <div className="similar-products-section">
+      <h2 className="similar-products-title">{t("product.similarProducts")}</h2>{" "}
+      <div className="similar-products-grid">
+        {similarProducts.map((product: Product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -106,11 +223,65 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<"description" | "reviews">(
-    "description"
-  );
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>(""); // Fetch all colors for proper nameEn support
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  // Fetch all age groups for proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
+  };
 
   const availableQuantity = useMemo(() => {
     // Calculate available quantity based on selected attributes
@@ -118,38 +289,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
     // If product has variants, adjust stock based on selected attributes
     if (product.variants && product.variants.length > 0) {
-      // Check if we have size and color selected
-      if (
-        (product.sizes && !selectedSize) ||
-        (product.colors && !selectedColor)
-      ) {
-        // If required attributes not selected, show base stock or 0
-        return product.countInStock || 0;
-      }
-
-      const matchingVariant = product.variants.find((v) => {
-        // Match based on available attributes
-        const sizeMatch = !selectedSize || v.size === selectedSize;
-        const colorMatch = !selectedColor || v.color === selectedColor;
-        const ageGroupMatch =
-          !selectedAgeGroup || v.ageGroup === selectedAgeGroup;
-
-        return sizeMatch && colorMatch && ageGroupMatch;
-      });
-
-      // Use variant stock if found, otherwise use product's countInStock as fallback
-      stock = matchingVariant
-        ? matchingVariant.stock || 0
-        : product.countInStock || 0;
-
-      // Debug log
-      console.log("Selected variant:", {
-        size: selectedSize,
-        color: selectedColor,
-        ageGroup: selectedAgeGroup,
-        matchingVariant,
-        stock,
-      });
+      const variant = product.variants.find(
+        (v) =>
+          (!v.size || v.size === selectedSize) &&
+          (!v.color || v.color === selectedColor) &&
+          (!v.ageGroup || v.ageGroup === selectedAgeGroup)
+      );
+      stock = variant ? variant.stock : 0;
     }
 
     return stock;
@@ -165,33 +311,24 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     language === "en" && product.descriptionEn
       ? product.descriptionEn
       : product.description;
-
   const isOutOfStock = product.countInStock === 0;
 
   // Initialize default selections based on product data
   useEffect(() => {
-    // Set default size if sizes array exists and not empty
+    // Set default size if sizes array exists
     if (product.sizes && product.sizes.length > 0) {
       setSelectedSize(product.sizes[0]);
     }
 
-    // Set default color if colors array exists and not empty
+    // Set default color if colors array exists
     if (product.colors && product.colors.length > 0) {
       setSelectedColor(product.colors[0]);
     }
 
-    // Set default age group if ageGroups array exists and not empty
+    // Set default age group if ageGroups array exists
     if (product.ageGroups && product.ageGroups.length > 0) {
       setSelectedAgeGroup(product.ageGroups[0]);
     }
-
-    // Debug log
-    console.log("Product data:", {
-      countInStock: product.countInStock,
-      variants: product.variants,
-      sizes: product.sizes,
-      colors: product.colors,
-    });
   }, [product]);
 
   // Function to open fullscreen image
@@ -204,73 +341,32 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     setIsFullscreenOpen(false);
   };
 
-  const handleReviewSuccess = () => {
-    setShowReviewForm(false);
-    toast({
-      title: "შეფასება დაემატა",
-      description: "თქვენი შეფასება წარმატებით დაემატა",
-    });
-    // Refresh the page to show the new review
-    window.location.reload();
-  };
-
-  // Fetch similar products from the same category
-  const { data: similarProducts = [] } = useQuery<Product[]>({
-    queryKey: ["similarProducts", product.category, product._id],
-    queryFn: async () => {
-      try {
-        const categoryId =
-          typeof product.category === "object"
-            ? product.category._id || product.category.id
-            : product.category;
-
-        const response = await fetchWithAuth(
-          `/products?category=${categoryId}&limit=4`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch similar products");
-        }
-
-        const data = await response.json();
-        // Get items/products array and filter out the current product
-        const products = (data.items || data.products || [])
-          .filter((p: Product) => p._id !== product._id)
-          .slice(0, 3); // Limit to 3 products
-
-        return products;
-      } catch (error) {
-        console.error("Error fetching similar products:", error);
-        return [];
-      }
-    },
-    enabled: !!product.category,
-  });
-
   return (
     <div className="container">
       <div className="grid">
-        {/* Title Section - Now on the left side above the image */}
-        <div className="product-title-section">
-          <h1 className="product-title">{displayName}</h1>
-          {product.brand && (
-            <div className="brand-badge">
-              {product.brandLogo ? (
-                <Image
-                  src={product.brandLogo}
-                  alt={product.brand}
-                  width={24}
-                  height={24}
-                  className="brand-logo"
-                />
-              ) : (
-                product.brand
-              )}
-            </div>
-          )}
+        {/* Left Column - Thumbnails */}
+        <div className="thumbnail-container">
+          {product.images.map((image, index) => (
+            <motion.button
+              key={image}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`thumbnail ${
+                index === currentImageIndex ? "active" : ""
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Image
+                src={image}
+                alt={`${displayName} view ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+            </motion.button>
+          ))}
         </div>
 
-        {/* Main Image Section */}
+        {/* Center Column - Main Image */}
         <div className="image-section">
           <div className="image-container">
             <AnimatePresence mode="wait">
@@ -296,65 +392,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
         </div>
 
-        {/* Thumbnails - Below the main image on the left side */}
-        <div className="thumbnail-container">
-          {product.images.map((image, index) => (
-            <motion.button
-              key={image}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`thumbnail ${
-                index === currentImageIndex ? "active" : ""
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Image
-                src={image}
-                alt={`${displayName} view ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </motion.button>
-          ))}
-        </div>
-        <div>
-          <div className="rating-container">
-            <div className="rating-stars">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <svg
-                  key={star}
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  className={`star-icon ${
-                    star <= Math.round(product.rating) ? "filled" : ""
-                  }`}
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-              ))}
-            </div>
-            <span
-              className="review-count"
-              onClick={() => setActiveTab("reviews")}
-            >
-              ({product.numReviews} შეფასება)
+        {/* Right Column - Product Info */}
+        <div className="product-info-details">
+          <h1 className="product-title">{displayName}</h1>{" "}
+          <div className="price-section">
+            <span className="price">
+              {product.price} {language === "en" ? "GEL" : "ლარი"}{" "}
             </span>
           </div>
           <ShareButtons
             url={typeof window !== "undefined" ? window.location.href : ""}
-            title={`Check out ${displayName} by ${product.brand} on MyHunter`}
+            title={`Check out ${displayName} by ${product.brand} on Russana`}
           />
-        </div>
-        {/* Product Info Section - On the right side */}
-        <div className="product-info-details">
-          <div className="price-section">
-            <span className="price">{product.price} ლარი </span>
-          </div>
-
           {!isOutOfStock && (
             <div className="product-options-container">
+              {" "}
               {/* Age Group Selector - only show if product has age groups */}
               {product.ageGroups && product.ageGroups.length > 0 && (
                 <div className="select-container">
@@ -364,25 +416,28 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     onChange={(e) => setSelectedAgeGroup(e.target.value)}
                     disabled={isOutOfStock || product.ageGroups.length === 0}
                   >
+                    {" "}
+                    <option value="">{t("product.selectAgeGroup")}</option>
                     {product.ageGroups.map((ageGroup) => (
                       <option key={ageGroup} value={ageGroup}>
-                        {ageGroup}
+                        {getLocalizedAgeGroupName(ageGroup)}
                       </option>
                     ))}
                   </select>
                 </div>
               )}
-
               {/* Size Selector - only show if product has sizes */}
               {product.sizes && product.sizes.length > 0 && (
                 <div className="select-container">
+                  {" "}
                   <select
                     className="option-select"
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
                     disabled={isOutOfStock || product.sizes.length === 0}
                   >
-                    <option value=""></option>
+                    {" "}
+                    <option value="">{t("product.selectSize")}</option>
                     {product.sizes.map((size) => (
                       <option key={size} value={size}>
                         {size}
@@ -390,27 +445,27 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     ))}
                   </select>
                 </div>
-              )}
-
+              )}{" "}
               {/* Color selector - only show if product has colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="select-container">
+                  {" "}
                   <select
                     className="option-select2"
                     value={selectedColor}
                     onChange={(e) => setSelectedColor(e.target.value)}
                     disabled={isOutOfStock || product.colors.length === 0}
                   >
-                    <option value="">აირჩიეთ ფერი</option>
+                    {" "}
+                    <option value="">{t("product.selectColor")}</option>
                     {product.colors.map((color) => (
                       <option key={color} value={color}>
-                        {color}
+                        {getLocalizedColorName(color)}
                       </option>
                     ))}
                   </select>
                 </div>
               )}
-
               {/* Quantity Selector */}
               {availableQuantity > 0 && (
                 <div className="select-container">
@@ -421,7 +476,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     disabled={availableQuantity <= 0}
                   >
                     {Array.from(
-                      { length: Math.min(availableQuantity, 10) },
+                      { length: availableQuantity },
                       (_, i) => i + 1
                     ).map((num) => (
                       <option key={num} value={num}>
@@ -431,110 +486,38 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   </select>
                 </div>
               )}
-
-              {/* Stock Status - Always show this section */}
-              <div className="stock-status">
-                {availableQuantity > 0 ? (
-                  <span className="in-stock-message">
-                    {t("shop.inStock") || "მარაგშია"} ({availableQuantity})
-                  </span>
-                ) : (
-                  <div className="out-of-stock-message">
-                    {t("shop.outOfStock") || "არ არის მარაგში"}
-                  </div>
-                )}
-              </div>
+              {/* Stock Status */}
+              {availableQuantity <= 0 && (
+                <div className="out-of-stock-message">
+                  {t("shop.outOfStock") || "არ არის მარაგში"}
+                </div>
+              )}
             </div>
           )}
-
-          {/* Add the description section back */}
-          <div className="product-description-section">
+          <div className="tabs">
             <h3>{t("product.details") || "აღწერა"} : </h3>
             <p>{displayDescription}</p>
+
+            <AddToCartButton
+              productId={product._id}
+              countInStock={availableQuantity}
+              className="custom-style-2"
+              selectedSize={selectedSize}
+              selectedColor={selectedColor}
+              selectedAgeGroup={selectedAgeGroup}
+              quantity={quantity}
+              disabled={
+                availableQuantity <= 0 ||
+                (product.sizes && product.sizes.length > 0 && !selectedSize) ||
+                (product.colors &&
+                  product.colors.length > 0 &&
+                  !selectedColor) ||
+                (product.ageGroups &&
+                  product.ageGroups.length > 0 &&
+                  !selectedAgeGroup)
+              }
+            />
           </div>
-
-          <div className="tabs">
-            <div className="tabs-list">
-              <button
-                className={`tabs-trigger ${
-                  activeTab === "description" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("description")}
-              >
-                აღწერა
-              </button>
-              <button
-                className={`tabs-trigger ${
-                  activeTab === "reviews" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("reviews")}
-              >
-                შეფასებები ({product.numReviews})
-              </button>
-            </div>
-
-            <div
-              className={`tab-content ${
-                activeTab === "description" ? "active" : ""
-              }`}
-            >
-              <div className="product-description">
-                {displayDescription || "ამ პროდუქტს არ აქვს აღწერა"}
-              </div>
-            </div>
-
-            <div
-              className={`tab-content ${
-                activeTab === "reviews" ? "active" : ""
-              }`}
-            >
-              <div className="reviews-container">
-                <ProductReviews product={product} />
-
-                {!showReviewForm ? (
-                  <button
-                    className="add-review-button"
-                    onClick={() => setShowReviewForm(true)}
-                  >
-                    დაამატე შეფასება
-                  </button>
-                ) : (
-                  <div className="review-form-container">
-                    <h3 className="review-form-title">დაამატე შეფასება</h3>
-                    <ReviewForm
-                      productId={product._id}
-                      onSuccess={handleReviewSuccess}
-                    />
-                    <button
-                      className="cancel-review-button"
-                      onClick={() => setShowReviewForm(false)}
-                    >
-                      გაუქმება
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <AddToCartButton
-            productId={product._id}
-            countInStock={availableQuantity}
-            className="custom-style-2"
-            selectedSize={selectedSize}
-            selectedColor={selectedColor}
-            selectedAgeGroup={selectedAgeGroup}
-            quantity={quantity}
-            disabled={
-              availableQuantity <= 0 ||
-              (product.sizes && product.sizes.length > 0 && !selectedSize) ||
-              (product.colors && product.colors.length > 0 && !selectedColor) ||
-              (product.ageGroups &&
-                product.ageGroups.length > 0 &&
-                !selectedAgeGroup)
-            }
-          />
-
           {/* Fullscreen Image Modal */}
           {isFullscreenOpen && (
             <div className="fullscreen-modal" onClick={closeFullscreen}>
@@ -563,47 +546,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
           )}
         </div>
-      </div>
-
+      </div>{" "}
       {/* Similar Products Section */}
-      {similarProducts && similarProducts.length > 0 && (
-        <div className="similar-products-section">
-          <h2 className="similar-products-title">მსგავსი პროდუქტები</h2>
-          <div className="similar-products-grid">
-            {similarProducts.map((similarProduct) => (
-              <ProductCard key={similarProduct._id} product={similarProduct} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Fullscreen Image Modal */}
-      {isFullscreenOpen && (
-        <div className="fullscreen-modal" onClick={closeFullscreen}>
-          <button
-            className="fullscreen-close"
-            onClick={(e) => {
-              e.stopPropagation();
-              closeFullscreen();
-            }}
-          >
-            <X />
-          </button>
-          <div
-            className="fullscreen-image-container"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Image
-              src={product.images[currentImageIndex]}
-              alt={displayName}
-              width={1200}
-              height={1200}
-              quality={100}
-              className="fullscreen-image"
-            />
-          </div>
-        </div>
-      )}
+      <SimilarProducts
+        currentProductId={product._id}
+        subCategoryId={
+          typeof product.subCategory === "string"
+            ? product.subCategory
+            : product.subCategory?.id || product.subCategory?._id || ""
+        }
+      />
     </div>
   );
 }

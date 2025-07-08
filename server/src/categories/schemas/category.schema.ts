@@ -67,9 +67,6 @@ CategorySchema.set('toJSON', {
   },
 });
 
-// IMPORTANT: Remove all indexes and only add the ones we need
-CategorySchema.index({ name: 1 }, { unique: true });
-
 // Add a pre-save hook to remove any unexpected fields
 CategorySchema.pre('save', function (next) {
   // Ensure only allowed fields are saved

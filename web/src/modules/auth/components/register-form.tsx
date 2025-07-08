@@ -36,12 +36,19 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterSchema) => {
     setRegistrationError(null);
 
+    // Extract only the data needed for backend (exclude acceptPrivacyPolicy)
+    const registerData = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
+
     interface RegisterUserOptions {
       onSuccess: () => void;
       onError: (error: { message?: string }) => void;
     }
 
-    registerUser(data, {
+    registerUser(registerData, {
       onSuccess: () => {
         setIsSuccess(true);
         toast({
@@ -56,14 +63,42 @@ export function RegisterForm() {
         }, 2000);
       },
       onError: (error: { message?: string }) => {
-        setRegistrationError(
-          error.message || "Registration failed. Please try again."
-        );
+        // Map common error messages to translation keys
+        let errorMessage = error.message || t("auth.registrationFailed");
+
+        // Check if it's a common backend error and translate it
+        if (
+          errorMessage === "ეს ელ-ფოსტა უკვე რეგისტრირებულია" ||
+          errorMessage === "This email is already registered" ||
+          errorMessage.includes("already exists") ||
+          errorMessage.includes("duplicate") ||
+          errorMessage === "Failed to create user"
+        ) {
+          errorMessage = t("auth.emailAlreadyExists");
+        } else if (
+          errorMessage.includes("invalid email") ||
+          errorMessage.includes("არასწორი ელ-ფოსტის ფორმატი")
+        ) {
+          errorMessage = t("auth.emailInvalid");
+        } else if (
+          errorMessage.includes("password") ||
+          errorMessage.includes("პაროლი")
+        ) {
+          errorMessage = t("auth.passwordMinLength");
+        } else if (
+          errorMessage.includes("Bad Request") ||
+          errorMessage.includes("მონაცემები არასწორია")
+        ) {
+          errorMessage = t("auth.invalidData");
+        }
+
+        setRegistrationError(errorMessage);
         toast({
           title: t("auth.registrationFailed"),
-          description: error.message,
+          description: errorMessage,
           variant: "destructive",
         });
+        // Don't redirect on error - stay on register page to show error
       },
     } as RegisterUserOptions);
   };
@@ -92,10 +127,9 @@ export function RegisterForm() {
       </div>
     );
   }
-
   return (
     <div className="register-content">
-      <h1 className="register-title">რეგისტრაცია</h1>
+      <h1 className="register-title">{t("auth.register")}</h1>
 
       {registrationError && (
         <div className="register-error-message">{registrationError}</div>
@@ -106,7 +140,7 @@ export function RegisterForm() {
           <input
             id="name"
             type="text"
-            placeholder="სახელი"
+            placeholder={t("auth.name")}
             {...register("name")}
           />
           {errors.name && <p className="error-text">{errors.name.message}</p>}
@@ -116,7 +150,7 @@ export function RegisterForm() {
           <input
             id="email"
             type="email"
-            placeholder="მეილი"
+            placeholder={t("auth.email")}
             {...register("email")}
           />
           {errors.email && <p className="error-text">{errors.email.message}</p>}
@@ -126,7 +160,7 @@ export function RegisterForm() {
           <input
             id="password"
             type="password"
-            placeholder="პაროლი"
+            placeholder={t("auth.password")}
             {...register("password")}
           />
           {errors.password && (
@@ -134,19 +168,44 @@ export function RegisterForm() {
           )}
         </div>
 
+        <div className="register-field privacy-field">
+          <label className="privacy-checkbox-label">
+            <input
+              type="checkbox"
+              {...register("acceptPrivacyPolicy")}
+              className="privacy-checkbox"
+            />
+            <span className="privacy-text">
+              {t("auth.agreeToPrivacyPolicy")}
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                className="privacy-link"
+              >
+                {t("auth.privacyPolicy")}
+              </Link>
+            </span>
+          </label>
+          {errors.acceptPrivacyPolicy && (
+            <p className="error-text">{errors.acceptPrivacyPolicy.message}</p>
+          )}
+        </div>
+
         <button type="submit" className="register-button" disabled={isPending}>
           {isPending ? (
             <>
               <span className="register-loading"></span>
-              რეგისტრაცია...
+              {t("auth.registerButton")}...
             </>
           ) : (
-            "რეგისტრაცია"
+            t("auth.registerButton")
           )}
         </button>
       </form>
 
- 
+      <div className="register-divider">
+        <span>{t("auth.orContinueWith")}</span>
+      </div>
 
       <div className="social-login">
         <button
@@ -170,9 +229,9 @@ export function RegisterForm() {
       </div>
 
       <div className="login-prompt">
-       
+        {t("auth.alreadyHaveAccount")}
         <Link href="/login" className="login-link">
-          ავტორიზაცია
+          {t("auth.login")}
         </Link>
       </div>
     </div>

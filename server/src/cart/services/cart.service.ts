@@ -56,7 +56,7 @@ export class CartService {
       0,
     );
     cart.taxPrice = Number((0.02 * cart.itemsPrice).toFixed(2));
-    cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 10;
+    cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 0;
     cart.totalPrice = cart.itemsPrice + cart.taxPrice + cart.shippingPrice;
     return cart;
   }
@@ -231,10 +231,22 @@ export class CartService {
   }
 
   validatePaymentMethod(paymentMethod: string): string {
-    const validMethods = ['PayPal', 'Stripe'];
+    console.log('Received payment method:', paymentMethod);
+    console.log('Type of payment method:', typeof paymentMethod);
+
+    const validMethods = ['PayPal', 'Stripe', 'BOG'];
+    console.log('Valid methods:', validMethods);
+    console.log(
+      'Is payment method in valid methods?',
+      validMethods.includes(paymentMethod),
+    );
+
     if (!validMethods.includes(paymentMethod)) {
+      console.log('Payment method validation failed!');
       throw new BadRequestException('Invalid payment method');
     }
+
+    console.log('Payment method validation passed!');
     return paymentMethod;
   }
 }

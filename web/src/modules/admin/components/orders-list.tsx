@@ -7,6 +7,7 @@ import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Order } from "@/types/order";
 import "./ordersList.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export function OrdersList() {
   const [page, setPage] = useState(1);
@@ -25,7 +26,9 @@ export function OrdersList() {
   });
 
   if (isLoading) {
-    return <div className="orders-container">Loading...</div>;
+    return (
+      <div className="orders-container">{<HeartLoading size="medium" />}</div>
+    );
   }
 
   const orders = data?.items || [];
@@ -48,7 +51,7 @@ export function OrdersList() {
                 <th>USER</th>
                 <th>DATE</th>
                 <th>TOTAL</th>
-                <th>DELIVERY TYPE</th>
+                {/* <th>DELIVERY TYPE</th> */}
                 <th>PAID</th>
                 <th>DELIVERED</th>
                 <th className="orders-actions">ACTIONS</th>
@@ -86,7 +89,12 @@ export function OrdersList() {
                     )}
                   </td> */}
                   <td>
-                    {order.isPaid ? (
+                    {order.status === "cancelled" ? (
+                      <span className="status-badge cancelled">
+                        <XCircle className="icon" />
+                        Cancelled
+                      </span>
+                    ) : order.status === "paid" || order.isPaid ? (
                       <span className="status-badge success">
                         <CheckCircle2 className="icon" />
                         {order.paidAt &&

@@ -13,6 +13,7 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import { StatusBadge } from "./status-badge";
 import { Role } from "@/types/role";
 import { useLanguage } from "@/hooks/LanguageContext";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 // Extended Product type to include mainCategory and subCategory properties
 interface ProductWithCategories extends Product {
@@ -131,18 +132,22 @@ export function ProductsList() {
       return response.json();
     },
   });
-
-  // Helper functions to get category and subcategory names by ID
+  // Helper functions to get category and subcategory names by ID with translation support
   function getCategoryNameById(categoryId: string): string {
     if (!categoryId) return "Uncategorized";
     if (!categoriesData) return "Loading...";
 
     const category = categoriesData.find(
-      (cat: { id?: string; _id?: string; name: string }) =>
+      (cat: { id?: string; _id?: string; name: string; nameEn?: string }) =>
         cat.id === categoryId || cat._id === categoryId
     );
 
-    return category ? category.name : "Unknown Category";
+    if (!category) return "Unknown Category";
+
+    // Return translated name based on language
+    return language === "en" && category.nameEn
+      ? category.nameEn
+      : category.name;
   }
 
   function getSubcategoryNameById(subcategoryId: string): string {
@@ -150,14 +155,18 @@ export function ProductsList() {
     if (!subcategoriesData) return "Loading...";
 
     const subcategory = subcategoriesData?.find(
-      (subcat: { id?: string; _id?: string; name: string }) =>
+      (subcat: { id?: string; _id?: string; name: string; nameEn?: string }) =>
         subcat.id === subcategoryId || subcat._id === subcategoryId
     );
 
-    return subcategory ? subcategory.name : "Unknown Subcategory";
-  }
+    if (!subcategory) return "Unknown Subcategory";
 
-  // New helper function to get the most accurate category display name
+    // Return translated name based on language
+    return language === "en" && subcategory.nameEn
+      ? subcategory.nameEn
+      : subcategory.name;
+  }
+  // New helper function to get the most accurate category display name with translation
   function getCategoryDisplayName(product: Product): string {
     // For object type mainCategory with name
     if (
@@ -165,7 +174,13 @@ export function ProductsList() {
       typeof product.mainCategory === "object" &&
       product.mainCategory.name
     ) {
-      return product.mainCategory.name;
+      const categoryObj = product.mainCategory as {
+        name: string;
+        nameEn?: string;
+      };
+      return language === "en" && categoryObj.nameEn
+        ? categoryObj.nameEn
+        : categoryObj.name;
     }
 
     // For object type category with name
@@ -174,7 +189,10 @@ export function ProductsList() {
       typeof product.category === "object" &&
       product.category.name
     ) {
-      return product.category.name;
+      const categoryObj = product.category as { name: string; nameEn?: string };
+      return language === "en" && categoryObj.nameEn
+        ? categoryObj.nameEn
+        : categoryObj.name;
     }
 
     // For string type mainCategory that is an ID
@@ -190,7 +208,7 @@ export function ProductsList() {
     return "Uncategorized";
   }
 
-  // New helper function to get the most accurate subcategory display name
+  // New helper function to get the most accurate subcategory display name with translation
   function getSubcategoryDisplayName(product: Product): string {
     // For object type subCategory with name
     if (
@@ -198,7 +216,13 @@ export function ProductsList() {
       typeof product.subCategory === "object" &&
       product.subCategory.name
     ) {
-      return product.subCategory.name;
+      const subcategoryObj = product.subCategory as {
+        name: string;
+        nameEn?: string;
+      };
+      return language === "en" && subcategoryObj.nameEn
+        ? subcategoryObj.nameEn
+        : subcategoryObj.name;
     }
 
     // For string type subCategory that is an ID
@@ -222,7 +246,7 @@ export function ProductsList() {
     return "";
   }
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <HeartLoading size="medium" />;
 
   const products = data?.items || [];
   const totalPages = data?.pages || 1;
@@ -296,9 +320,9 @@ export function ProductsList() {
             <th className="prd-th">CATEGORY</th>
             <th className="prd-th">SUBCATEGORY</th>
             <th className="prd-th">STOCK</th>
-            <th className="prd-th">Status</th>
-            <th className="prd-th">DELIVERY</th>
-            <th className="prd-th">SELLER INFO</th>
+            {/* <th className="prd-th">Status</th> */}
+            {/* <th className="prd-th">DELIVERY</th>
+            <th className="prd-th">SELLER INFO</th> */}
             <th className="prd-th prd-th-right">ACTIONS</th>
           </tr>
         </thead>
@@ -324,9 +348,9 @@ export function ProductsList() {
               <td className="prd-td">{getCategoryDisplayName(product)}</td>
               <td className="prd-td">{getSubcategoryDisplayName(product)}</td>
               <td className="prd-td">{product.countInStock}</td>
-              <td className="prd-td">
+              {/* <td className="prd-td">
                 <StatusBadge status={product.status} />
-              </td>
+              </td> */}
               {/* <td className="prd-td">
                 <div className="delivery-info">
                   <span>{product.deliveryType || "SOULART"}</span>
@@ -339,7 +363,7 @@ export function ProductsList() {
                     )}
                 </div>
               </td> */}
-              <td className="prd-td">
+              {/* <td className="prd-td">
                 <div className="seller-info">
                   <p className="font-medium">{product.user?.name || "N/A"}</p>
                   <p className="text-sm text-gray-500">
@@ -349,7 +373,7 @@ export function ProductsList() {
                     {product.user?.phoneNumber || "N/A"}
                   </p>
                 </div>
-              </td>
+              </td> */}
               <td className="prd-td prd-td-right">
                 <ProductsActions
                   product={product}

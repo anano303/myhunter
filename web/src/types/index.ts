@@ -50,6 +50,21 @@ export interface ProductVariant {
   stock: number;
 }
 
+export interface Color {
+  _id: string;
+  name: string;
+  nameEn?: string;
+  isActive: boolean;
+}
+
+export interface AgeGroupItem {
+  _id: string;
+  name: string;
+  nameEn?: string;
+  ageRange?: string;
+  description?: string;
+  isActive: boolean;
+}
 export interface Product {
   _id: string;
   user: User;
@@ -79,6 +94,7 @@ export interface Product {
   deliveryType?: "SELLER" | "SoulArt";
   minDeliveryDays?: number;
   maxDeliveryDays?: number;
+  hashtags?: string[]; // Added hashtags for SEO
   dimensions?: {
     width?: number;
     height?: number;

@@ -341,6 +341,11 @@ export class ProductsService {
       updateFields.sizes = Array.isArray(data.sizes) ? data.sizes : [];
     if (data.colors)
       updateFields.colors = Array.isArray(data.colors) ? data.colors : [];
+    if (data.hashtags !== undefined)
+      updateFields.hashtags = Array.isArray(data.hashtags) ? data.hashtags : [];
+
+    console.log('Updating product with hashtags:', updateFields.hashtags);
+
     if (data.variants) {
       // Ensure variants is an array
       if (Array.isArray(data.variants)) {
@@ -485,6 +490,9 @@ export class ProductsService {
       data.ageGroups = Array.isArray(data.ageGroups) ? data.ageGroups : [];
       data.sizes = Array.isArray(data.sizes) ? data.sizes : [];
       data.colors = Array.isArray(data.colors) ? data.colors : [];
+      data.hashtags = Array.isArray(data.hashtags) ? data.hashtags : [];
+
+      console.log('Creating product with hashtags:', data.hashtags);
 
       // Parse variants if it's a string
       if (data.variants && typeof data.variants === 'string') {
@@ -554,9 +562,10 @@ export class ProductsService {
   // Add a method to check stock availability by size and color
   async checkStockAvailability(
     productId: string,
-    size: string,
-    color: string,
     quantity: number = 1,
+    size?: string,
+    color?: string,
+    ageGroup?: string,
   ): Promise<boolean> {
     const product = await this.productModel.findById(productId).exec();
 
@@ -567,7 +576,7 @@ export class ProductsService {
     // If the product has variants
     if (product.variants && product.variants.length > 0) {
       const variant = product.variants.find(
-        (v) => v.size === size && v.color === color,
+        (v) => v.size === size && v.color === color && v.ageGroup === ageGroup,
       );
       if (!variant) {
         return false;

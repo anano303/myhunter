@@ -53,9 +53,11 @@ export enum AgeGroup {
 export interface CategoryStructure {
   main: MainCategory;
   sub: string;
+  subEn?: string;
   ageGroup?: AgeGroup;
   size?: string;
   color?: string;
+  colorEn?: string;
 }
 
 // New variant schema for tracking inventory by size/color
@@ -66,6 +68,9 @@ export class ProductVariant {
 
   @Prop({ required: false })
   color?: string;
+
+  @Prop({ required: false })
+  colorEn?: string;
 
   @Prop({ required: false })
   ageGroup?: string;
@@ -80,7 +85,10 @@ export class ProductVariant {
 export const ProductVariantSchema =
   SchemaFactory.createForClass(ProductVariant);
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  autoIndex: false, // Disable automatic index creation
+})
 export class Product {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -97,7 +105,7 @@ export class Product {
   nameEn?: string;
 
   @Prop({ required: true })
-  brand!: string;
+  brand?: string;
 
   @Prop({})
   brandLogo?: string;
@@ -113,11 +121,17 @@ export class Product {
   })
   mainCategory?: mongoose.Types.ObjectId | string;
 
+  @Prop()
+  mainCategoryEn?: string;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SubCategory',
   })
   subCategory?: mongoose.Types.ObjectId | string;
+
+  @Prop()
+  subCategoryEn?: string;
 
   // Product attributes based on subcategory
   @Prop({ type: [String], default: [] })
@@ -128,6 +142,9 @@ export class Product {
 
   @Prop({ type: [String], default: [] })
   colors?: string[];
+
+  @Prop({ type: [String], default: [] })
+  colorsEn?: string[];
 
   // Add categoryStructure field
   @Prop({ type: Object })
@@ -141,6 +158,10 @@ export class Product {
 
   @Prop({ required: false })
   descriptionEn?: string;
+
+  // SEO hashtags for better search visibility
+  @Prop({ type: [String], default: [] })
+  hashtags?: string[];
 
   @Prop({ required: true })
   reviews!: Review[];
@@ -187,15 +208,24 @@ export class Product {
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
 
-// IMPORTANT: Do NOT create compound indexes on multiple array fields!
-// Only create simple single-field indexes
+// Disable automatic index creation to prevent duplicates
+ProductSchema.set('autoIndex', false);
 
-// Safe indexes (non-array fields)
-ProductSchema.index({ mainCategory: 1 });
-ProductSchema.index({ subCategory: 1 });
-ProductSchema.index({ brand: 1 });
-ProductSchema.index({ status: 1 });
-ProductSchema.index({ createdAt: -1 });
+// Create indexes manually with proper configuration
+// Note: autoIndex is disabled to prevent duplicate indexes
 
-// DO NOT create any indexes on the array fields to avoid parallel array indexing error
-// MongoDB cannot index multiple array fields in the same document
+// Create composite index for efficient category-based queries
+ProductSchema.index(
+  { mainCategory: 1, subCategory: 1 },
+  { background: true, sparse: true },
+);
+
+// Individual indexes for common queries
+ProductSchema.index({ brand: 1 }, { background: true, sparse: true });
+ProductSchema.index({ status: 1 }, { background: true });
+// Note: createdAt index is automatically created by timestamps: true
+
+// Array field indexes (created individually to avoid parallel array indexing)
+ProductSchema.index({ ageGroups: 1 }, { background: true, sparse: true });
+ProductSchema.index({ sizes: 1 }, { background: true, sparse: true });
+ProductSchema.index({ colors: 1 }, { background: true, sparse: true });

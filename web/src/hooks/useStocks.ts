@@ -101,10 +101,22 @@ export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
         color: combo.color,
       });
 
-      // If this combination already exists, keep its count, otherwise initialize to 0
+      // If this combination already exists, keep its count, otherwise initialize
+      // For initial data with variants, try to find matching variant
+      let initialStock = 0;
+      if (initialData?.variants) {
+        const matchingVariant = initialData.variants.find(
+          (variant) =>
+            variant.ageGroup === combo.ageGroup &&
+            variant.size === combo.size &&
+            variant.color === combo.color
+        );
+        initialStock = matchingVariant?.stock || 0;
+      }
+
       newStocks[key] = {
         ...combo,
-        stock: stocks[key]?.stock || 0,
+        stock: stocks[key]?.stock || initialStock,
       };
     });
 
@@ -115,7 +127,7 @@ export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
     ) {
       setStocks(newStocks);
     }
-  }, [combinations, stocks]);
+  }, [combinations, stocks, initialData?.variants]);
 
   // Function to update stock count by combination fields
   const setStockCount = useCallback(
@@ -150,15 +162,25 @@ export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
   );
 
   const [isInitialRender, setIsInitialRender] = useState(true);
+
+  // Initialize stock counts from initialData variants when combinations are ready
   useEffect(() => {
-    if (combinations.length !== 0 && isInitialRender) {
+    if (combinations.length > 0 && isInitialRender && initialData?.variants) {
+      console.log("Setting initial stock counts:", initialData.variants);
+
+      initialData.variants.forEach((variant) => {
+        console.log("Setting variant:", variant);
+        setStockCount(variant, variant.stock);
+      });
+
       setIsInitialRender(false);
-      initialData?.variants?.forEach((variant) =>
-        setStockCount(variant, variant.stock)
-      );
-      console.log("Initial stock counts set from initialData");
     }
-  }, [combinations.length, isInitialRender, initialData, setStockCount]);
+  }, [
+    combinations.length,
+    isInitialRender,
+    initialData?.variants,
+    setStockCount,
+  ]);
 
   // Calculate total count from all stock items
   const totalCount = useMemo(

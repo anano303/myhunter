@@ -5,13 +5,16 @@ import {
   useUpdateSubCategory,
   useDeleteSubCategory,
   useAttributes,
+  useAttributesWithTranslations,
   SubCategory,
   SubCategoryCreateInput,
   SubCategoryUpdateInput,
   Category,
 } from "../hook/use-categories";
-import { Loader, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader } from "lucide-react";
 import "./styles/subcategories-list.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 interface SubcategoriesListProps {
   categoryId: string;
@@ -25,14 +28,18 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     SubCategoryCreateInput | SubCategoryUpdateInput
   >({
     name: "",
+    nameEn: "",
     categoryId: categoryId,
     description: "",
+    descriptionEn: "",
     ageGroups: [],
     sizes: [],
     colors: [],
     isActive: true,
   });
   const [error, setError] = useState<string | null>(null);
+
+  const { t, language } = useLanguage();
 
   const {
     data: subcategories,
@@ -41,47 +48,25 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     error: queryError,
   } = useSubCategories(categoryId, showInactive);
   const { data: attributes, isLoading: isLoadingAttributes } = useAttributes();
+  const { data: attributesWithTranslations } = useAttributesWithTranslations();
   const createSubCategory = useCreateSubCategory();
   const updateSubCategory = useUpdateSubCategory();
   const deleteSubCategory = useDeleteSubCategory();
-
-  // State to track expanded subcategories
-  const [expandedSubcategories, setExpandedSubcategories] = useState<
-    Record<string, boolean>
-  >({});
-
   useEffect(() => {
-    console.log(`SubcategoriesList mounted with categoryId: ${categoryId}`);
-
     // Clear any previous errors when the categoryId changes
     setError(null);
-
-    return () => {
-      console.log(`SubcategoriesList unmounted for categoryId: ${categoryId}`);
-    };
   }, [categoryId]);
-
   useEffect(() => {
     if (isError) {
-      console.error("Error fetching subcategories:", queryError);
-      setError("ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა");
+      setError(t("adminCategories.noSubcategoriesFound"));
     } else {
       setError(null);
     }
-
-    if (subcategories) {
-      console.log(
-        `Successfully loaded ${subcategories.length} subcategories for category: ${categoryId}`
-      );
-    }
-  }, [isError, queryError, subcategories, categoryId]);
+  }, [isError, queryError, subcategories, categoryId, t]);
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validation before submission
+    e.preventDefault(); // Validation before submission
     if (!formData.name || !formData.name.trim()) {
-      console.error("Subcategory name is required");
       return;
     }
 
@@ -92,8 +77,6 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
       name: (formData.name || "").trim(), // Trim whitespace with null check
     };
 
-    console.log("Creating subcategory with data:", dataToSubmit);
-
     try {
       await createSubCategory.mutateAsync(
         dataToSubmit as SubCategoryCreateInput
@@ -101,27 +84,24 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
       setIsCreating(false);
       setFormData({
         name: "",
+        nameEn: "",
         categoryId: categoryId, // Keep the current categoryId
         description: "",
+        descriptionEn: "",
         ageGroups: [],
         sizes: [],
         colors: [],
         isActive: true,
       });
-      console.log("Subcategory created successfully");
-    } catch (error) {
-      console.error("Failed to create subcategory:", error);
-      setError("ქვეკატეგორიის შექმნა ვერ მოხერხდა");
+    } catch {
+      setError(t("adminCategories.createError"));
     }
   };
 
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isEditing) return;
-
-    // Validation before submission
+    if (!isEditing) return; // Validation before submission
     if (!formData.name || !formData.name.trim()) {
-      console.error("Subcategory name is required");
       return;
     }
 
@@ -133,8 +113,6 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         name: (formData.name || "").trim(), // Trim whitespace with null check
       };
 
-      console.log("Updating subcategory with data:", updateData);
-
       await updateSubCategory.mutateAsync({
         id: isEditing,
         data: updateData as SubCategoryUpdateInput,
@@ -142,47 +120,44 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
       setIsEditing(null);
       setFormData({
         name: "",
+        nameEn: "",
         categoryId, // Keep categoryId in the form data
         description: "",
+        descriptionEn: "",
         ageGroups: [],
         sizes: [],
         colors: [],
         isActive: true,
       });
-      console.log("Subcategory updated successfully");
-    } catch (error) {
-      console.error("Failed to update subcategory:", error);
-      setError("ქვეკატეგორიის განახლება ვერ მოხერხდა");
+    } catch {
+      setError(t("adminCategories.updateError"));
     }
   };
-
   const startEditing = (subcategory: SubCategory) => {
     setIsEditing(subcategory.id);
     setFormData({
       name: subcategory.name,
+      nameEn: subcategory.nameEn || "",
       categoryId:
         typeof subcategory.categoryId === "string"
           ? subcategory.categoryId
           : (subcategory.categoryId as Category).id,
       description: subcategory.description || "",
+      descriptionEn: subcategory.descriptionEn || "",
       ageGroups: subcategory.ageGroups || [],
       sizes: subcategory.sizes || [],
       colors: subcategory.colors || [],
       isActive: subcategory.isActive,
     });
   };
-
   const handleDelete = async (id: string) => {
-    if (!window.confirm("დარწმუნებული ხართ, რომ გსურთ ქვეკატეგორიის წაშლა?")) {
+    if (!window.confirm(t("adminCategories.confirmDeleteSubcategory"))) {
       return;
     }
-
     try {
       await deleteSubCategory.mutateAsync(id);
-      console.log("Subcategory deleted successfully");
-    } catch (error) {
-      console.error("Failed to delete subcategory:", error);
-      setError("ქვეკატეგორიის წაშლა ვერ მოხერხდა");
+    } catch {
+      setError(t("adminCategories.deleteError"));
     }
   };
 
@@ -209,10 +184,10 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
 
     return (
       <div className="attributes-section">
-        <h5>ატრიბუტები</h5>
+        <h5>{t("adminCategories.attributes")}</h5>
 
         <div className="attribute-group">
-          <h6>ასაკობრივი ჯგუფები</h6>
+          <h6>{t("adminCategories.ageGroups")}</h6>{" "}
           <div className="attribute-options">
             {attributes.ageGroups.map((ageGroup) => (
               <label key={ageGroup} className="attribute-option">
@@ -223,14 +198,14 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                     handleAttributeSelection("ageGroups", ageGroup)
                   }
                 />
-                {ageGroup}
+                {translateAgeGroup(ageGroup)}
               </label>
             ))}
           </div>
         </div>
 
         <div className="attribute-group">
-          <h6>ზომები</h6>
+          <h6>{t("adminCategories.sizes")}</h6>
           <div className="attribute-options">
             {attributes.sizes.map((size) => (
               <label key={size} className="attribute-option">
@@ -246,7 +221,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         </div>
 
         <div className="attribute-group">
-          <h6>ფერები</h6>
+          <h6>{t("adminCategories.colors")}</h6>{" "}
           <div className="attribute-options">
             {attributes.colors.map((color) => (
               <label key={color} className="attribute-option">
@@ -255,7 +230,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                   checked={(formData.colors || []).includes(color)}
                   onChange={() => handleAttributeSelection("colors", color)}
                 />
-                {color}
+                {translateColor(color)}
               </label>
             ))}
           </div>
@@ -264,11 +239,53 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     );
   };
 
+  // Helper function to translate color names
+  const translateColor = (colorName: string): string => {
+    if (!attributesWithTranslations?.colors) return colorName;
+
+    const colorObj = attributesWithTranslations.colors.find(
+      (c) => c.name === colorName
+    );
+    if (!colorObj) return colorName;
+
+    if (language === "en" && colorObj.nameEn) {
+      return colorObj.nameEn;
+    }
+    return colorObj.name;
+  };
+
+  // Helper function to translate age group names
+  const translateAgeGroup = (ageGroupName: string): string => {
+    if (!attributesWithTranslations?.ageGroups) return ageGroupName;
+
+    const ageGroupObj = attributesWithTranslations.ageGroups.find(
+      (ag) => ag.name === ageGroupName
+    );
+    if (!ageGroupObj) return ageGroupName;
+
+    if (language === "en" && ageGroupObj.nameEn) {
+      return ageGroupObj.nameEn;
+    }
+    return ageGroupObj.name;
+  };
+
+  // Helper function to get translated attribute display text
+  const getTranslatedAttributes = (
+    attributeList: string[],
+    translateFn: (name: string) => string
+  ): string => {
+    return attributeList.map(translateFn).join(", ");
+  };
+
   if (isLoading || isLoadingAttributes) {
     return (
       <div className="loading-container">
+        {" "}
         <Loader />
-        <p>იტვირთება...</p>
+        <div className="loading-text">
+          <HeartLoading size="medium" inline={true} />
+          <span>{t("adminCategories.loading")}...</span>
+        </div>
       </div>
     );
   }
@@ -278,24 +295,17 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
       <div className="error-container">
         <p className="error-message">{error}</p>
         <button className="btn-retry" onClick={handleReload}>
-          ხელახლა ცდა
+          {t("adminCategories.retry")}
         </button>
       </div>
     );
   }
-
-  // Function to toggle subcategory expansion
-  const toggleSubcategoryExpansion = (subcategoryId: string) => {
-    setExpandedSubcategories((prev) => ({
-      ...prev,
-      [subcategoryId]: !prev[subcategoryId],
-    }));
-  };
-
   return (
     <div className="subcategories-list-container">
       <div className="subcategories-header">
-        <h3 className="subcategories-title">ქვეკატეგორიები</h3>
+        <h3 className="subcategories-title">
+          {t("adminCategories.subcategories")}
+        </h3>
         <div className="subcategories-actions">
           <button
             className="btn-add"
@@ -304,7 +314,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
               setIsEditing(null);
             }}
           >
-            + დამატება
+            + {t("adminCategories.add")}
           </button>
           <label className="show-inactive">
             <input
@@ -312,17 +322,18 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
               checked={showInactive}
               onChange={() => setShowInactive(!showInactive)}
             />
-            არააქტიურების ჩვენება
+            {t("adminCategories.showInactive")}
           </label>
         </div>
       </div>
 
       {isCreating && (
         <div className="subcategory-form-container">
-          <h4>ახალი ქვეკატეგორიის დამატება</h4>
+          <h4>{t("adminCategories.addNewSubcategory")}</h4>
           <form onSubmit={handleCreateSubmit} className="subcategory-form">
+            {" "}
             <div className="form-group">
-              <label htmlFor="name">დასახელება*</label>
+              <label htmlFor="name">{t("adminCategories.nameGe")}*</label>
               <input
                 type="text"
                 id="name"
@@ -334,7 +345,20 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="description">აღწერა</label>
+              <label htmlFor="nameEn">{t("adminCategories.nameEn")}</label>
+              <input
+                type="text"
+                id="nameEn"
+                value={formData.nameEn}
+                onChange={(e) =>
+                  setFormData({ ...formData, nameEn: e.target.value })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">
+                {t("adminCategories.descriptionGe")}
+              </label>
               <textarea
                 id="description"
                 value={formData.description}
@@ -343,9 +367,19 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                 }
               />
             </div>
-
+            <div className="form-group">
+              <label htmlFor="descriptionEn">
+                {t("adminCategories.descriptionEn")}
+              </label>
+              <textarea
+                id="descriptionEn"
+                value={formData.descriptionEn}
+                onChange={(e) =>
+                  setFormData({ ...formData, descriptionEn: e.target.value })
+                }
+              />
+            </div>
             {renderAttributeSelections()}
-
             <div className="form-group checkbox">
               <label>
                 <input
@@ -355,17 +389,18 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                     setFormData({ ...formData, isActive: e.target.checked })
                   }
                 />
-                აქტიური
+                {t("adminCategories.active")}
               </label>
             </div>
-
             <div className="form-actions">
               <button
                 type="submit"
                 className="btn-submit"
                 disabled={createSubCategory.isPending}
               >
-                {createSubCategory.isPending ? "იტვირთება..." : "დამატება"}
+                {createSubCategory.isPending
+                  ? t("adminCategories.loading")
+                  : t("adminCategories.add")}
               </button>
               <button
                 type="button"
@@ -374,8 +409,10 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                   setIsCreating(false);
                   setFormData({
                     name: "",
+                    nameEn: "",
                     categoryId,
                     description: "",
+                    descriptionEn: "",
                     ageGroups: [],
                     sizes: [],
                     colors: [],
@@ -383,7 +420,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                   });
                 }}
               >
-                გაუქმება
+                {t("adminCategories.cancel")}
               </button>
             </div>
           </form>
@@ -404,9 +441,10 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                   onSubmit={handleUpdateSubmit}
                   className="subcategory-form"
                 >
+                  {" "}
                   <div className="form-group">
                     <label htmlFor={`edit-name-${subcategory.id}`}>
-                      დასახელება*
+                      {t("adminCategories.nameGe")}*
                     </label>
                     <input
                       type="text"
@@ -419,9 +457,22 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor={`edit-description-${subcategory.id}`}>
-                      აღწერა
+                    <label htmlFor={`edit-nameEn-${subcategory.id}`}>
+                      {t("adminCategories.nameEn")}
                     </label>
+                    <input
+                      type="text"
+                      id={`edit-nameEn-${subcategory.id}`}
+                      value={formData.nameEn}
+                      onChange={(e) =>
+                        setFormData({ ...formData, nameEn: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor={`edit-description-${subcategory.id}`}>
+                      {t("adminCategories.descriptionGe")}
+                    </label>{" "}
                     <textarea
                       id={`edit-description-${subcategory.id}`}
                       value={formData.description}
@@ -433,9 +484,22 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                       }
                     />
                   </div>
-
+                  <div className="form-group">
+                    <label htmlFor={`edit-descriptionEn-${subcategory.id}`}>
+                      {t("adminCategories.descriptionEn")}
+                    </label>
+                    <textarea
+                      id={`edit-descriptionEn-${subcategory.id}`}
+                      value={formData.descriptionEn}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          descriptionEn: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
                   {renderAttributeSelections()}
-
                   <div className="form-group checkbox">
                     <label>
                       <input
@@ -448,19 +512,20 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                           })
                         }
                       />
-                      აქტიური
+                      {t("adminCategories.active")}
                     </label>
                   </div>
-
                   <div className="form-actions">
                     <button
                       type="submit"
                       className="btn-submit"
                       disabled={updateSubCategory.isPending}
                     >
-                      {updateSubCategory.isPending
-                        ? "იტვირთება..."
-                        : "განახლება"}
+                      {updateSubCategory.isPending ? (
+                        <HeartLoading size="medium" inline={true} />
+                      ) : (
+                        t("adminCategories.update")
+                      )}
                     </button>
                     <button
                       type="button"
@@ -469,8 +534,10 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                         setIsEditing(null);
                         setFormData({
                           name: "",
+                          nameEn: "",
                           categoryId,
                           description: "",
+                          descriptionEn: "",
                           ageGroups: [],
                           sizes: [],
                           colors: [],
@@ -478,98 +545,100 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                         });
                       }}
                     >
-                      გაუქმება
+                      {t("adminCategories.cancel")}
                     </button>
                   </div>
                 </form>
               ) : (
                 <>
+                  {" "}
                   <div className="subcategory-header">
-                    <div
-                      className="subcategory-title-section"
-                      onClick={() => toggleSubcategoryExpansion(subcategory.id)}
-                    >
-                      <h4 className="subcategory-name">
-                        {subcategory.name}
-                        {!subcategory.isActive && (
-                          <span className="inactive-label"> (არააქტიური)</span>
-                        )}
-                      </h4>
-                      <button className="toggle-btn">
-                        {expandedSubcategories[subcategory.id] ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </button>
-                    </div>
+                    <h4 className="subcategory-name">
+                      {language === "en" && subcategory.nameEn
+                        ? subcategory.nameEn
+                        : subcategory.name}
+                      {language === "ge" && subcategory.nameEn && (
+                        <span className="name-en"> ({subcategory.nameEn})</span>
+                      )}
+                      {!subcategory.isActive && (
+                        <span className="inactive-label">
+                          {" "}
+                          ({t("adminCategories.inactive")})
+                        </span>
+                      )}
+                    </h4>
                     <div className="subcategory-actions">
                       <button
                         className="btn-edit"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          startEditing(subcategory);
-                        }}
+                        onClick={() => startEditing(subcategory)}
                       >
-                        რედაქტირება
+                        {t("adminCategories.edit")}
                       </button>
                       <button
                         className="btn-delete"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(subcategory.id);
-                        }}
+                        onClick={() => handleDelete(subcategory.id)}
                       >
-                        წაშლა
+                        {t("adminCategories.delete")}
                       </button>
                     </div>
-                  </div>
-
-                  {/* Show details only when expanded */}
-                  {expandedSubcategories[subcategory.id] && (
-                    <>
-                      {subcategory.description && (
-                        <p className="subcategory-description">
-                          {subcategory.description}
-                        </p>
-                      )}
-
-                      <div className="subcategory-attributes">
-                        {subcategory.ageGroups &&
-                          subcategory.ageGroups.length > 0 && (
-                            <div className="attribute-list">
-                              <strong>ასაკობრივი ჯგუფები:</strong>{" "}
-                              {subcategory.ageGroups.join(", ")}
-                            </div>
-                          )}
-
-                        {subcategory.sizes && subcategory.sizes.length > 0 && (
-                          <div className="attribute-list">
-                            <strong>ზომები:</strong>{" "}
-                            {subcategory.sizes.join(", ")}
-                          </div>
+                  </div>{" "}
+                  {(subcategory.description || subcategory.descriptionEn) && (
+                    <p className="subcategory-description">
+                      {language === "en" && subcategory.descriptionEn
+                        ? subcategory.descriptionEn
+                        : subcategory.description}
+                      {language === "ge" &&
+                        subcategory.descriptionEn &&
+                        subcategory.description && (
+                          <span className="description-en">
+                            {" "}
+                            ({subcategory.descriptionEn})
+                          </span>
                         )}
-
-                        {subcategory.colors &&
-                          subcategory.colors.length > 0 && (
-                            <div className="attribute-list">
-                              <strong>ფერები:</strong>{" "}
-                              {subcategory.colors.join(", ")}
-                            </div>
+                    </p>
+                  )}{" "}
+                  <div className="subcategory-attributes">
+                    {" "}
+                    {subcategory.ageGroups &&
+                      subcategory.ageGroups.length > 0 && (
+                        <div className="attribute-list">
+                          <strong>{t("adminCategories.ageGroups")}:</strong>{" "}
+                          {getTranslatedAttributes(
+                            subcategory.ageGroups,
+                            translateAgeGroup
                           )}
+                        </div>
+                      )}
+                    {subcategory.sizes && subcategory.sizes.length > 0 && (
+                      <div className="attribute-list">
+                        <strong>{t("adminCategories.sizes")}:</strong>{" "}
+                        {subcategory.sizes.join(", ")}
                       </div>
-                    </>
-                  )}
+                    )}
+                    {subcategory.colors && subcategory.colors.length > 0 && (
+                      <div className="attribute-list">
+                        <strong>{t("adminCategories.colors")}:</strong>{" "}
+                        {getTranslatedAttributes(
+                          subcategory.colors,
+                          translateColor
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
             </div>
           ))
         ) : (
           <div className="no-subcategories">
-            <p>ქვეკატეგორიები არ მოიძებნა</p>
+            <p>{t("adminCategories.noSubcategoriesFound")}</p>
           </div>
         )}
       </div>
     </div>
   );
 };
+// The component now uses the language context to dynamically switch between displaying
+// Georgian and English content based on the user's selected language.
+// When language is "en", it prioritizes showing nameEn and descriptionEn
+// When language is "ge", it shows the Georgian name/description and only shows English in parentheses

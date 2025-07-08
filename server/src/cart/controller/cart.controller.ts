@@ -94,6 +94,8 @@ export class CartController {
     @Body() { paymentMethod }: SavePaymentMethodDto,
     @CurrentUser() user: UserDocument,
   ) {
+    console.log('Cart controller received payment method:', paymentMethod);
+    console.log('Full request body:', { paymentMethod });
     return this.cartService.validatePaymentMethod(paymentMethod);
   }
 

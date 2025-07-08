@@ -227,6 +227,7 @@ export class ProductsController {
       let ageGroups = productData.ageGroups;
       let sizes = productData.sizes;
       let colors = productData.colors;
+      let hashtags = productData.hashtags;
 
       if (typeof ageGroups === 'string') {
         try {
@@ -252,6 +253,17 @@ export class ProductsController {
         }
       }
 
+      if (typeof hashtags === 'string') {
+        try {
+          hashtags = JSON.parse(hashtags);
+        } catch (e) {
+          hashtags = [];
+        }
+      }
+
+      console.log('Parsed hashtags:', hashtags);
+      console.log('ProductData hashtags:', productData.hashtags);
+
       // Extract the main category data
       const { mainCategory, subCategory, ...otherProductData } = productData;
 
@@ -266,6 +278,7 @@ export class ProductsController {
         ageGroups,
         sizes,
         colors,
+        hashtags,
         user,
         images: imageUrls,
         brandLogo: brandLogoUrl,
@@ -331,6 +344,7 @@ export class ProductsController {
       let ageGroups = productData.ageGroups;
       let sizes = productData.sizes;
       let colors = productData.colors;
+      let hashtags = productData.hashtags;
 
       if (typeof ageGroups === 'string') {
         try {
@@ -353,6 +367,14 @@ export class ProductsController {
           colors = JSON.parse(colors);
         } catch (e) {
           colors = [];
+        }
+      }
+
+      if (typeof hashtags === 'string') {
+        try {
+          hashtags = JSON.parse(hashtags);
+        } catch (e) {
+          hashtags = [];
         }
       }
 
@@ -407,6 +429,7 @@ export class ProductsController {
         ageGroups,
         sizes,
         colors,
+        hashtags,
         variants: parseVariants,
       };
 

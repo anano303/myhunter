@@ -22,7 +22,7 @@ export function OrderReview() {
     (acc, item) => acc + item.price * item.qty,
     0
   );
-  const shippingPrice = itemsPrice > 100 ? 0 : 10;
+  const shippingPrice: number = itemsPrice > 100 ? 0 : 0;
   const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
@@ -35,7 +35,7 @@ export function OrderReview() {
         image: item.image,
         price: item.price,
         productId: item.productId,
-          size: item.size,
+        size: item.size,
         color: item.color,
         ageGroup: item.ageGroup,
       }));
@@ -95,7 +95,7 @@ export function OrderReview() {
 
               return (
                 <div
-                    key={`${item.productId}-${item.color ?? "c"}-${
+                  key={`${item.productId}-${item.color ?? "c"}-${
                     item.size ?? "s"
                   }-${item.ageGroup ?? "a"}`}
                   className="order-item flex items-center space-x-4"

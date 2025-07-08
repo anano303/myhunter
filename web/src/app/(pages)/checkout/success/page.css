@@ -1,0 +1,262 @@
+.checkout-success-container {
+  background-image: url("/heartLast.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  background-attachment: scroll;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 3rem 2rem; */
+  margin: 2rem 1rem;
+  font-family: "ALK Life", "Georgia", serif;
+  position: relative;
+}
+
+.success-card {
+  max-width: 500px;
+  width: 80%;
+  padding: 1.6rem 1.2rem;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+  background: transparent;
+  border-radius: 20px;
+  margin: 0 auto;
+  transform: translateY(10%);
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.success-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+
+  margin: 0 auto 1.2rem;
+  position: relative;
+}
+
+.success-icon {
+  width: 24px;
+  height: 24px;
+  color: #22c55e;
+  stroke-width: 3;
+}
+
+.success-title {
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 1.44rem;
+  line-height: 1.2;
+  letter-spacing: 0.4px;
+  color: rgba(255, 255, 255, 1);
+  margin: 0.8rem 0 0.6rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+.success-description {
+  font-family: ALK Life;
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  letter-spacing: 1.6px;
+  color: rgba(255, 255, 255, 1);
+  margin: 0.6rem 0 1.2rem;
+  word-break: break-word;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.order-info {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin: 1.2rem 0;
+  border-left: 2px solid #22c55e;
+}
+
+.order-info-text {
+  font-size: 0.72rem;
+  color: #333;
+}
+
+.order-info-label {
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.btn-primary {
+ 
+  background: linear-gradient(90deg, #CF0A0A, #e91e63);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-family: "ALK Life", "Georgia", serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  border: 2px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  overflow: hidden;
+  letter-spacing: 0.4px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
+} */
+
+/* .btn-primary:hover::before {
+  left: 100%;
+} */
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #e91e63, #CF0A0A);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(233, 30, 99, 0.4);
+}
+
+.btn-secondary {
+  background: white;
+  color: #333;
+  padding: 0.6rem 1.2rem;
+  font-family: "ALK Life", "Georgia", serif;
+  font-weight: 500;
+  font-size: 0.72rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.24px;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
+  border-color: #CF0A0A;
+  color: #CF0A0A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(207, 10, 10, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .checkout-success-container {
+    padding: 0.5rem 0.5rem;
+    background-size: contain;
+    background-attachment: scroll;
+    background-position: center 10%;
+    margin: 0.5rem 0;
+    min-height: 90vh;
+  }
+
+  .success-card {
+    padding: 1.05rem 0.8rem;
+    border-radius: 16px;
+    max-width: 250px;
+    background: transparent;
+    transform: translateY(-45%);
+  }
+
+  .success-title {
+    font-size: 1.0rem;
+    margin: 0.5rem 0 0.4rem;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+  }
+
+  .success-description {
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    margin: 0.4rem 0 0.8rem;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  .order-info {
+    padding: 0.65rem;
+    margin: 0.8rem 0;
+    background: rgba(248, 249, 250, 0.95);
+    backdrop-filter: blur(5px);
+  }
+
+  .order-info-text {
+    font-size: 0.55rem;
+  }
+
+  .buttons-container {
+    gap: 0.45rem;
+    margin-top: 1.0rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.55rem;
+  }
+
+  .success-icon-container {
+    width: 38px;
+    height: 38px;
+    margin: 0 auto 0.8rem;
+  }
+
+  .success-icon {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+@media (max-width: 600px) {
+  .checkout-success-container {
+    background-position: center 18%;
+  }
+}
+@media (max-width: 520px) {
+  .checkout-success-container {
+    background-position: center 22%;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-success-container {
+    background-position: center 28%;
+  }
+}
+

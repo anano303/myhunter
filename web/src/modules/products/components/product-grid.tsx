@@ -8,6 +8,7 @@ import { getProducts } from "../api/get-products";
 import { getVisiblePages } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { useLanguage } from "@/hooks/LanguageContext";
 import "./ProductGrid.css";
 
 const paginationStyles = `
@@ -71,6 +72,7 @@ export function ProductGrid({
   const [pages, setPages] = useState(totalPages);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { language } = useLanguage();
 
   // Fetch categories and subcategories for reference
   useQuery<Category[]>({
@@ -106,7 +108,15 @@ export function ProductGrid({
   });
 
   useEffect(() => {
-    if (searchKeyword) {
+    // For search page, don't fetch again - just use the provided products
+    if (searchKeyword && initialProducts) {
+      setProducts(initialProducts);
+      setPages(totalPages);
+      setIsLoading(false);
+      return;
+    }
+
+    if (searchKeyword && !initialProducts) {
       setIsLoading(true);
       setError(null);
 
@@ -161,7 +171,7 @@ export function ProductGrid({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
         >
-          &larr; წინა
+          &larr; {language === "en" ? "Previous" : "წინა"}
         </button>
 
         <span className="pagination-info">
@@ -173,7 +183,7 @@ export function ProductGrid({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
         >
-          შემდეგი &rarr;
+          {language === "en" ? "Next" : "შემდეგი"} &rarr;
         </button>
       </div>
     );
@@ -199,16 +209,19 @@ export function ProductGrid({
           onClick={() => window.location.reload()}
           className="retry-button"
         >
-          სცადეთ თავიდან
+          {language === "en" ? "Try Again" : "სცადეთ თავიდან"}
         </button>
       </div>
     );
   }
 
-  if (!products?.length) {
+  if (!products || products.length === 0) {
     return (
       <div className="no-products">
-        <p>პროდუქტები ვერ მოიძებნა</p>
+        <p>
+          {language === "en" ? "No products found" : "პროდუქტები ვერ მოიძებნა"}
+        </p>
+        <p>Debug info: products array length = {products?.length || 0}</p>
       </div>
     );
   }
@@ -237,7 +250,7 @@ export function ProductGrid({
               }`)
             }
           >
-            წინა
+            {language === "en" ? "Previous" : "წინა"}
           </button>
 
           {visiblePages.map((pageNum, idx) =>
@@ -269,7 +282,7 @@ export function ProductGrid({
               }`)
             }
           >
-            შემდეგი
+            {language === "en" ? "Next" : "შემდეგი"}
           </button>
         </div>
       )}

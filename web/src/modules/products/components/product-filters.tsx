@@ -5,7 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./product-filters.css";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Category, SubCategory } from "@/types";
+import { Category, SubCategory, Color, AgeGroupItem } from "@/types";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
+import SearchBox from "@/components/SearchBox/search-box";
 
 interface FilterProps {
   onCategoryChange: (categoryId: string) => void;
@@ -45,7 +47,7 @@ export function ProductFilters({
   selectedBrand,
   priceRange = [0, 1000],
 }: FilterProps) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [minPrice, setMinPrice] = useState(priceRange[0]);
   const [maxPrice, setMaxPrice] = useState(priceRange[1]);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +78,7 @@ export function ProductFilters({
         return response.json();
       } catch (err) {
         console.error("Failed to fetch categories:", err);
-        setError("კატეგორიების ჩატვირთვა ვერ მოხერხდა");
+        setError(t("shop.errorLoadingCategories"));
         return [];
       }
     },
@@ -103,7 +105,7 @@ export function ProductFilters({
         return response.json();
       } catch (err) {
         console.error("Failed to fetch subcategories:", err);
-        setError("ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა");
+        setError(t("shop.errorLoadingSubcategories"));
         return [];
       }
     },
@@ -111,7 +113,6 @@ export function ProductFilters({
     retry: 2,
     refetchOnWindowFocus: false,
   });
-
   // Fetch all available brands for filtering with error handling
   const {
     data: availableBrands = [],
@@ -134,6 +135,46 @@ export function ProductFilters({
     retry: 1,
     refetchOnWindowFocus: false,
   });
+  // Fetch all colors for filtering with proper nameEn support
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          console.error("Failed to fetch colors:", response.status);
+          return [];
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch colors:", err);
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  // Fetch all age groups for filtering with proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          console.error("Failed to fetch age groups:", response.status);
+          return [];
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch age groups:", err);
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
 
   // Get available attributes based on selected subcategory
   const getAvailableAttributes = (
@@ -150,6 +191,28 @@ export function ProductFilters({
     if (!selectedSubCategory) return [];
 
     return selectedSubCategory[attributeType] || [];
+  }; // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
   };
 
   // Handle price range changes with validation
@@ -217,70 +280,101 @@ export function ProductFilters({
     setTimeout(() => {
       setShowFilters(false);
       setIsClosing(false);
-    }, 500); // მატჩეს ანიმაციის ხანგრძლივობას
+    }, 500); // matches animation duration
   };
 
   return (
     <div className="product-filters">
-      <div className="filters-top-section">
-        <button
-          className="filter-toggle-btn"
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          ფილტრი
-        </button>
-        <div className="main-categories-grid">
-          {isCategoriesLoading ? (
-            <div className="loading">იტვირთება...</div>
-          ) : categories.length > 0 ? (
-            categories.map((category) => (
-              <div
-                key={category.id || category._id}
-                className={`main-category-option ${
-                  selectedCategoryId === category.id ||
-                  selectedCategoryId === category._id
-                    ? "selected"
-                    : ""
-                }`}
-                onClick={() =>
-                  onCategoryChange(category.id || category._id || "")
-                }
+      <SearchBox/>
+      {/* Categories section */}
+      <div className="categories-section">
+        {error && (
+          <div className="filter-error">
+            <p>{error}</p>
+            <button onClick={() => setError(null)}>{t("shop.close")}</button>
+          </div>
+        )}
+
+        <div className="filter-section">
+          <div className="filter-header">
+            {/* <h3 className="filter-title">კატეგორიები</h3> */}{" "}
+            {selectedCategoryId && (
+              <button
+                className="filter-clear-btn"
+                onClick={clearCategoryFilter}
+                aria-label="Clear category filter"
               >
-                <div className="category-content">
-                  <span className="category-name">
-                    {getLocalizedName(category.name, category)}
-                  </span>
+                {t("shop.clear")}
+              </button>
+            )}
+          </div>
+          <div className="filter-options">
+            <div className="main-categories-grid">
+              {isCategoriesLoading ? (
+                <div className="loading">
+                  <HeartLoading size="medium" />
                 </div>
-                {subcategories.length > 0 &&
-                  selectedCategoryId === (category.id || category._id) && (
-                    <div className="subcategories-overlay">
-                      {isSubcategoriesLoading ? (
-                        <div className="loading">იტვირთება...</div>
-                      ) : (
-                        subcategories.map((sub) => (
-                          <div
-                            key={sub.id || sub._id}
-                            className="subcategory-item"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSubCategoryChange(sub.id || sub._id || "");
-                            }}
-                          >
-                            {getLocalizedName(sub.name, sub)}
-                          </div>
-                        ))
-                      )}
+              ) : categories.length > 0 ? (
+                categories.map((category) => (
+                  <div
+                    key={category.id || category._id}
+                    className={`main-category-option ${
+                      selectedCategoryId === category.id ||
+                      selectedCategoryId === category._id
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      onCategoryChange(category.id || category._id || "")
+                    }
+                  >
+                    <div className="category-content">
+                      <span className="category-name">
+                        {getLocalizedName(category.name, category)}
+                      </span>
                     </div>
-                  )}
-              </div>
-            ))
-          ) : (
-            <div className="no-data">კატეგორიები არ მოიძებნა</div>
-          )}
+                    {subcategories.length > 0 &&
+                      selectedCategoryId === (category.id || category._id) && (
+                        <div className="subcategories-overlay">
+                          {isSubcategoriesLoading ? (
+                            <div className="loading">
+                              <HeartLoading size="medium" />
+                            </div>
+                          ) : (
+                            subcategories.map((sub) => (
+                              <div
+                                key={sub.id || sub._id}
+                                className="subcategory-item"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onSubCategoryChange(sub.id || sub._id || "");
+                                }}
+                              >
+                                {getLocalizedName(sub.name, sub)}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                  </div>
+                ))
+              ) : (
+                <div className="no-data">{t("shop.noCategories")}</div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Filter toggle button */}
+      {!showFilters && (
+        <button
+          className="filter-toggle-btn"
+          onClick={() => setShowFilters(true)}
+        >
+          {t("shop.filterToggle")}
+        </button>
+      )}
 
       {/* Additional filters section */}
       {showFilters && (
@@ -294,20 +388,20 @@ export function ProductFilters({
               ✕
             </button>
           </div>
-
           {/* Age Group Filter */}
           {selectedSubCategoryId &&
             getAvailableAttributes("ageGroups").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ასაკობრივი ჯგუფი</h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.ageGroupFilter")}</h3>
                   {selectedAgeGroup && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onAgeGroupChange("")}
                       aria-label="Clear age group filter"
                     >
-                      გასუფთავება
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -325,37 +419,28 @@ export function ProductFilters({
                           )
                         }
                       >
-                        {language === "en"
-                          ? ageGroup === "ADULTS"
-                            ? "Adults"
-                            : ageGroup === "KIDS"
-                            ? "Kids"
-                            : ageGroup
-                          : ageGroup === "ADULTS"
-                          ? "უფროსები"
-                          : ageGroup === "KIDS"
-                          ? "ბავშვები"
-                          : ageGroup}
+                        {" "}
+                        {getLocalizedAgeGroupName(ageGroup)}
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
-
           {/* Size Filter */}
           {selectedSubCategoryId &&
             getAvailableAttributes("sizes").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ზომები</h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.sizes")}</h3>
                   {selectedSize && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onSizeChange("")}
                       aria-label="Clear size filter"
                     >
-                      გასუფთავება
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -377,21 +462,21 @@ export function ProductFilters({
                   </div>
                 </div>
               </div>
-            )}
-
+            )}{" "}
           {/* Color Filter */}
           {selectedSubCategoryId &&
             getAvailableAttributes("colors").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ფერები</h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.colors")}</h3>
                   {selectedColor && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onColorChange("")}
                       aria-label="Clear color filter"
                     >
-                      გასუფთავება
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -407,28 +492,28 @@ export function ProductFilters({
                           onColorChange(color === selectedColor ? "" : color)
                         }
                       >
-                        {color}
+                        {getLocalizedColorName(color)}
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
-
           {/* Brand Filter */}
           {!isBrandsLoading &&
             availableBrands &&
             availableBrands.length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ბრენდები</h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.brands")}</h3>
                   {selectedBrand && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onBrandChange("")}
                       aria-label="Clear brand filter"
                     >
-                      გასუფთავება
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -450,11 +535,11 @@ export function ProductFilters({
                   </div>
                 </div>
               </div>
-            )}
-
+            )}{" "}
           {/* Price Range Filter */}
           <div className="filter-section">
-            <h3 className="filter-title">ფასის დიაპაზონი</h3>
+            {" "}
+            <h3 className="filter-title">{t("shop.priceRange")}</h3>
             <div className="price-range">
               <div className="price-inputs">
                 <input
@@ -465,7 +550,7 @@ export function ProductFilters({
                     const value = Number(e.target.value);
                     setMinPrice(value >= 0 ? value : 0);
                   }}
-                  placeholder="მინ"
+                  placeholder={t("shop.min")}
                   className="price-input"
                 />
                 <span className="price-separator">-</span>
@@ -477,7 +562,7 @@ export function ProductFilters({
                     const value = Number(e.target.value);
                     setMaxPrice(value >= minPrice ? value : minPrice);
                   }}
-                  placeholder="მაქს"
+                  placeholder={t("shop.max")}
                   className="price-input"
                 />
                 <button
@@ -485,15 +570,15 @@ export function ProductFilters({
                   onClick={handlePriceChange}
                   aria-label="Apply price filter"
                 >
-                  დადასტურება
+                  {t("shop.applyPrice")}
                 </button>
               </div>
             </div>
-          </div>
-
+          </div>{" "}
           {/* Sort Options */}
           <div className="filter-section">
-            <h3 className="filter-title">სორტირება</h3>
+            {" "}
+            <h3 className="filter-title">{t("shop.sortBy")}</h3>
             <div className="sort-options">
               <select
                 className="sort-select"
@@ -506,16 +591,16 @@ export function ProductFilters({
                   });
                 }}
               >
-                <option value="createdAt-desc">უახლესი</option>
-                <option value="price-asc">ფასი: დაბლიდან მაღლა</option>
-                <option value="price-desc">ფასი: მაღლიდან დაბლა</option>
-                <option value="name-asc">სახელი: ა-ჰ</option>
-                <option value="name-desc">სახელი: ჰ-ა</option>
-                <option value="rating-desc">რეიტინგი: მაღალი</option>
+                {" "}
+                <option value="createdAt-desc">{t("shop.newest")}</option>{" "}
+                <option value="price-asc">{t("shop.priceLowHigh")}</option>{" "}
+                <option value="price-desc">{t("shop.priceHighLow")}</option>{" "}
+                <option value="name-asc">{t("shop.nameAZ")}</option>{" "}
+                <option value="name-desc">{t("shop.nameZA")}</option>{" "}
+                <option value="rating-desc">{t("shop.ratingHigh")}</option>
               </select>
             </div>
           </div>
-
           {/* Clear All Filters Button */}
           {(selectedCategoryId ||
             selectedSubCategoryId ||
@@ -531,7 +616,7 @@ export function ProductFilters({
                 onClick={resetAllFilters}
                 aria-label="Clear all filters"
               >
-                ფილტრების გასუფთავება
+                {t("shop.clearAllFilters")}
               </button>
             </div>
           )}

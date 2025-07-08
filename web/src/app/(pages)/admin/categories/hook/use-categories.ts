@@ -6,7 +6,9 @@ import { toast } from "react-hot-toast";
 export interface Category {
   id: string;
   name: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -15,30 +17,38 @@ export interface Category {
 export interface SubCategory {
   id: string;
   name: string;
+  nameEn?: string;
   categoryId: string | Category;
   ageGroups: string[];
   sizes: string[];
   colors: string[];
   description?: string;
+  descriptionEn?: string;
   isActive: boolean;
 }
 
 export interface CategoryCreateInput {
   name: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   isActive?: boolean;
 }
 
 export interface CategoryUpdateInput {
   name?: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   isActive?: boolean;
 }
 
 export interface SubCategoryCreateInput {
   name: string;
+  nameEn?: string;
   categoryId: string;
   description?: string;
+  descriptionEn?: string;
   ageGroups?: string[];
   sizes?: string[];
   colors?: string[];
@@ -47,8 +57,10 @@ export interface SubCategoryCreateInput {
 
 export interface SubCategoryUpdateInput {
   name?: string;
+  nameEn?: string;
   categoryId?: string;
   description?: string;
+  descriptionEn?: string;
   ageGroups?: string[];
   sizes?: string[];
   colors?: string[];
@@ -56,7 +68,9 @@ export interface SubCategoryUpdateInput {
 }
 
 export interface AttributeInput {
-  value: string;
+  value?: string;
+  name?: string;
+  nameEn?: string;
 }
 
 // Error interface to properly type error responses
@@ -179,10 +193,6 @@ export const useSubCategories = (
   categoryId?: string,
   includeInactive = false
 ) => {
-  console.log(
-    `[useSubCategories] Hook called. categoryId: "${categoryId}", includeInactive: ${includeInactive}`
-  );
-
   return useQuery<SubCategory[], Error>({
     // Specify Error type for queryError
     queryKey: ["subcategories", { categoryId, includeInactive }],
@@ -370,7 +380,7 @@ export const useDeleteSubCategory = () => {
   });
 };
 
-// Fetch all attributes (colors, sizes, age groups)
+// Fetch all attributes (colors, sizes, age groups) - returns simple strings for backward compatibility
 export const useAttributes = () => {
   return useQuery<{
     colors: string[];
@@ -380,9 +390,7 @@ export const useAttributes = () => {
     queryKey: ["attributes"],
     queryFn: async () => {
       try {
-        console.log("Fetching all attributes");
         const response = await apiClient.get("/categories/attributes/all");
-        console.log("Attributes fetched:", response.data);
         return response.data;
       } catch (error) {
         console.error("Error fetching attributes:", error);
@@ -392,9 +400,61 @@ export const useAttributes = () => {
   });
 };
 
+// Fetch all attributes with full objects (includes translations)
+export const useAttributesWithTranslations = () => {
+  return useQuery<{
+    colors: Color[];
+    sizes: string[];
+    ageGroups: AgeGroupItem[];
+  }>({
+    queryKey: ["attributesWithTranslations"],
+    queryFn: async () => {
+      try {
+        const [colorsResponse, sizesResponse, ageGroupsResponse] =
+          await Promise.all([
+            apiClient.get("/categories/attributes/colors"),
+            apiClient.get("/categories/attributes/sizes"),
+            apiClient.get("/categories/attributes/age-groups"),
+          ]);
+
+        return {
+          colors: colorsResponse.data,
+          sizes: sizesResponse.data,
+          ageGroups: ageGroupsResponse.data,
+        };
+      } catch (error) {
+        console.error("Error fetching attributes with translations:", error);
+        throw new Error("Failed to fetch attributes with translations");
+      }
+    },
+  });
+};
+
+// Color interface
+export interface Color {
+  _id?: string;
+  id?: string;
+  name: string;
+  nameEn?: string;
+  hexCode?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+// AgeGroup interface
+export interface AgeGroupItem {
+  _id?: string;
+  id?: string;
+  name: string;
+  nameEn?: string;
+  ageRange?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
 // Colors
 export const useColors = () => {
-  return useQuery<string[]>({
+  return useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
       const response = await apiClient.get("/categories/attributes/colors");
@@ -408,9 +468,14 @@ export const useCreateColor = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
+      // Convert to the format expected by the backend
+      const colorData = {
+        name: data.value,
+        nameEn: data.nameEn,
+      };
       const response = await apiClient.post(
         "/categories/attributes/colors",
-        data
+        colorData
       );
       return response.data;
     },
@@ -437,9 +502,14 @@ export const useUpdateColor = () => {
       color: string;
       data: AttributeInput;
     }) => {
+      // Convert to the format expected by the backend
+      const colorData = {
+        name: data.value,
+        nameEn: data.nameEn,
+      };
       const response = await apiClient.put(
         `/categories/attributes/colors/${color}`,
-        data
+        colorData
       );
       return response.data;
     },
@@ -568,7 +638,7 @@ export const useDeleteSize = () => {
 
 // Age Groups
 export const useAgeGroups = () => {
-  return useQuery<string[]>({
+  return useQuery<AgeGroupItem[]>({
     queryKey: ["ageGroups"],
     queryFn: async () => {
       const response = await apiClient.get("/categories/attributes/age-groups");
@@ -582,9 +652,19 @@ export const useCreateAgeGroup = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
+      // Ensure we only send valid, non-undefined values
+      const ageGroupData: { name: string; nameEn?: string } = {
+        name: data.value || data.name || "",
+      };
+
+      // Only add nameEn if it exists and is not empty
+      if (data.nameEn && data.nameEn.trim() !== "") {
+        ageGroupData.nameEn = data.nameEn.trim();
+      }
+
       const response = await apiClient.post(
         "/categories/attributes/age-groups",
-        data
+        ageGroupData
       );
       return response.data;
     },
@@ -604,7 +684,6 @@ export const useCreateAgeGroup = () => {
 
 export const useUpdateAgeGroup = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({
       ageGroup,
@@ -613,9 +692,20 @@ export const useUpdateAgeGroup = () => {
       ageGroup: string;
       data: AttributeInput;
     }) => {
+      // Ensure we only send valid, non-undefined values
+      const ageGroupData: { name?: string; nameEn?: string } = {};
+
+      // Only add name if it exists and is not empty
+      if (data.value || data.name) {
+        ageGroupData.name = (data.value || data.name || "").trim();
+      } // Only add nameEn if it exists and is not empty
+      if (data.nameEn && data.nameEn.trim() !== "") {
+        ageGroupData.nameEn = data.nameEn.trim();
+      }
+
       const response = await apiClient.put(
         `/categories/attributes/age-groups/${ageGroup}`,
-        data
+        ageGroupData
       );
       return response.data;
     },
