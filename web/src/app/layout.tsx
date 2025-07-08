@@ -57,13 +57,14 @@ export default function RootLayout({
         />
         {/* Remove the problematic prefetch links */}
         {/* Add Google Fonts link */}
-        <link
+        {/* <link
           href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"
-        />
+        /> */}
       </head>
       <body
-        className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
+        className={`${satoshi.variable} antialiased min-h-screen flex flex-col overflow-x-hidden`}
+        style={{ maxWidth: "100vw" }}
       >
         {/* <LandingPage /> */}
         <Providers>

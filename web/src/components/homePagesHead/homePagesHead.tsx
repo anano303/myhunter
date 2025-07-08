@@ -1,13 +1,155 @@
-import React from "react";
+"use client";
 
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/hooks/LanguageContext";
+import { fetchActiveBanners } from "@/lib/banner-api";
+import { Banner } from "@/types/banner";
+import CategoryNavigation from "@/components/CategoryNavigation/CategoryNavigation";
 import "./homePagesHead.css";
 
 const HomePagesHead = () => {
+  const { language } = useLanguage();
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const loadBanners = async () => {
+      try {
+        const activeBanners = await fetchActiveBanners();
+        setBanners(activeBanners);
+      } catch (error) {
+        console.error("Error loading banners:", error);
+      }
+    };
+
+    loadBanners();
+  }, []);
+
+  // Auto-advance banners every 5 seconds (pause on hover)
+  useEffect(() => {
+    if (banners.length <= 1 || isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [banners.length, isPaused]);
+
+  const nextBanner = useCallback(() => {
+    setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+  }, [banners.length]);
+
+  const prevBanner = useCallback(() => {
+    setCurrentBannerIndex(
+      (prev) => (prev - 1 + banners.length) % banners.length
+    );
+  }, [banners.length]);
+
+  const goToBanner = useCallback((index: number) => {
+    setCurrentBannerIndex(index);
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (banners.length <= 1) return;
+
+      switch (event.key) {
+        case "ArrowLeft":
+          event.preventDefault();
+          prevBanner();
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          nextBanner();
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [nextBanner, prevBanner, banners.length]);
+
+  const currentBanner = banners[currentBannerIndex];
+
+  // Determine background style based on whether we have dynamic banners
+  const backgroundStyle =
+    currentBanner && currentBanner.imageUrl
+      ? {
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url(${currentBanner.imageUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }
+      : {
+          backgroundImage:
+            'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url("/mainImage.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        };
+
   return (
     <div className="home-pages-head">
-      <div className="rifle-banner">
-        {/* Hero image is set as background in CSS */}
+      <div
+        className="rifle-banner"
+        style={backgroundStyle}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Dynamic banner content */}
+        {currentBanner && (
+          <div className="banner-content">
+            <h1 className="banner-title">
+              {language === "en" ? currentBanner.titleEn : currentBanner.title}
+            </h1>
+            {currentBanner.buttonText && currentBanner.buttonLink && (
+              <Link href={currentBanner.buttonLink} className="banner-cta-btn">
+                <span className="btn-text">
+                  {language === "en"
+                    ? currentBanner.buttonTextEn
+                    : currentBanner.buttonText}
+                </span>
+              </Link>
+            )}
+          </div>
+        )}
+
+        {/* Carousel navigation (only show if multiple banners) */}
+        {banners.length > 1 && (
+          <>
+            <button
+              className="carousel-btn prev-btn"
+              onClick={prevBanner}
+              aria-label="Previous banner"
+            >
+              &#8249;
+            </button>
+            <button
+              className="carousel-btn next-btn"
+              onClick={nextBanner}
+              aria-label="Next banner"
+            >
+              &#8250;
+            </button>
+
+            <div className="carousel-indicators">
+              {banners.map((_, index) => (
+                <button
+                  key={index}
+                  className={`indicator ${
+                    index === currentBannerIndex ? "active" : ""
+                  }`}
+                  onClick={() => goToBanner(index)}
+                  aria-label={`Go to banner ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Original action buttons - always visible */}
         <div className="action-buttons">
           <Link href="/register" className="registration-btn">
             <span className="btn-text">რეგისტრაცია</span>
@@ -17,34 +159,8 @@ const HomePagesHead = () => {
           </Link>
         </div>
 
-        <div className="navigation-icons">
-          <Link href="/guns" className="nav-icon">
-            <div className="icon-container">
-              <svg viewBox="0 0 24 24" className="icon gun-icon">
-                <path d="M21,7h-2V6h-2V5H9v1H7v1H5v1H3V9h2v1h2v7h1v1h2v1h8v-1h2v-1h1V9h2V7z M12,16c-1.657,0-3-1.343-3-3s1.343-3,3-3s3,1.343,3,3S13.657,16,12,16z" />
-              </svg>
-              <span className="nav-text">ცეცხლსასროლი</span>
-            </div>
-          </Link>
-
-          <Link href="/ammunition" className="nav-icon">
-            <div className="icon-container">
-              <svg viewBox="0 0 24 24" className="icon ammo-icon">
-                <path d="M19,8V5h-2v3h-3v2h3v3h2v-3h3V8H19z M3,7h3V4h2v3h3v2H8v3H6v-3H3V7z M15,15H9v-2h6V15z M15,17H9v2h6V17z" />
-              </svg>
-              <span className="nav-text">საბრძოლო მასალები</span>
-            </div>
-          </Link>
-
-          <Link href="/camping" className="nav-icon">
-            <div className="icon-container">
-              <svg viewBox="0 0 24 24" className="icon camp-icon">
-                <path d="M12,3L1,22h22L12,3z M12,7l6.92,11H5.08L12,7z" />
-              </svg>
-              <span className="nav-text">კემპინგი</span>
-            </div>
-          </Link>
-        </div>
+        {/* Original navigation icons - now using CategoryNavigation component */}
+        <CategoryNavigation />
       </div>
     </div>
   );

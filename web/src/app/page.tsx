@@ -40,14 +40,16 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ maxWidth: "100vw", overflowX: "hidden" }}>
       <div className="section-wrapper">
         <HomePagesHead />
       </div>
 
       <div
         className="section-wrapper reveal-section"
-        ref={(el) => { sectionsRef.current[0] = el; }}
+        ref={(el) => {
+          sectionsRef.current[0] = el;
+        }}
       >
         <TopItems />
       </div>
@@ -58,14 +60,18 @@ const Home = () => {
 
       <div
         className="section-wrapper reveal-section"
-        ref={(el) => { sectionsRef.current[1] = el; }}
+        ref={(el) => {
+          sectionsRef.current[1] = el;
+        }}
       >
         <HomePageShop />
       </div>
 
       <div
         className="section-wrapper reveal-section"
-        ref={(el) => { sectionsRef.current[2] = el; }}
+        ref={(el) => {
+          sectionsRef.current[2] = el;
+        }}
       >
         <BrandLogos />
       </div>

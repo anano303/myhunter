@@ -16,15 +16,30 @@ body {
   font-family: "firaGo", sans-serif;
   font-style: normal;
   overflow-x: hidden;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
   background-color: #121212;
   color: #ffffff;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 main {
   min-height: 100vh;
-  max-width: 100%;
+  max-width: 100vw;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .container {

@@ -123,6 +123,13 @@ export default function UserMenu() {
                 </Link>
               </>
             )}
+            <Link
+              href="/admin/banners"
+              className="dropdown-item"
+              onClick={() => setIsOpen(false)}
+            >
+              ბანერები
+            </Link>
 
             {user.role === Role.Admin && (
               <>

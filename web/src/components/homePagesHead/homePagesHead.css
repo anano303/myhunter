@@ -2,16 +2,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   position: relative;
   width: 100%;
+  max-width: 100vw;
   margin: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .home-pages-head h1 {
   text-align: center;
-  font-family: ALK Katerina;
-  font-weight: 400;
+ 
+  font-weight: 800;
   font-size: 36px;
   line-height: 100%;
   letter-spacing: 10%;
@@ -101,6 +103,7 @@
 
 .rifle-banner {
   width: 100%;
+  max-width: 100vw;
   height: 500px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)),
     url("/mainImage.png");
@@ -111,6 +114,120 @@
   flex-direction: column;
   justify-content: space-between;
   animation: zoomAnimation 15s ease-in-out infinite alternate;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Dynamic banner content */
+.banner-content {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  color: white;
+  z-index: 2;
+  max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+  justify-content: center;
+  text-align: left;
+  animation: fadeIn 1.5s ease-in-out;
+  gap: 10%;
+  align-items: center;
+}
+
+.banner-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  animation: slideInLeft 1s ease-out;
+  font-family: "FiraGo";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1;
+  unicode-bidi: plaintext;
+}
+
+.banner-cta-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #5b6c18;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  animation: slideInUp 1s ease-out 0.3s both;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", "DejaVu Sans",
+    "Arial Unicode MS", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.banner-cta-btn:hover {
+  background-color: #4a5813;
+  transform: translateY(-2px);
+}
+
+/* Carousel navigation */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.prev-btn {
+  left: 20px;
+}
+
+.next-btn {
+  right: 20px;
+}
+
+/* Carousel indicators */
+.carousel-indicators {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  background: white;
+}
+
+.indicator:hover {
+  background: rgba(255, 255, 255, 0.7);
 }
 
 /* Action buttons styling */
@@ -122,21 +239,24 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  z-index: 4;
   animation: fadeIn 1.5s ease-in-out;
 }
 
 .registration-btn,
 .auth-btn {
   display: inline-block;
-  padding: 10px 20px;
-  margin: 0 10px;
-  border-radius: 4px;
+  padding: 12px 24px;
+  margin: 0;
+  border-radius: 6px;
   font-family: "FiraGo", sans-serif;
   font-weight: 500;
   text-decoration: none;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 140px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .registration-btn {
@@ -147,53 +267,20 @@
 
 .registration-btn:hover {
   background-color: #4a5813;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .auth-btn {
   background-color: transparent;
   color: white;
-  border: 1px solid white;
+  border: 2px solid white;
 }
 
 .auth-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Navigation icons styling */
-.navigation-icons {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: rgba(76, 95, 44, 0.8);
-  padding: 10px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  position: absolute;
-  bottom: -5%;
-}
-
-.nav-icon {
-  color: white;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "ALK Katerina", sans-serif;
-  font-size: 14px;
-}
-
-.icon-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
-  fill: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 /* Animations */
@@ -217,6 +304,28 @@
   100% {
     opacity: 1;
     transform: translateY(-50%);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px) translateY(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(-50%);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -270,23 +379,36 @@
     height: 400px;
   }
 
+  .banner-content {
+    left: 5%;
+    right: 5%;
+    max-width: 90%;
+  }
+
+  .banner-title {
+    font-size: 2rem;
+  }
+
+  .carousel-btn {
+    font-size: 20px;
+    padding: 8px 12px;
+  }
+
+  .prev-btn {
+    left: 10px;
+  }
+
+  .next-btn {
+    right: 10px;
+  }
+
+  .carousel-indicators {
+    bottom: 70px;
+  }
+
+  /* Hide action buttons on mobile */
   .action-buttons {
-    right: 50%;
-    transform: translate(50%, -50%);
-  }
-
-  .registration-btn,
-  .auth-btn {
-    min-width: 150px;
-  }
-
-  .navigation-icons {
-    flex-wrap: wrap;
-  }
-
-  .nav-icon {
-    margin: 5px 0;
-    font-size: 12px;
+    display: none;
   }
 }
 
@@ -295,15 +417,40 @@
     height: 350px;
   }
 
-  .registration-btn,
-  .auth-btn {
-    min-width: 120px;
-    padding: 10px;
+  .banner-title {
+    font-size: 1.5rem;
+  }
+
+  .banner-cta-btn {
+    padding: 10px 20px;
     font-size: 14px;
   }
 
-  .icon {
-    width: 20px;
-    height: 20px;
+  .carousel-indicators {
+    bottom: 60px;
+  }
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Keep action buttons hidden on mobile */
+  .action-buttons {
+    display: none;
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .action-buttons {
+    right: 3%;
+  }
+
+  .registration-btn,
+  .auth-btn {
+    min-width: 130px;
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }
