@@ -23,7 +23,7 @@ export default function Footer() {
               <Link href="/" className="footer-link">
                 {t("navigation.shop")}
               </Link>
-              <Link href="/" className="footer-link">
+              <Link href="/about" className="footer-link">
                 {/* {t("navigation.shop")} */}
                 ჩვენს შესახებ
               </Link>

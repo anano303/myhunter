@@ -1,39 +1,40 @@
 .contact-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 2rem;
-
-  color: #012645;
-  background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+  padding: 1.5rem;
+  color: #e6cd9f;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
   border-radius: 15px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border: 2px solid #014f86;
-  margin-top: 5%;
-  margin-bottom: 5%;
-
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  border: 2px solid #4b5320;
+  margin-top: 3%;
+  margin-bottom: 3%;
+  position: relative;
 }
 
 .contact-title {
-  font-size: 2.8rem;
+  font-size: 2.2rem;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 1.5rem;
-  color: #014f86;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+  color: #f48c06;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .contact-description {
   text-align: center;
-  font-size: 1.2rem;
-  margin-bottom: 2.5rem;
-  color: #012645;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #e6cd9f;
   line-height: 1.6;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.2rem;
 }
 
 .form-group {
@@ -42,59 +43,72 @@
 }
 
 label {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #012645;
+  margin-bottom: 0.4rem;
+  color: #e6cd9f;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .form-input,
 .form-textarea {
-  padding: 1rem;
-  font-size: 1rem;
-  border: 1px solid #d1e7f3;
-  border-radius: 10px;
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  border: 1px solid #4b5320;
+  border-radius: 8px;
   outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background: #ffffff;
+  background: #333333;
+  color: #e6cd9f;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .form-input:focus,
 .form-textarea:focus {
-  border-color: #014f86;
-  box-shadow: 0 0 8px rgba(1, 79, 134, 0.5);
+  border-color: #f48c06;
+  box-shadow: 0 0 8px rgba(244, 140, 6, 0.5);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #888;
 }
 
 .form-textarea {
   resize: none;
-  height: 150px;
+  height: 120px;
 }
 
 .error-border {
-  border-color: #e63946;
+  border-color: #cf0a0a;
 }
 
 .form-error {
-  color: #e63946;
+  color: #cf0a0a;
   font-size: 0.9rem;
   margin-top: 0.5rem;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .form-button {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #f8f9fa;
-  background: linear-gradient(135deg, #014f86, #012645);
+  color: #e6cd9f;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
   border: none;
-  border-radius: 10px;
-  cursor: url('/brush.png'), pointer; 
+  border-radius: 8px;
+  cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 0.5rem;
 }
 
 .form-button:hover {
-  background: linear-gradient(135deg, #012645, #014f86);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
   transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .form-button:active {
@@ -109,15 +123,99 @@ label {
   right: -10px;
   bottom: -10px;
   z-index: -1;
-  background: linear-gradient(135deg, #014f86, #012645);
+  background: linear-gradient(135deg, #4b5320, #5c6525);
   border-radius: 20px;
   filter: blur(20px);
+  opacity: 0.3;
 }
 
 @media screen and (max-width: 768px) {
   .contact-container {
-    max-width: 80vw;
+    max-width: 90vw;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
-  
-  
+
+  .contact-title {
+    font-size: 2.2rem;
+  }
+
+  .contact-description {
+    font-size: 1.1rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .form-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .contact-container {
+    max-width: 95vw;
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .contact-title {
+    font-size: 1.8rem;
+  }
+
+  .contact-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .form-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  label {
+    font-size: 1rem;
+  }
+}
+
+/* Add hunting theme decorative elements */
+.contact-container::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(45deg, #f48c06, #ffb84d);
+  border-radius: 50%;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+/* Add subtle texture to the background */
+.contact-container {
+  background-image: linear-gradient(135deg, #1a1a1a, #2a2a2a),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(75, 83, 32, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(244, 140, 6, 0.1) 0%,
+      transparent 50%
+    );
+  background-blend-mode: normal, multiply, overlay;
 }

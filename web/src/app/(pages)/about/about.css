@@ -338,10 +338,9 @@
 }
 
 .team-members {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+ justify-self: center;
   margin-top: 2rem;
+  width: 40%;
 }
 
 .team-member {
@@ -487,5 +486,10 @@
 
   .team-members {
     grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .team-members {
+    width: 90%;
   }
 }

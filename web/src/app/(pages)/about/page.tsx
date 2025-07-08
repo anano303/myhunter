@@ -5,6 +5,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import { useState } from "react";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AboutPage() {
   const { language } = useLanguage();
@@ -69,8 +70,8 @@ export default function AboutPage() {
               <ul className="about-list">
                 <li>
                   {language === "ge"
-                    ? "გთავაზობთ 500+ ბრენდისგან შემდგარ ფართო ასორტიმენტს"
-                    : "We offer a wide assortment from 500+ brands"}
+                    ? "გთავაზობთ 100+ ბრენდისგან შემდგარ ფართო ასორტიმენტს"
+                    : "We offer a wide assortment from 100+ brands"}
                 </li>
                 <li>
                   {language === "ge"
@@ -228,61 +229,25 @@ export default function AboutPage() {
             <div className="team-members">
               <div className="team-member">
                 <div className="team-member-photo">
-                  {/* Placeholder for team member photo */}
-                  <div className="photo-placeholder"></div>
+                  <div className="photo-placeholder"> <Image src="/irakli.jpg" alt="Irakli Beruchashvili" width={300} height={300}/></div>
+                  
                 </div>
                 <h3 className="team-member-name">
                   {language === "ge"
-                    ? "გიორგი მეგრელიშვილი"
-                    : "Giorgi Megrelishvili"}
+                    ? "ირაკლი ბერუჩაშვილი"
+                    : "Irakli Beruchashvili"}
                 </h3>
                 <p className="team-member-position">
                   {language === "ge" ? "დამფუძნებელი & CEO" : "Founder & CEO"}
                 </p>
                 <p className="team-member-bio">
                   {language === "ge"
-                    ? "გიორგი არის გამოცდილი მონადირე 15+ წლიანი გამოცდილებით. მისი ვნება ნადირობისა და თევზაობის მიმართ გახდა MyHunter-ის შექმნის მთავარი მიზეზი."
-                    : "Giorgi is an experienced hunter with 15+ years of experience. His passion for hunting and fishing became the main reason for creating MyHunter."}
+                    ? "ირაკლი არის გამოცდილი მონადირე 15+ წლიანი გამოცდილებით. მისი სიყვარული ნადირობისა და თევზაობის მიმართ გახდა MyHunter-ის შექმნის მთავარი მიზეზი."
+                    : "Irakli is an experienced hunter with 15+ years of experience. His passion for hunting and fishing became the main reason for creating MyHunter."}
                 </p>
               </div>
 
-              <div className="team-member">
-                <div className="team-member-photo">
-                  {/* Placeholder for team member photo */}
-                  <div className="photo-placeholder"></div>
-                </div>
-                <h3 className="team-member-name">
-                  {language === "ge" ? "ნინო კავთელაძე" : "Nino gevteladze"}
-                </h3>
-                <p className="team-member-position">
-                  {language === "ge" ? "პროდუქტის მენეჯერი" : "Product Manager"}
-                </p>
-                <p className="team-member-bio">
-                  {language === "ge"
-                    ? "ნინო უზრუნველყოფს, რომ ჩვენი ასორტიმენტი ყოველთვის განახლებული იყოს უახლესი და საუკეთესო პროდუქტებით."
-                    : "Nino ensures that our assortment is always updated with the latest and best products."}
-                </p>
-              </div>
-
-              <div className="team-member">
-                <div className="team-member-photo">
-                  {/* Placeholder for team member photo */}
-                  <div className="photo-placeholder"></div>
-                </div>
-                <h3 className="team-member-name">
-                  {language === "ge" ? "დავით წიკლაური" : "David Tsiklauri"}
-                </h3>
-                <p className="team-member-position">
-                  {language === "ge"
-                    ? "ტექნიკური ექსპერტი"
-                    : "Technical Expert"}
-                </p>
-                <p className="team-member-bio">
-                  {language === "ge"
-                    ? "დავითი არის ჩვენი ტექნიკური ექსპერტი, რომელიც გეხმარებათ იარაღებისა და აღჭურვილობის შერჩევაში."
-                    : "David is our technical expert who helps you choose weapons and equipment."}
-                </p>
-              </div>
+              
             </div>
 
             <div className="about-join-team">
