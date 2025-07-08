@@ -7,7 +7,7 @@ import "./product-filters.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Category, SubCategory, Color, AgeGroupItem } from "@/types";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
-import SearchBox from "@/components/SearchBox/search-box";
+
 
 interface FilterProps {
   onCategoryChange: (categoryId: string) => void;
@@ -285,7 +285,7 @@ export function ProductFilters({
 
   return (
     <div className="product-filters">
-      <SearchBox/>
+      
       {/* Categories section */}
       <div className="categories-section">
         {error && (

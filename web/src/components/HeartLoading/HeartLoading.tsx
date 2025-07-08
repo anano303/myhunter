@@ -30,7 +30,7 @@ export default function HeartLoading({
     <>
       <div className="heart-spin">
         <Image
-          src="/heart-icon.png"
+          src="/loading.png"
           alt="Loading heart"
           width={size === "small" ? 24 : size === "medium" ? 32 : 40}
           height={size === "small" ? 24 : size === "medium" ? 32 : 40}

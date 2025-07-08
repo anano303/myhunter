@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: #cf0a0a;
+  color: rgba(76, 95, 44, 0.9);
 }
 
 .heart-loading.inline {
@@ -29,13 +29,13 @@
 .heart-icon {
   width: 1.5em;
   height: 1.5em;
-  color: #cf0a0a;
+  color: rgba(76, 95, 44, 0.9);
 }
 
 .loading-text {
   font-family: "ALK Katerina", sans-serif;
   font-weight: 400;
-  color: #cf0a0a;
+  color: rgba(76, 95, 44, 0.9);
 }
 
 .dots {
