@@ -125,10 +125,6 @@ export default function UserMenu() {
             )}
             {(user.role === Role.Admin || user.role === Role.Seller) && (
               <>
-                <hr />
-                <div className="dropdown-label">
-                  {t("navigation.adminPanel")}
-                </div>
                 <Link
                   href="/admin/banners"
                   className="dropdown-item"
