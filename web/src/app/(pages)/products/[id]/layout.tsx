@@ -21,14 +21,14 @@ export async function generateMetadata({
 
     if (!response.ok) {
       return {
-        title: "Product Not Found | RussanaForDire",
+        title: "Product Not Found | MyHunter",
         description: "The requested product could not be found.",
       };
     }
 
     const product = await response.json();
 
-    const title = `${product.name} - ${product.brand} | RussanaForDire`;
+    const title = `${product.name} - ${product.brand} | MyHunter`;
 
     let description =
       product.description?.slice(0, 160) ||
@@ -58,7 +58,7 @@ export async function generateMetadata({
       ...(product.hashtags || []),
       "საზაფხულო",
       "მაისური",
-      "russanaForDire",
+      "MyHunter",
     ].join(", ");
 
     return {
@@ -81,7 +81,7 @@ export async function generateMetadata({
             : [],
         type: "website",
         locale: "ka_GE",
-        siteName: "RussanaForDire",
+        siteName: "MyHunter",
       },
       twitter: {
         card: "summary_large_image",
@@ -90,14 +90,14 @@ export async function generateMetadata({
         images: product.images?.length > 0 ? [product.images[0]] : [],
       },
       alternates: {
-        canonical: `https://russanaForDire.ge/products/${id}`,
+        canonical: `https://MyHunter.ge/products/${id}`,
       },
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {
-      title: "Product | RussanaForDire",
-      description: "Discover products on RussanaForDire",
+      title: "Product | MyHunter",
+      description: "Discover products on MyHunter",
     };
   }
 }

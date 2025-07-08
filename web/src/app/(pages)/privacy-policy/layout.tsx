@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "კონფიდენციალურობის პოლიტიკა | Privacy Policy",
   description:
-    "RussanaForDire-ს კონფიდენციალურობის პოლიტიკა. გაიგეთ როგორ ვიცავთ და ვმუშავებთ თქვენს პირად ინფორმაციასთან. | RussanaForDire privacy policy. Learn how we protect and handle your personal information.",
+    "MyHunter-ს კონფიდენციალურობის პოლიტიკა. გაიგეთ როგორ ვიცავთ და ვმუშავებთ თქვენს პირად ინფორმაციასთან. | MyHunter privacy policy. Learn how we protect and handle your personal information.",
   keywords: [
     "კონფიდენციალურობა",
     "პოლიტიკა",
@@ -17,24 +17,24 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title:
-      "კონფიდენციალურობის პოლიტიკა - RussanaForDire | Privacy Policy - RussanaForDire",
+      "კონფიდენციალურობის პოლიტიკა - MyHunter | Privacy Policy - MyHunter",
     description:
       "გაიგეთ როგორ ვიცავთ თქვენს პირად ინფორმაციას | Learn how we protect your personal information",
-    url: "https://russanaForDire.ge/privacy-policy",
+    url: "https://MyHunter.ge/privacy-policy",
     images: [
       {
         url: "/favicon.ico",
         width: 1200,
         height: 630,
-        alt: "RussanaForDire კონფიდენციალურობის პოლიტიკა | Privacy Policy",
+        alt: "MyHunter კონფიდენციალურობის პოლიტიკა | Privacy Policy",
       },
     ],
   },
   alternates: {
-    canonical: "https://russanaForDire.ge/privacy-policy",
+    canonical: "https://MyHunter.ge/privacy-policy",
     languages: {
-      ka: "https://russanaForDire.ge/privacy-policy",
-      en: "https://russanaForDire.ge/en/privacy-policy",
+      ka: "https://MyHunter.ge/privacy-policy",
+      en: "https://MyHunter.ge/en/privacy-policy",
     },
   },
   robots: {

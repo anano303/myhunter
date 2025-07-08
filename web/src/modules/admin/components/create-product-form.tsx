@@ -66,7 +66,7 @@ export function CreateProductForm({
       description: "",
       descriptionEn: "",
       images: [],
-      brand: "RussanaForDire", // Set default brand here
+      brand: "MyHunter", // Set default brand here
       category: "",
       subcategory: "",
       countInStock: 0,
@@ -205,7 +205,7 @@ export function CreateProductForm({
     if (user && isSeller && !isEdit) {
       setFormData((prevData) => ({
         ...prevData,
-        brand: user.name || user.storeName || "RussanaForDire",
+        brand: user.name || user.storeName || "MyHunter",
         brandLogo: user.storeLogo || undefined,
       }));
     }
@@ -223,7 +223,7 @@ export function CreateProductForm({
         _id: initialData._id,
         name: initialData.name || "",
         nameEn: initialData.nameEn || "",
-        brand: initialData.brand || "russanaForDire",
+        brand: initialData.brand || "MyHunter",
         brandLogo:
           typeof initialData.brandLogo === "string"
             ? initialData.brandLogo
@@ -303,7 +303,7 @@ export function CreateProductForm({
       description: "",
       descriptionEn: "",
       images: [],
-      brand: "RussanaForDire", // Set default brand here too
+      brand: "MyHunter", // Set default brand here too
       category: "",
       subcategory: "",
       countInStock: 0,
@@ -599,14 +599,14 @@ export function CreateProductForm({
         formDataToSend.append("variants", JSON.stringify(stocks));
       }
 
-      // Handle brand name - ensure it's always set to RussanaForDire if empty
+      // Handle brand name - ensure it's always set to MyHunter if empty
       if (isSeller) {
         formDataToSend.append(
           "brand",
-          user?.name || user?.storeName || formData.brand || "RussanaForDire"
+          user?.name || user?.storeName || formData.brand || "MyHunter"
         );
       } else {
-        formDataToSend.append("brand", formData.brand || "RussanaForDire");
+        formDataToSend.append("brand", formData.brand || "MyHunter");
       }
 
       // SIMPLIFIED logo handling - THIS IS THE FIX
