@@ -97,25 +97,25 @@ const CategoryNavigation = () => {
       id: "guns",
       name: "ცეცხლსასროლი",
       nameEn: "Firearms",
-      href: "/guns",
+      href: "/shop/categories",
     },
     {
       id: "ammunition",
       name: "საბრძოლო მასალები",
       nameEn: "Ammunition",
-      href: "/ammunition",
+      href: "/shop/categories",
     },
     {
       id: "camping",
       name: "კემპინგი",
       nameEn: "Camping",
-      href: "/camping",
+      href: "/shop/categories",
     },
     {
       id: "test-percent",
       name: "ტესტი 20%",
       nameEn: "Test 20%",
-      href: "/test",
+      href: "/shop/categories",
     },
   ];
 
@@ -154,9 +154,9 @@ const CategoryNavigation = () => {
         {categoriesToShow.map((category) => {
           const isApiCategory = categories && categories.length > 0;
           const href = isApiCategory
-            ? `/category/${category.id}`
+            ? `/shop?mainCategory=${category.id}`
             : defaultCategories.find((def) => def.id === category.id)?.href ||
-              `/category/${category.id}`;
+              "/shop/categories";
 
           return (
             <Link key={category.id} href={href} className="category-item">

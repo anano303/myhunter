@@ -230,4 +230,9 @@
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
   }
+  .hunting-banner-footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
 }
