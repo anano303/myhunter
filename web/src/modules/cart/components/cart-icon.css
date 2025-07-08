@@ -4,31 +4,46 @@
   border: none;
   cursor: pointer;
   font-size: 24px;
-  padding: 0;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.cartIconButton:hover {
+  background-color: rgba(244, 140, 6, 0.1);
 }
 
 a {
   text-decoration: none;
-  color: rgba(30, 30, 30, 1);
+  color: #e6cd9f;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #f48c06;
 }
 
 .cartIconsSpan {
   position: absolute;
-  top: 16%;
+  top: 10%;
 
-  background-color: #e50000;
-  color: white;
+  background: linear-gradient(135deg, #f48c06, #ff8c00);
+  color: #1a1a1a;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #1a1a1a;
+  z-index: 10;
 }
 .cart-icon-container {
   position: relative;
@@ -37,11 +52,17 @@ a {
 .cart-icon {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 .shopping-cart-icon {
-  color: #333;
+  color: #e6cd9f;
+  transition: color 0.3s ease;
+  font-size: 20px;
+}
+
+.shopping-cart-icon:hover {
+  color: #f48c06;
 }
 
 .cart-text {
@@ -49,12 +70,30 @@ a {
   margin-left: 5px;
   font-size: 14px;
   font-weight: 500;
-  font-family: "ALK Katerina", sans-serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  color: #e6cd9f;
+  transition: color 0.3s ease;
+}
+
+.cart-text:hover {
+  color: #f48c06;
 }
 
 /* Hide text on mobile */
 @media (max-width: 768px) {
   .cart-text {
     display: none;
+  }
+
+  .cartIconButton {
+    padding: 6px;
+  }
+
+  .cartIconsSpan {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    top: 8%;
+    right: 8%;
   }
 }
