@@ -3,13 +3,14 @@ import "./globals.css";
 import { Providers } from "./providers";
 // import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/components/auth-provider";
-import { CartProvider } from "@/modules/cart/context/cart-context";
-import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
+
 import { satoshi } from "./(pages)/fonts";
 import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/header/header";
 import MessengerChatWrapper from "@/components/MessengerChat/MessengerChatWrapper";
+import { CartProvider } from "@/modules/cart/context/cart-context";
+import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     title: "MyHunter",
     images: [
       {
-        url: "/van%20gog.jpg",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "MyHunter Sharing Image",
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MyHunter",
     description: "სანადირო და სათევზაო აღჭურვილობის საუკეთესო არჩევანი",
-    images: ["/mainImage.png"],
+    images: ["/logo.png"],
   },
 };
 
