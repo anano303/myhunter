@@ -12,13 +12,19 @@
 
 .home-pages-head h1 {
   text-align: center;
- 
-  font-weight: 800;
-  font-size: 36px;
+  color: rgba(255, 255, 255, 1);
+  font-size: 46px;
   line-height: 100%;
   letter-spacing: 10%;
   margin: 5px;
+  font-family: FiraGO;
+  font-weight: 700;
+  font-style: Bold;
+
+  line-height: 100%;
+  letter-spacing: -1px;
 }
+
 
 .logo-containerHome {
   width: 100%;

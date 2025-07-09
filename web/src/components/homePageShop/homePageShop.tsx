@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import "./homePageShop.css";
 import "../../app/(pages)/shop/ShopPage.css";
@@ -11,7 +11,7 @@ import { Category, Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
-import { Shirt, ShoppingBag, Footprints } from "lucide-react";
+// import { Shirt, ShoppingBag, Footprints } from "lucide-react";
 
 interface CategoryProducts {
   category: string;
@@ -25,8 +25,6 @@ export default function HomePageShop() {
   const [categoryProducts, setCategoryProducts] = useState<CategoryProducts[]>(
     []
   );
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const titleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
 
   // Fetch all categories first
   const { data: categories = [] } = useQuery<Category[]>({
@@ -45,43 +43,6 @@ export default function HomePageShop() {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
-    // Animation observer
-    const observeElements = () => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("animate-visible");
-              // Once animation is triggered, stop observing this element
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
-      );
-
-      // Observe section elements
-      sectionRefs.current.forEach((el) => {
-        if (el) observer.observe(el);
-      });
-
-      // Observe title elements separately for different animation
-      titleRefs.current.forEach((el) => {
-        if (el) observer.observe(el);
-      });
-
-      return observer;
-    };
-
-    const observer = observeElements();
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [categoryProducts.length]);
-
-  // Rest of the fetch logic
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -155,29 +116,23 @@ export default function HomePageShop() {
     }
   }, [categories, language]);
 
-  const renderAnimatedIcons = () => {
-    return (
-      <div className="shop-animated-icons-container animate-element fade-up">
-        <div className="shop-animated-icons modern">
-          <div className="icon clothing-icon">
-            <Shirt />
-          </div>
-          <div className="icon accessories-icon">
-            <ShoppingBag />
-          </div>
-          <div className="icon footwear-icon">
-            <Footprints />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="container shop-container">
-      {renderAnimatedIcons()}
-
       <div className="content">
+        {/* <div style={{ display: "flex", alignItems: "center", gap: 10 }}> */}
+        {/* <h1
+            className="title"
+            style={{
+              marginBottom: 40,
+              marginTop: 70,
+              zIndex: 9,
+              textAlign: "left",
+            }}
+          > */}
+        {/* {t("shop.allArtworks")} */}
+        {/* </h1> */}
+        {/* </div> */}
+
         {isLoading ? (
           <div className="loading-container">
             <p>{t("shop.loading")}</p>
@@ -186,32 +141,13 @@ export default function HomePageShop() {
           <div className="product-sections">
             {categoryProducts.length > 0 ? (
               categoryProducts.map((categoryData, index) => (
-                <div
-                  key={index}
-                  className="product-section animate-element fade-up"
-                  ref={(el) => {
-                    sectionRefs.current[index] = el;
-                  }}
-                >
-                  <div
-                    className="titleContainer"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <h2
-                      className={`section-title animate-element slide-${
-                        index % 2 === 0 ? "right" : "left"
-                      }`}
-                      ref={(el) => {
-                        titleRefs.current[index] = el;
-                      }}
-                    >
-                      კატეგორია: {categoryData.category}
+                <div key={index} className="product-section">
+                  <div className="section-header">
+                    <h2 className="section-title">
+                      {categoryData.category}
                     </h2>
-                    <div className="see-more animate-element fade-in">
+
+                    <div className="see-more-desktop see-more">
                       <Link
                         href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
                       >
@@ -222,10 +158,19 @@ export default function HomePageShop() {
                     </div>
                   </div>
                   <ProductGrid
-                    products={categoryData.products}
+                    products={categoryData.products.slice(0, 3)} // Only take first 3 products
                     theme="default"
                     isShopPage={false}
                   />
+                  <div className="see-more-mobile see-more">
+                    <Link
+                      href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
+                    >
+                      <button className="see-more-btn">
+                        {t("shop.seeAll")}
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               ))
             ) : (
