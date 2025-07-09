@@ -4,6 +4,19 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { OrdersService } from '../orders/services/orders.service';
 
+interface BogTokenResponse {
+  access_token: string;
+}
+
+interface BogPaymentResponse {
+  id: string;
+  _links: {
+    redirect: {
+      href: string;
+    };
+  };
+}
+
 @Injectable()
 export class PaymentsService {
   constructor(
@@ -20,7 +33,7 @@ export class PaymentsService {
         throw new Error('BOG credentials are not configured');
       }
 
-      const response: any = await axios.post(
+      const response = await axios.post<BogTokenResponse>(
         'https://oauth2.bog.ge/auth/realms/bog/protocol/openid-connect/token',
         new URLSearchParams({
           grant_type: 'client_credentials',
@@ -36,7 +49,7 @@ export class PaymentsService {
       );
 
       return response.data.access_token;
-    } catch (error: any) {
+    } catch (error) {
       console.error('BOG Token Error:', error.message);
       throw error;
     }
@@ -92,7 +105,7 @@ export class PaymentsService {
         },
       };
 
-      const response: any = await axios.post(
+      const response = await axios.post<BogPaymentResponse>(
         'https://api.bog.ge/payments/v1/ecommerce/orders',
         payload,
         {
@@ -111,7 +124,7 @@ export class PaymentsService {
         token,
         uniqueId: externalOrderId,
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error('BOG Service Error:', error.message);
       throw error;
     }
@@ -119,7 +132,7 @@ export class PaymentsService {
 
   async getPaymentStatus(orderId: string): Promise<any> {
     const token = await this.getToken();
-    const response: any = await axios.get(
+    const response = await axios.get(
       `https://api.bog.ge/payments/v1/receipt/${orderId}`,
       {
         headers: {
@@ -164,7 +177,7 @@ export class PaymentsService {
             JSON.stringify(paymentStatus, null, 2),
           );
         }
-      } catch (error: any) {
+      } catch (error) {
         console.log(
           'Error fetching payment status from BOG API:',
           error.message,
@@ -206,7 +219,7 @@ export class PaymentsService {
             success: true,
             message: 'Payment processed successfully and order updated',
           };
-        } catch (error: any) {
+        } catch (error) {
           console.error(
             'Error updating order with payment result:',
             error.message,
@@ -226,7 +239,7 @@ export class PaymentsService {
           message: 'Payment was not successful',
         };
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error processing payment callback:', error.message);
       return {
         success: false,
@@ -245,7 +258,7 @@ export class PaymentsService {
         order.externalOrderId = externalOrderId;
         await order.save();
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating order with external ID:', error);
       throw error;
     }

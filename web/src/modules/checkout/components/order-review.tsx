@@ -1,7 +1,7 @@
 "use client";
 
 import { useCheckout } from "../context/checkout-context";
-import { useCart } from "@/modules/cart/context/cart-context";
+
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
@@ -10,6 +10,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import Image from "next/image";
 import Link from "next/link";
 import "./order-review.css";
+import { useCart } from "@/modules/cart/context/cart-context";
 
 export function OrderReview() {
   const { shippingAddress: shippingDetails, paymentMethod } = useCheckout();
