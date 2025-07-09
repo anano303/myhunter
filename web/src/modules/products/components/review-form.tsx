@@ -105,8 +105,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
             "You can only review products you have purchased") ||
         // Add more broad detection
         errorMessage.includes("purchased") ||
-        errorMessage.includes("only review") ||
-        true; // TEMPORARY: Always show popup for testing
+        errorMessage.includes("only review");
 
       console.log("Is purchase error?", isPurchaseError);
 

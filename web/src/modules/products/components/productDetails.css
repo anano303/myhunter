@@ -735,7 +735,7 @@
     grid-template-columns: 1fr;
     grid-template-areas:
       "image"
-      "thumbnails"  
+      "thumbnails"
       "details";
     gap: 1.5rem;
   }
@@ -813,6 +813,13 @@
 @media (max-width: 480px) {
   .container {
     padding: 1rem;
+  }
+
+  .grid {
+    grid-template-areas:
+      "image"
+      "thumbnails"
+      "details";
   }
 
   .product-title {
