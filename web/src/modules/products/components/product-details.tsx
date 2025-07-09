@@ -14,8 +14,9 @@ import { Color, AgeGroupItem } from "@/types";
 
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { useCart } from "@/modules/cart/context/cart-context";
+
 import { ProductCard } from "./product-card";
+import { useCart } from "@/modules/cart/context/cart-context";
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -51,17 +52,28 @@ function AddToCartButton({
         selectedSize,
         selectedColor,
         selectedAgeGroup
-      ); // Show success message
+      );
+
+      // მხოლოდ წარმატებული დამატების შემდეგ ვაჩვენოთ success message
+      // თუ addToCart error-ს მისცემს (არაავტორიზებული), ეს კოდი არ შესრულდება
       setShowSuccessMessage(true);
-      setTimeout(() => setShowSuccessMessage(false), 3000); // Hide after 3 seconds
+      setTimeout(() => setShowSuccessMessage(false), 3000);
     } catch (error) {
-      console.error("Add to cart error:", error); // Debug log
-      toast({
-        title: t("product.errorTitle"),
-        description:
-          error instanceof Error ? error.message : t("product.addToCartError"),
-        variant: "destructive",
-      });
+      console.error("Add to cart error:", error);
+
+      // არ ვაჩვენოთ error toast არაავტორიზებული მომხმარებლისთვის
+      // რადგან ისედაც redirect მოხდება
+      const errorMessage = error instanceof Error ? error.message : "";
+      if (errorMessage !== "User not authenticated") {
+        toast({
+          title: t("product.errorTitle"),
+          description:
+            error instanceof Error
+              ? error.message
+              : t("product.addToCartError"),
+          variant: "destructive",
+        });
+      }
     } finally {
       setPending(false);
     }

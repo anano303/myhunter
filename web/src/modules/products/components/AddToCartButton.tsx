@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useCart } from "@/modules/cart/context/cart-context";
+
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ProductCard.css";
+import { useCart } from "@/modules/cart/context/cart-context";
 
 interface AddToCartButtonProps {
   productId: string;
