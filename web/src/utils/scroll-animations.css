@@ -160,26 +160,54 @@
   transform: translateY(0);
 }
 
+/* Animations for HomePageShop elements */
+.product-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  transition-delay: 0.2s;
+  will-change: opacity, transform;
+}
+
+.product-section.animate-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-section .section-title {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  will-change: opacity, transform;
+}
+
+.product-section .section-title.animate-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* Staggered delay for multiple product sections */
-.product-section-animation:nth-child(1) {
+.product-section:nth-child(1) {
   transition-delay: 0.1s;
 }
-.product-section-animation:nth-child(2) {
+.product-section:nth-child(2) {
   transition-delay: 0.2s;
 }
-.product-section-animation:nth-child(3) {
+.product-section:nth-child(3) {
   transition-delay: 0.3s;
 }
-.product-section-animation:nth-child(4) {
+.product-section:nth-child(4) {
   transition-delay: 0.4s;
 }
-.product-section-animation:nth-child(5) {
+.product-section:nth-child(5) {
   transition-delay: 0.5s;
 }
 
 /* Disable HomePageShop animations for reduced motion */
 .reduced-motion .category-title-animation,
-.reduced-motion .product-section-animation {
+.reduced-motion .product-section-animation,
+.reduced-motion .product-section,
+.reduced-motion .product-section .section-title {
   opacity: 1;
   transform: none;
   transition: none;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import "./homePageShop.css";
 import "../../app/(pages)/shop/ShopPage.css";
@@ -25,6 +25,9 @@ export default function HomePageShop() {
   const [categoryProducts, setCategoryProducts] = useState<CategoryProducts[]>(
     []
   );
+
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
 
   // Fetch all categories first
   const { data: categories = [] } = useQuery<Category[]>({
@@ -116,6 +119,42 @@ export default function HomePageShop() {
     }
   }, [categories, language]);
 
+  useEffect(() => {
+    // Animation observer
+    const observeElements = () => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("animate-visible");
+              // Once animation is triggered, stop observing this element
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+      );
+
+      // Observe section elements
+      sectionRefs.current.forEach((el) => {
+        if (el) observer.observe(el);
+      });
+
+      // Observe title elements separately for different animation
+      titleRefs.current.forEach((el) => {
+        if (el) observer.observe(el);
+      });
+
+      return observer;
+    };
+
+    const observer = observeElements();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [categoryProducts.length]);
+
   return (
     <div className="container shop-container">
       <div className="content">
@@ -141,9 +180,20 @@ export default function HomePageShop() {
           <div className="product-sections">
             {categoryProducts.length > 0 ? (
               categoryProducts.map((categoryData, index) => (
-                <div key={index} className="product-section">
+                <div
+                  key={index}
+                  className="product-section"
+                  ref={(el) => {
+                    sectionRefs.current[index] = el;
+                  }}
+                >
                   <div className="section-header">
-                    <h2 className="section-title">
+                    <h2
+                      className="section-title"
+                      ref={(el) => {
+                        titleRefs.current[index] = el;
+                      }}
+                    >
                       {categoryData.category}
                     </h2>
 

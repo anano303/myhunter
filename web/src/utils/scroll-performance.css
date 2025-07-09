@@ -19,8 +19,8 @@ html {
 .slide-down,
 .fade-in,
 .scale-in,
-.category-title-animation,
-.product-section-animation {
+.product-section,
+.product-section .section-title {
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
@@ -38,8 +38,8 @@ html {
   .slide-down,
   .fade-in,
   .scale-in,
-  .category-title-animation,
-  .product-section-animation {
+  .product-section,
+  .product-section .section-title {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
