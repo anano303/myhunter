@@ -145,6 +145,7 @@
   object-fit: contain;
   filter: brightness(0.9) grayscale(0.5);
   transition: all 0.3s ease;
+  max-height: 100%;
 }
 
 .brand-logo-item:hover .brand-logo-image {
