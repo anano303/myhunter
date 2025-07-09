@@ -8,7 +8,7 @@
   background-color: rgb(76 95 44 / 59%);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 10;
+  z-index: 5;
   overflow: hidden;
 }
 

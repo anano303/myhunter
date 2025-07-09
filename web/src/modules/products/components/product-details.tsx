@@ -17,6 +17,8 @@ import { Loader2 } from "lucide-react";
 
 import { ProductCard } from "./product-card";
 import { useCart } from "@/modules/cart/context/cart-context";
+import { ReviewForm } from "./review-form";
+import { ProductReviews } from "./product-reviews";
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -558,7 +560,28 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
           )}
         </div>
-      </div>{" "}
+      </div>
+
+      {/* Reviews Section */}
+      <div className="reviews-section">
+        <h2 className="reviews-title">Customer Reviews</h2>
+
+        {/* Product Reviews */}
+        <ProductReviews product={product} />
+
+        {/* Review Form */}
+        <div className="review-form-container">
+          <h3 className="review-form-title">Write a Review</h3>
+          <ReviewForm
+            productId={product._id}
+            onSuccess={() => {
+              // Optionally refresh the product data to show new review
+              window.location.reload();
+            }}
+          />
+        </div>
+      </div>
+
       {/* Similar Products Section */}
       <SimilarProducts
         currentProductId={product._id}
