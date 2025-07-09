@@ -1,20 +1,21 @@
-/* ProfileForm.css */
+/* ProfileForm.css - Hunting/Fishing Theme */
 .card {
   margin-top: 2.5rem;
   max-width: 40rem;
   margin-left: auto;
   margin-right: auto;
   padding: 2rem;
-  background-color: #222222;
-  border-radius: 1rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  border: 2px solid #4b5320;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  color: #e6cd9f;
   transition: transform 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
   width: calc(100% - 4rem);
   box-sizing: border-box;
-  border: 1px solid #333333;
-  color: #e0e0e0;
 }
 
 .card::before {
@@ -23,10 +24,35 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 6px;
-  background: linear-gradient(90deg, #4b5320, #5c6525, #4b5320);
+  height: 4px;
+  background: linear-gradient(90deg, #4b5320, #f48c06, #4b5320);
   background-size: 200% 100%;
   animation: gradientAnimation 3s infinite alternate;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(75, 83, 32, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(244, 140, 6, 0.05) 0%,
+      transparent 50%
+    );
+  z-index: 1;
+}
+
+.card > * {
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes gradientAnimation {
@@ -40,68 +66,56 @@
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 .card h2 {
   font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: #ffffff;
+  font-weight: 500;
+  color: #f48c06;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #4b5320;
+  padding-bottom: 0.75rem;
   text-align: center;
-  font-family: "FiraGO", sans-serif;
-  position: relative;
-  padding-bottom: 1rem;
-}
-
-.card h2::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 3px;
-  background-color: #4b5320;
-  border-radius: 2px;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .input {
   width: 100%;
-  border: 1px solid #444444;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #4b5320;
+  border-radius: 6px;
+  background: #333;
+  color: #e6cd9f;
+  font-family: inherit;
   transition: all 0.3s ease;
+  font-size: 1rem;
   box-sizing: border-box;
-  background-color: #333333;
-  color: #e0e0e0;
-  font-family: "FiraGO", sans-serif;
 }
 
 .input:focus {
   outline: none;
-  border-color: #4b5320;
-  box-shadow: 0 0 0 3px rgba(75, 83, 32, 0.15);
+  border-color: #f48c06;
+  box-shadow: 0 0 0 3px rgba(244, 140, 6, 0.2);
   transform: translateY(-2px);
 }
 
 .label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
   font-weight: 500;
-  color: #a5bda5;
+  margin-bottom: 0.5rem;
+  color: #f48c06;
   transition: color 0.3s ease;
-  font-family: "FiraGO", sans-serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
 .form-field:focus-within .label {
-  color: #4b5320;
+  color: #f48c06;
 }
 
 .form-field {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   position: relative;
   width: 100%;
   box-sizing: border-box;
@@ -109,19 +123,21 @@
 
 .ProfileButton {
   width: 100%;
-  background: linear-gradient(90deg, #4b5320, #5c6525);
-  color: white;
-  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
+  color: #e6cd9f;
   padding: 1rem;
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 1rem;
-  position: relative;
-  overflow: hidden;
-  font-family: "FiraGO", sans-serif;
 }
 
 .ProfileButton::before {
@@ -134,7 +150,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(244, 140, 6, 0.2),
     transparent
   );
   transition: all 0.6s ease;
@@ -145,9 +161,10 @@
 }
 
 .ProfileButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(90deg, #5c6525, #4b5320);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(244, 140, 6, 0.3);
+  color: #f48c06;
 }
 
 .ProfileButton:active {
@@ -155,7 +172,7 @@
 }
 
 .ProfileButton:disabled {
-  background-color: #3a4119;
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a);
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
@@ -185,17 +202,16 @@
   border-radius: 50%;
   object-fit: cover;
   border: 5px solid #4b5320;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   margin-bottom: 1rem;
   transition: all 0.3s ease;
 }
 
 .profile-image:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgba(244, 140, 6, 0.3);
 }
 
-/* New styles for profile images layout */
 .profile-images-container {
   display: flex;
   flex-wrap: wrap;
@@ -215,21 +231,21 @@
 .store-logo {
   border: 5px solid #4b5320;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   margin-bottom: 1rem;
   transition: all 0.3s ease;
 }
 
 .store-logo:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgba(244, 140, 6, 0.3);
 }
 
 .upload-button {
-  background-color: #4b5320;
-  color: white;
+  background: linear-gradient(135deg, #4b5320, #5c6525);
+  color: #e6cd9f;
   border: none;
-  border-radius: 2rem;
+  border-radius: 6px;
   padding: 0.75rem 1.5rem;
   font-size: 0.95rem;
   cursor: pointer;
@@ -237,7 +253,9 @@
   display: flex;
   align-items: center;
   font-weight: 500;
-  font-family: "FiraGO", sans-serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
 .upload-button::before {
@@ -247,9 +265,10 @@
 }
 
 .upload-button:hover {
-  background-color: #5c6525;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
+  box-shadow: 0 4px 10px rgba(244, 140, 6, 0.3);
   transform: translateY(-2px);
+  color: #f48c06;
 }
 
 .upload-button:active {
@@ -261,16 +280,17 @@
 }
 
 .upload-success {
-  color: #a5bda5;
+  color: #e6cd9f;
   font-size: 0.95rem;
   margin-top: 0.75rem;
   font-weight: 500;
   display: flex;
   align-items: center;
-  background-color: rgba(75, 83, 32, 0.1);
+  background: rgba(75, 83, 32, 0.2);
   border-radius: 4px;
   padding: 0.5rem 1rem;
   animation: fadeIn 0.5s ease-out;
+  opacity: 0.8;
 }
 
 .upload-success::before {
@@ -296,14 +316,15 @@
 }
 
 .success-message {
-  background-color: rgba(75, 83, 32, 0.1);
-  color: #a5bda5;
+  background: rgba(75, 83, 32, 0.2);
+  color: #e6cd9f;
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: 6px;
   text-align: center;
   font-weight: 500;
   margin-top: 1.5rem;
   border-left: 4px solid #4b5320;
+  opacity: 0.8;
 }
 
 form {
@@ -316,17 +337,18 @@ form {
 .seller-section {
   margin-top: 2.5rem;
   padding-top: 2rem;
-  border-top: 2px dashed rgba(75, 83, 32, 0.2);
+  border-top: 2px dashed rgba(244, 140, 6, 0.2);
 }
 
 .seller-section-title {
   font-size: 1.3rem;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 500;
+  color: #f48c06;
   margin-bottom: 1.5rem;
   text-align: center;
   position: relative;
-  font-family: "FiraGO", sans-serif;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  letter-spacing: 1px;
 }
 
 .seller-section-title::after {
@@ -334,7 +356,7 @@ form {
   display: block;
   width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, #4b5320, #5c6525);
+  background: linear-gradient(90deg, #4b5320, #f48c06);
   margin: 0.5rem auto 0;
   border-radius: 2px;
 }
@@ -352,15 +374,15 @@ form {
   border-radius: 8px;
   object-fit: cover;
   border: 4px solid #4b5320;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
   margin-bottom: 1rem;
   transition: all 0.3s ease;
-  background-color: #333333;
+  background: #333;
 }
 
 .seller-logo:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(244, 140, 6, 0.3);
 }
 
 .seller-form-grid {
@@ -372,14 +394,14 @@ form {
 
 .avatar-initial {
   border: 5px solid #4b5320;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   margin-bottom: 1rem;
   transition: all 0.3s ease;
 }
 
 .avatar-initial:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgba(244, 140, 6, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -391,23 +413,6 @@ form {
   .profile-image {
     width: 120px;
     height: 120px;
-  }
-
-  .form-field {
-    width: 100%;
-  }
-
-  .input {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .space-y-6 {
-    width: 100%;
-  }
-
-  form {
-    width: 100%;
   }
 
   .seller-form-grid {
