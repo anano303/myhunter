@@ -7,7 +7,52 @@ import "./product-filters.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Category, SubCategory, Color, AgeGroupItem } from "@/types";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
+import Image from "next/image";
 
+// Function to get category-specific icon
+const getCategoryIcon = (categoryName: string) => {
+  const name = categoryName.toLowerCase();
+
+  if (
+    name.includes("ნადირობა") ||
+    name.includes("hunting") ||
+    name.includes("rifle")
+  ) {
+    return "/gun.png";
+  } else if (
+    name.includes("საბრძოლო") ||
+    name.includes("ammunition") ||
+    name.includes("ammo")
+  ) {
+    return "/gun.png";
+  } else if (
+    name.includes("დასვენება") ||
+    name.includes("camping") ||
+    name.includes("camp")
+  ) {
+    return "/camping.png";
+  } else if (
+    name.includes("თევზაობა") ||
+    name.includes("fishing") ||
+    name.includes("fish")
+  ) {
+    return "/fish.png";
+  } else if (
+    name.includes("ტანსაცმელი") ||
+    name.includes("clothing") ||
+    name.includes("clothes")
+  ) {
+    return "/clothes.png";
+  } else if (
+    name.includes("აქსესუარები") ||
+    name.includes("accessories") ||
+    name.includes("gear")
+  ) {
+    return "/clothes.png";
+  } else {
+    return "/clothes.png"; // Default icon
+  }
+};
 
 interface FilterProps {
   onCategoryChange: (categoryId: string) => void;
@@ -285,7 +330,6 @@ export function ProductFilters({
 
   return (
     <div className="product-filters">
-      
       {/* Categories section */}
       <div className="categories-section">
         {error && (
@@ -329,9 +373,16 @@ export function ProductFilters({
                     }
                   >
                     <div className="category-content">
+                      <Image
+                        src={getCategoryIcon(category.name)}
+                        alt={category.name}
+                        width={24}
+                        height={24}
+                        className="category-icon"
+                      />
                       <span className="category-name">
                         {getLocalizedName(category.name, category)}
-                      </span>
+                      </span> 
                     </div>
                     {subcategories.length > 0 &&
                       selectedCategoryId === (category.id || category._id) && (
@@ -372,6 +423,13 @@ export function ProductFilters({
           className="filter-toggle-btn"
           onClick={() => setShowFilters(true)}
         >
+          <Image
+            src="/filter.png"
+            alt="Filter"
+            className="filter-icon"
+            width={20}
+            height={20}
+          />
           {t("shop.filterToggle")}
         </button>
       )}
