@@ -265,7 +265,12 @@ export class ProductsController {
       console.log('ProductData hashtags:', productData.hashtags);
 
       // Extract the main category data
-      const { mainCategory, subCategory, ...otherProductData } = productData;
+      const {
+        mainCategory,
+        subCategory,
+        videoDescription,
+        ...otherProductData
+      } = productData;
 
       // Create the product with proper category references
       return this.productsService.create({
@@ -282,6 +287,7 @@ export class ProductsController {
         user,
         images: imageUrls,
         brandLogo: brandLogoUrl,
+        videoDescription,
       });
     } catch (error) {
       console.error('Error creating product:', error);
@@ -431,6 +437,7 @@ export class ProductsController {
         colors,
         hashtags,
         variants: parseVariants,
+        videoDescription: productData.videoDescription,
       };
 
       console.log('UPDATING PRODUCT WITH DATA:', updateData);

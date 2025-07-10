@@ -25,13 +25,13 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [
-        'https://www.russana.vercel.app',
-        'https://russana.vercel.app',
-        'https://russana.vercel.app/home',
-        'https://russana-web.vercel.app', // Add this
-        'https://www.russana-web.vercel.app', // Add this
-        'https://russana-git-main-aberoshvilis-projects.vercel.app', // Add preview URLs
-        'https://russana-aberoshvilis-projects.vercel.app', // Add preview URLs
+        'https://www.myhunter.vercel.app',
+        'https://myhunter.vercel.app',
+        'https://myhunter.vercel.app/home',
+        'https://myhunter-web.vercel.app', // Add this
+        'https://www.myhunter-web.vercel.app', // Add this
+        'https://myhunter-git-main-aberoshvilis-projects.vercel.app', // Add preview URLs
+        'https://myhunter-aberoshvilis-projects.vercel.app', // Add preview URLs
         'http://localhost:3000',
         'https://localhost:3000',
         'http://localhost:4000',
@@ -103,8 +103,8 @@ async function bootstrap() {
   }
 
   const config = new DocumentBuilder()
-    .setTitle('Russana  API')
-    .setDescription('Russana E-commerce REST API')
+    .setTitle('myhunter  API')
+    .setDescription('myhunter E-commerce REST API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

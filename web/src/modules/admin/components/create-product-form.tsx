@@ -33,6 +33,7 @@ interface ProductFormData extends BaseProductFormData {
     sub: string;
     ageGroup?: string;
   };
+  videoDescription?: string; // YouTube embed code or URL
 }
 
 interface CreateProductFormProps {
@@ -72,6 +73,7 @@ export function CreateProductForm({
       countInStock: 0,
       hashtags: [],
       brandLogo: undefined,
+      videoDescription: "",
     }
   );
 
@@ -238,6 +240,7 @@ export function CreateProductForm({
         sizes: initialData.sizes || [],
         colors: initialData.colors || [],
         hashtags: initialData.hashtags || [],
+        videoDescription: initialData.videoDescription || "",
       }));
 
       // Set hashtags input text
@@ -570,6 +573,12 @@ export function CreateProductForm({
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("description", formData.description);
       formDataToSend.append("descriptionEn", formData.descriptionEn || "");
+
+      // Add video description if present
+      if (formData.videoDescription) {
+        formDataToSend.append("videoDescription", formData.videoDescription);
+      }
+
       formDataToSend.append("countInStock", String(totalCount));
 
       // Add new category structure - ensure we're sending strings, not objects
@@ -812,6 +821,20 @@ export function CreateProductForm({
             <p className="create-product-error text-center">{serverError}</p>
           </div>
         )}{" "}
+        <div>
+          <label htmlFor="videoDescription">
+            YouTube Embed Code (optional)
+          </label>
+          <textarea
+            id="videoDescription"
+            name="videoDescription"
+            value={formData.videoDescription || ""}
+            onChange={handleChange}
+            className="create-product-textarea"
+            placeholder="Paste YouTube embed code or iframe here"
+            rows={3}
+          />
+        </div>
         <div>
           <label htmlFor="name">{t("adminProducts.productNameGe")}</label>
           <input

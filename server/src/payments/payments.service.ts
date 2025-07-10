@@ -100,8 +100,8 @@ export class PaymentsService {
         ttl: 10,
         redirect_urls: {
           success:
-            data.successUrl || 'https://russana.vercel.app/checkout/success',
-          fail: data.failUrl || 'https://russana.vercel.app/checkout/fail',
+            data.successUrl || 'https://myhunter.vercel.app/checkout/success',
+          fail: data.failUrl || 'https://myhunter.vercel.app/checkout/fail',
         },
       };
 

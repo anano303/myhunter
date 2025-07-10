@@ -308,6 +308,8 @@ export class ProductsService {
       updateFields.description = data.description;
     if (data.descriptionEn !== undefined)
       updateFields.descriptionEn = data.descriptionEn;
+    if (data.videoDescription !== undefined)
+      updateFields.videoDescription = data.videoDescription;
     if (data.images) updateFields.images = data.images;
     if (data.brandLogo) updateFields.brandLogo = data.brandLogo;
     if (data.brand) updateFields.brand = data.brand;

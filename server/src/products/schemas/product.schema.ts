@@ -159,6 +159,9 @@ export class Product {
   @Prop({ required: false })
   descriptionEn?: string;
 
+  @Prop({ required: false })
+  videoDescription?: string; // YouTube embed code or URL
+
   // SEO hashtags for better search visibility
   @Prop({ type: [String], default: [] })
   hashtags?: string[];

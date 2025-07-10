@@ -101,6 +101,7 @@ export interface Product {
     depth?: number;
   };
   variants?: ProductVariant[];
+  videoDescription?: string; // YouTube embed code or URL
 }
 
 export enum ProductStatus {

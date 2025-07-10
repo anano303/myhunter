@@ -64,6 +64,7 @@ export interface Product {
   deliveryType?: 'SELLER' | 'SoulArt'; // Corrected from 'SOULART' to 'SoulArt'
   minDeliveryDays?: number;
   maxDeliveryDays?: number;
+  videoDescription?: string; // YouTube embed code or URL
   dimensions?: {
     width?: number;
     height?: number;

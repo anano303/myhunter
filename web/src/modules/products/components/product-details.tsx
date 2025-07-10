@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
 import "./productDetails.css";
+import "./videoTabs.css"; // Import new tabs styles
 import { Product } from "@/types";
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -237,7 +238,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>(""); // Fetch all colors for proper nameEn support
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<"description" | "video">(
+    "description"
+  ); // Active tab state
   const { data: availableColors = [] } = useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
@@ -416,7 +420,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
           <ShareButtons
             url={typeof window !== "undefined" ? window.location.href : ""}
-            title={`Check out ${displayName} by ${product.brand} on Russana`}
+            title={`Check out ${displayName} by ${product.brand} on Myhunter`}
           />
           {!isOutOfStock && (
             <div className="product-options-container">
@@ -508,9 +512,55 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
             </div>
           )}
+          {/* New Tabs UI with Description and Video */}
           <div className="tabs">
-            <h3>{t("product.details") || "აღწერა"} : </h3>
-            <p>{displayDescription}</p>
+            {/* Tab controls */}
+            <div className="tabs-list">
+              <button
+                className={`tabs-trigger ${
+                  activeTab === "description" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("description")}
+              >
+                {t("product.details") || "აღწერა"}
+              </button>
+
+              {product.videoDescription && (
+                <button
+                  className={`tabs-trigger ${
+                    activeTab === "video" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveTab("video")}
+                >
+                  {language === "en" ? "Video" : "ვიდეო"}
+                </button>
+              )}
+            </div>
+
+            {/* Tab content */}
+            <div
+              className={`tab-content ${
+                activeTab === "description" ? "active" : ""
+              }`}
+            >
+              <p className="product-description">{displayDescription}</p>
+            </div>
+
+            {product.videoDescription && (
+              <div
+                className={`tab-content ${
+                  activeTab === "video" ? "active" : ""
+                }`}
+              >
+                <div className="video-container">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: product.videoDescription,
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             <AddToCartButton
               productId={product._id}
