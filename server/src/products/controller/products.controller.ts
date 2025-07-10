@@ -456,12 +456,18 @@ export class ProductsController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/review')
-  createReview(
+  async createReview(
     @Param('id') id: string,
     @Body() { rating, comment }: ReviewDto,
     @CurrentUser() user: UserDocument,
   ) {
-    return this.productsService.createReview(id, user, rating, comment);
+    try {
+      return await this.productsService.createReview(id, user, rating, comment);
+    } catch (error) {
+      console.log('Review error:', error);
+      // Re-throw the error to maintain the same behavior for the client
+      throw error;
+    }
   }
 
   @Put(':id/status')

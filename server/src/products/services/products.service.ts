@@ -425,9 +425,11 @@ export class ProductsService {
     });
 
     if (!hasPurchased)
-      throw new BadRequestException(
-        'You can only review products you have purchased',
-      );
+      throw new BadRequestException({
+        message: 'You can only review products you have purchased',
+        code: 'PRODUCT_NOT_PURCHASED',
+        statusCode: 400,
+      });
 
     const review = {
       name: user.name,

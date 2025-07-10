@@ -30,14 +30,19 @@ async function bootstrap() {
         'https://www.myhunter.ge',
         'https://myhunter.vercel.app',
         'https://myhunter.vercel.app/home',
-        'https://myhunter-web.vercel.app', // Add this
-        'https://www.myhunter-web.vercel.app', // Add this
-        'https://myhunter-git-main-aberoshvilis-projects.vercel.app', // Add preview URLs
-        'https://myhunter-aberoshvilis-projects.vercel.app', // Add preview URLs
+        'https://myhunter-web.vercel.app',
+        'https://www.myhunter-web.vercel.app',
+        'https://myhunter-git-main-aberoshvilis-projects.vercel.app',
+        'https://myhunter-aberoshvilis-projects.vercel.app',
         'http://localhost:3000',
         'https://localhost:3000',
         'http://localhost:4000',
         'https://localhost:4000',
+        // Add development URLs that might be used
+        'http://127.0.0.1:3000',
+        'https://127.0.0.1:3000',
+        'http://127.0.0.1:4000',
+        'https://127.0.0.1:4000',
       ];
 
       // Allow requests with no origin (like mobile apps, curl requests)
