@@ -170,11 +170,12 @@
 /* Category display styling */
 .categories-section {
   width: 100%;
-  max-width: 1400px;
-  margin: 40px auto;
+  /* max-width: 1400px; */
+  margin: 40px auto 2px auto;
   padding: 0 20px;
   box-sizing: border-box;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+  height: auto;
 }
 
 .categories-title {

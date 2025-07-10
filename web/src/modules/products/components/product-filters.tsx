@@ -98,12 +98,22 @@ export function ProductFilters({
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [showSubcategories, setShowSubcategories] = useState(false);
 
   // Update local state when props change
   useEffect(() => {
     setMinPrice(priceRange[0]);
     setMaxPrice(priceRange[1]);
   }, [priceRange]);
+
+  // Auto-show subcategories when category is selected
+  useEffect(() => {
+    if (selectedCategoryId) {
+      setShowSubcategories(true);
+    } else {
+      setShowSubcategories(false);
+    }
+  }, [selectedCategoryId]);
 
   // Fetch all categories with error handling
   const {
@@ -368,11 +378,24 @@ export function ProductFilters({
                         ? "selected"
                         : ""
                     }`}
-                    onClick={() =>
-                      onCategoryChange(category.id || category._id || "")
-                    }
+                    onClick={() => {
+                      const categoryId = category.id || category._id || "";
+                      if (selectedCategoryId === categoryId) {
+                        // If same category is clicked, just toggle subcategories visibility
+                        setShowSubcategories(!showSubcategories);
+                      } else {
+                        // Select new category and show subcategories
+                        onCategoryChange(categoryId);
+                        onSubCategoryChange(""); // Clear subcategory when changing main category
+                        setShowSubcategories(true);
+                      }
+                    }}
                   >
-                    <div className="category-content">
+                    <div className={`category-content ${
+                      selectedCategoryId === (category.id || category._id) && showSubcategories 
+                        ? "subcategories-open" 
+                        : ""
+                    }`}>
                       <Image
                         src={getCategoryIcon(category.name)}
                         alt={category.name}
@@ -385,7 +408,8 @@ export function ProductFilters({
                       </span> 
                     </div>
                     {subcategories.length > 0 &&
-                      selectedCategoryId === (category.id || category._id) && (
+                      selectedCategoryId === (category.id || category._id) &&
+                      showSubcategories && (
                         <div className="subcategories-overlay">
                           {isSubcategoriesLoading ? (
                             <div className="loading">
