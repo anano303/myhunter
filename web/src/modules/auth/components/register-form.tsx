@@ -170,11 +170,6 @@ export function RegisterForm() {
 
         <div className="register-field privacy-field">
           <label className="privacy-checkbox-label">
-            <input
-              type="checkbox"
-              {...register("acceptPrivacyPolicy")}
-              className="privacy-checkbox"
-            />
             <span className="privacy-text">
               {t("auth.agreeToPrivacyPolicy")}
               <Link
@@ -185,6 +180,11 @@ export function RegisterForm() {
                 {t("auth.privacyPolicy")}
               </Link>
             </span>
+            <input
+              type="checkbox"
+              {...register("acceptPrivacyPolicy")}
+              className="privacy-checkbox"
+            />
           </label>
           {errors.acceptPrivacyPolicy && (
             <p className="error-text">{errors.acceptPrivacyPolicy.message}</p>

@@ -776,3 +776,78 @@ input:-webkit-autofill:active {
   margin-bottom: 0.5rem;
   font-size: 16px;
 }
+
+/* Privacy Policy Checkbox Styling */
+.privacy-field {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.privacy-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 14px;
+  color: #d9c9a3;
+  font-family: "FiraGo", sans-serif;
+  text-align: center;
+}
+
+.privacy-text {
+  flex: 1;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.privacy-link {
+  color: #e6d5b0;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  display: block;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+.privacy-link:hover {
+  color: #f5e9d1;
+  text-decoration: none;
+}
+
+.privacy-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #8a7d52;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  align-self: center;
+  margin-top: 2px;
+}
+
+.privacy-checkbox:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.privacy-checkbox:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.privacy-checkbox:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Error styling for privacy field */
+.privacy-field .error-text {
+  margin-top: 0.5rem;
+  font-size: 12px;
+}
