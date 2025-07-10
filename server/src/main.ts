@@ -26,6 +26,8 @@ async function bootstrap() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'https://www.myhunter.vercel.app',
+        'https://myhunter.ge',
+        'https://www.myhunter.ge',
         'https://myhunter.vercel.app',
         'https://myhunter.vercel.app/home',
         'https://myhunter-web.vercel.app', // Add this
