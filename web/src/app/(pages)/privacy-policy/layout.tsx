@@ -1,45 +1,64 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "კონფიდენციალურობის პოლიტიკა | Privacy Policy",
+  title: "კონფიდენციალურობის პოლიტიკა - MyHunter | Privacy Policy",
   description:
-    "MyHunter-ს კონფიდენციალურობის პოლიტიკა. გაიგეთ როგორ ვიცავთ და ვმუშავებთ თქვენს პირად ინფორმაციასთან. | MyHunter privacy policy. Learn how we protect and handle your personal information.",
+    "გაეცანით MyHunter-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას. GDPR შესაბამისი მონაცემთა დაცვის პოლიტიკა. Privacy Policy - MyHunter data protection.",
   keywords: [
-    "კონფიდენციალურობა",
-    "პოლიტიკა",
-    "პირადი ინფორმაცია",
+    "კონფიდენციალურობის პოლიტიკა",
     "მონაცემთა დაცვა",
+    "პირადი ინფორმაცია",
+    "უსაფრთხოება",
     "GDPR",
-    "privacy",
-    "policy",
-    "personal information",
+    "MyHunter",
+    "მაიჰანტერი",
+    "privacy policy",
     "data protection",
+    "personal information",
+    "security",
+    "privacy",
+    "terms",
+    "conditions",
   ],
-  openGraph: {
-    title:
-      "კონფიდენციალურობის პოლიტიკა - MyHunter | Privacy Policy - MyHunter",
-    description:
-      "გაიგეთ როგორ ვიცავთ თქვენს პირად ინფორმაციას | Learn how we protect your personal information",
-    url: "https://MyHunter.ge/privacy-policy",
-    images: [
-      {
-        url: "/favicon.ico",
-        width: 1200,
-        height: 630,
-        alt: "MyHunter კონფიდენციალურობის პოლიტიკა | Privacy Policy",
-      },
-    ],
-  },
-  alternates: {
-    canonical: "https://MyHunter.ge/privacy-policy",
-    languages: {
-      ka: "https://MyHunter.ge/privacy-policy",
-      en: "https://MyHunter.ge/en/privacy-policy",
-    },
-  },
+  authors: [{ name: "MyHunter" }],
+  creator: "MyHunter",
+  publisher: "MyHunter",
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    title: "კონფიდენციალურობის პოლიტიკა - MyHunter | Privacy Policy",
+    description:
+      "გაეცანით MyHunter-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას.",
+    url: "https://myhunter.ge/privacy-policy",
+    siteName: "MyHunter",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "MyHunter კონფიდენციალურობის პოლიტიკა",
+      },
+    ],
+    locale: "ka_GE",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "კონფიდენციალურობის პოლიტიკა - MyHunter",
+    description:
+      "გაეცანით MyHunter-ის კონფიდენციალურობის პოლიტიკას. როგორ ვიყენებთ და ვიცავთ თქვენს პირად ინფორმაციას.",
+    images: ["/logo.png"],
+  },
+  alternates: {
+    canonical: "https://myhunter.ge/privacy-policy",
   },
 };
 

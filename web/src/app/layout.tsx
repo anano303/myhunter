@@ -16,28 +16,78 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_CLIENT_URL || "https://myhunter.ge"
   ),
-  title: "MyHunter",
-  description: "საუკეთესო სანადირო და სათევზაო აღჭურვილობა",
+  title: "MyHunter - სანადირო და სათევზაო აღჭურვილობის მაღაზია საქართველოში",
+  description:
+    "საუკეთესო სანადირო და სათევზაო აღჭურვილობა, თოვლისთვის, შოტლანდისთვის, ნაცარი პროდუქტები. ხარისხი, სანდოობა, ფასი. Best hunting and fishing equipment in Georgia",
+  keywords: [
+    "სანადირო",
+    "სათევზაო",
+    "აღჭურვილობა",
+    "მაღაზია",
+    "MyHunter",
+    "მაიჰანტერი",
+    "საქართველო",
+    "hunting",
+    "fishing",
+    "equipment",
+    "store",
+    "Georgia",
+    "outdoor",
+    "gear",
+  ],
+  authors: [{ name: "MyHunter" }],
+  creator: "MyHunter",
+  publisher: "MyHunter",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://myhunter.ge",
+    languages: {
+      ka: "https://myhunter.ge",
+      en: "https://myhunter.ge/en",
+    },
+  },
   openGraph: {
     type: "website",
     locale: "ka_GE",
     url: "https://myhunter.ge/",
     siteName: "MyHunter",
-    title: "MyHunter",
+    title: "MyHunter - სანადირო და სათევზაო აღჭურვილობის მაღაზია საქართველოში",
+    description:
+      "საუკეთესო სანადირო და სათევზაო აღჭურვილობა, თოვლისთვის, შოტლანდისთვის, ნაცარი პროდუქტები. ხარისხი, სანდოობა, ფასი",
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "MyHunter Sharing Image",
+        alt: "MyHunter - სანადირო და სათევზაო აღჭურვილობის მაღაზია",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyHunter",
-    description: "სანადირო და სათევზაო აღჭურვილობის საუკეთესო არჩევანი",
+    title: "MyHunter - სანადირო და სათევზაო აღჭურვილობის მაღაზია",
+    description:
+      "სანადირო და სათევზაო აღჭურვილობის საუკეთესო არჩევანი საქართველოში",
     images: ["/logo.png"],
+  },
+  verification: {
+    google: "your-google-verification-code", // ამას თქვენ შეცვლით
+  },
+  other: {
+    "geo.region": "GE",
+    "geo.placename": "Georgia",
+    "geo.position": "41.7151;44.8271",
+    ICBM: "41.7151, 44.8271",
   },
 };
 

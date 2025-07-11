@@ -56,15 +56,39 @@ export async function generateMetadata({
       product.brand,
       ...categoryKeywords,
       ...(product.hashtags || []),
-      "საზაფხულო",
-      "მაისური",
+      "სანადირო",
+      "სათევზაო",
+      "აღჭურვილობა",
+      "მაღაზია",
       "MyHunter",
+      "მაიჰანტერი",
+      "საქართველო",
+      "hunting",
+      "fishing",
+      "equipment",
+      "store",
+      "Georgia",
+      "outdoor",
+      "gear",
     ].join(", ");
 
     return {
       title,
       description,
       keywords,
+      authors: [{ name: "MyHunter" }],
+      creator: "MyHunter",
+      publisher: "MyHunter",
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
       openGraph: {
         title,
         description,
@@ -78,19 +102,37 @@ export async function generateMetadata({
                   alt: product.name,
                 },
               ]
-            : [],
+            : [
+                {
+                  url: "/logo.png",
+                  width: 1200,
+                  height: 630,
+                  alt: "MyHunter",
+                },
+              ],
         type: "website",
         locale: "ka_GE",
         siteName: "MyHunter",
+        url: `https://myhunter.ge/products/${id}`,
       },
       twitter: {
         card: "summary_large_image",
         title,
         description,
-        images: product.images?.length > 0 ? [product.images[0]] : [],
+        images:
+          product.images?.length > 0 ? [product.images[0]] : ["/logo.png"],
       },
       alternates: {
-        canonical: `https://MyHunter.ge/products/${id}`,
+        canonical: `https://myhunter.ge/products/${id}`,
+      },
+      other: {
+        "product:price:amount": product.price,
+        "product:price:currency": "GEL",
+        "product:availability": product.availability
+          ? "in stock"
+          : "out of stock",
+        "product:brand": product.brand,
+        "product:category": product.mainCategory?.name || "",
       },
     };
   } catch (error) {
