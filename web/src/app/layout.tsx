@@ -49,6 +49,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Favicon links */}
+        <link rel="icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="shortcut icon" href="/logo.png" />
+        <link rel="mask-icon" href="/logo.png" color="#000000" />
+        <meta name="msapplication-TileImage" content="/logo.png" />
         {/* Facebook SDK - Fix appId to lowercase appid */}
         <script
           async
