@@ -1,11 +1,22 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "@/lib/process-refresh";
 import { initializeAuth } from "@/lib/auth";
 import { useEffect } from "react";
 import { checkAndRefreshAuth } from "@/lib/process-refresh";
+
+// Lazy load DevTools only in development
+const ReactQueryDevtools =
+  process.env.NODE_ENV === "development"
+    ? lazy(() =>
+        import("@tanstack/react-query-devtools").then((module) => ({
+          default: module.ReactQueryDevtools,
+        }))
+      )
+    : () => null;
+
+import { lazy } from "react";
 
 // Declare global window property for query client access
 declare global {
@@ -65,7 +76,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools />
+      {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
       {children}
     </QueryClientProvider>
   );
