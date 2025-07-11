@@ -11,6 +11,12 @@ import Header from "@/components/header/header";
 import MessengerChatWrapper from "@/components/MessengerChat/MessengerChatWrapper";
 import { CartProvider } from "@/modules/cart/context/cart-context";
 import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
+import {
+  organizationSchema,
+  websiteSchema,
+  storeSchema,
+} from "@/lib/structured-data";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -49,12 +55,16 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  alternates: {
-    canonical: "https://myhunter.ge",
-    languages: {
-      ka: "https://myhunter.ge",
-      en: "https://myhunter.ge/en",
-    },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
+  other: {
+    "google-site-verification":
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "", // backup
+    "geo.region": "GE",
+    "geo.placename": "Georgia",
+    "geo.position": "41.7151;44.8271", // თბილისის კოორდინატები
+    ICBM: "41.7151, 44.8271",
   },
   openGraph: {
     type: "website",
@@ -63,7 +73,7 @@ export const metadata: Metadata = {
     siteName: "MyHunter",
     title: "MyHunter - სანადირო და სათევზაო აღჭურვილობის მაღაზია საქართველოში",
     description:
-      "საუკეთესო სანადირო და სათევზაო აღჭურვილობა, თოვლისთვის, შოტლანდისთვის, ნაცარი პროდუქტები. ხარისხი, სანდოობა, ფასი",
+      "საუკეთესო სანადირო და სათევზაო აღჭურვილობა, თოვლისთვის, შოტლანდიისთვის, ნაცარი პროდუქტები. ხარისხი, სანდოობა, ფასი",
     images: [
       {
         url: "/logo.png",
@@ -79,15 +89,6 @@ export const metadata: Metadata = {
     description:
       "სანადირო და სათევზაო აღჭურვილობის საუკეთესო არჩევანი საქართველოში",
     images: ["/logo.png"],
-  },
-  verification: {
-    google: "your-google-verification-code", // ამას თქვენ შეცვლით
-  },
-  other: {
-    "geo.region": "GE",
-    "geo.placename": "Georgia",
-    "geo.position": "41.7151;44.8271",
-    ICBM: "41.7151, 44.8271",
   },
 };
 
@@ -129,9 +130,8 @@ export default function RootLayout({
             <CartProvider>
               <CheckoutProvider>
                 <LanguageProvider>
-                  {/* <SiteTimer /> */}
                   <Header />
-                  <main className="flex-1">{children}</main>
+                  {children}
                   <Footer />
                 </LanguageProvider>
               </CheckoutProvider>
@@ -139,6 +139,29 @@ export default function RootLayout({
           </AuthProvider>
         </Providers>
         <MessengerChatWrapper />
+
+        {/* Google Analytics */}
+        <GoogleAnalytics />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(storeSchema),
+          }}
+        />
       </body>
     </html>
   );
