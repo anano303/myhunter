@@ -1,41 +1,34 @@
-interface Product {
-  name: string;
-  description?: string;
-  brand: string;
-  images?: string[];
-  sku?: string;
-  gtin?: string;
-  barcode?: string;
-  price: number;
-  availability: boolean;
-  averageRating?: number;
-  reviewsCount?: number;
-  mainCategory?: { name: string; _id: string };
-  hashtags?: string[];
-  mpn?: string;
-  model?: string;
-  color?: string;
-  size?: string;
-  material?: string;
-  weight?: string;
-}
+import { Product } from "@/types";
 
 export function generateProductSchema(product: Product, productId: string) {
   const baseUrl =
     process.env.NEXT_PUBLIC_PRODUCTION_URL || "https://myhunter.ge";
 
+  // ჰეშთეგების მომზადება SEO-სთვის
+  const hashtagKeywords =
+    product.hashtags?.map((tag) => (tag.startsWith("#") ? tag : `#${tag}`)) ||
+    [];
+  const keywordString = hashtagKeywords.join(" ");
+
+  // კატეგორიის სახელის მიღება
+  const categoryName =
+    typeof product.mainCategory === "object"
+      ? product.mainCategory?.name
+      : product.mainCategory || "სანადირო აღჭურვილობა";
+
   return {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
-    description: product.description || `${product.name} by ${product.brand}`,
+    description: product.description
+      ? `${product.description} ${keywordString}`.trim()
+      : `${product.name} by ${product.brand} ${keywordString}`.trim(),
     brand: {
       "@type": "Brand",
       name: product.brand,
     },
-    image: product.images?.map((img: string) => img) || ["/logo.png"],
-    sku: product.sku || productId,
-    gtin: product.gtin || product.barcode,
+    image: product.images?.length > 0 ? product.images : ["/logo.png"],
+    sku: product._id,
     offers: {
       "@type": "Offer",
       url: `${baseUrl}/products/${productId}`,
@@ -43,10 +36,11 @@ export function generateProductSchema(product: Product, productId: string) {
       price: product.price,
       priceValidUntil: new Date(
         Date.now() + 365 * 24 * 60 * 60 * 1000
-      ).toISOString(), // 1 წელი
-      availability: product.availability
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
+      ).toISOString(),
+      availability:
+        product.countInStock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "MyHunter",
@@ -54,31 +48,50 @@ export function generateProductSchema(product: Product, productId: string) {
       },
     },
     aggregateRating:
-      product.averageRating && product.reviewsCount
+      product.rating && product.numReviews > 0
         ? {
             "@type": "AggregateRating",
-            ratingValue: product.averageRating,
-            reviewCount: product.reviewsCount,
+            ratingValue: product.rating,
+            reviewCount: product.numReviews,
             bestRating: 5,
             worstRating: 1,
           }
         : undefined,
-    category: product.mainCategory?.name || "Hunting Equipment",
-    additionalProperty:
-      product.hashtags?.map((tag: string) => ({
+    category: categoryName,
+    keywords: [
+      product.name,
+      product.brand,
+      categoryName,
+      ...(product.hashtags || []),
+      "სანადირო",
+      "სათევზაო",
+      "აღჭურვილობა",
+      "MyHunter",
+      "მაიჰანტერი",
+    ].join(", "),
+    additionalProperty: [
+      // ჰეშთეგები როგორც თვისებები
+      ...(product.hashtags?.map((tag: string) => ({
         "@type": "PropertyValue",
         name: "hashtag",
-        value: tag,
-      })) || [],
+        value: tag.startsWith("#") ? tag : `#${tag}`,
+      })) || []),
+      // სხვა თვისებები
+      {
+        "@type": "PropertyValue",
+        name: "brand",
+        value: product.brand,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "category",
+        value: categoryName,
+      },
+    ],
     manufacturer: {
       "@type": "Organization",
       name: product.brand,
     },
-    mpn: product.mpn || product.model,
-    color: product.color,
-    size: product.size,
-    material: product.material,
-    weight: product.weight,
     url: `${baseUrl}/products/${productId}`,
   };
 }
@@ -102,12 +115,23 @@ export function generateBreadcrumbSchema(product: Product, productId: string) {
     },
   ];
 
-  if (product.mainCategory?.name) {
+  // კატეგორიის სწორი ტიპის შემოწმება
+  const categoryName =
+    typeof product.mainCategory === "object"
+      ? product.mainCategory?.name
+      : product.mainCategory;
+
+  const categoryId =
+    typeof product.mainCategory === "object"
+      ? product.mainCategory?._id || product.mainCategory?.id
+      : product.mainCategory;
+
+  if (categoryName) {
     items.push({
       "@type": "ListItem",
       position: 3,
-      name: product.mainCategory.name,
-      item: `${baseUrl}/shop?category=${product.mainCategory._id}`,
+      name: categoryName,
+      item: `${baseUrl}/shop?category=${categoryId}`,
     });
   }
 

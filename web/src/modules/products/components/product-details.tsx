@@ -20,6 +20,7 @@ import { ProductCard } from "./product-card";
 import { useCart } from "@/modules/cart/context/cart-context";
 import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
+import ProductSchema from "@/components/ProductSchema";
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -361,6 +362,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   return (
     <div className="container">
+      {/* SEO Product Schema */}
+      <ProductSchema product={product} productId={product._id} />
+
       <div className="grid">
         {/* Left Column - Thumbnails */}
         <div className="thumbnail-container">

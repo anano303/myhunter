@@ -5,19 +5,10 @@ import {
   generateProductSchema,
   generateBreadcrumbSchema,
 } from "@/lib/product-schema";
+import { Product } from "@/types";
 
 interface ProductSchemaProps {
-  product: {
-    name: string;
-    description?: string;
-    brand: string;
-    images?: string[];
-    price: number;
-    availability: boolean;
-    mainCategory?: { name: string; _id: string };
-    hashtags?: string[];
-    [key: string]: unknown; // for additional dynamic properties
-  };
+  product: Product;
   productId: string;
 }
 
