@@ -1,10 +1,5 @@
-/* User Menu Component - Hunting/Fishing Theme */
-@font-face {
-  font-family: "FiraGO";
-  src: url("/fonts/FiraGO-Regular.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-}
+
+
 
 .dropdown .button {
   display: flex;

@@ -65,26 +65,7 @@ button {
   }
 }
 
-@font-face {
-  font-family: "FiraGO";
-  src: url("/fonts/FiraGO-Regular.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-}
 
-@font-face {
-  font-family: "FiraGO";
-  src: url("/fonts/FiraGO-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "FiraGO";
-  src: url("/fonts/FiraGO-Bold.woff2") format("woff2");
-  font-weight: bold;
-  font-style: normal;
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
