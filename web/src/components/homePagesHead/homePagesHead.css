@@ -111,7 +111,7 @@
   max-width: 100vw;
   height: 500px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)),
-    url("/mainImage.png");
+    url("/mainImage.webP");
   background-size: cover;
   background-position: center;
   position: relative;
