@@ -8,7 +8,7 @@ async function getProducts() {
     const response = await fetch(
       `${apiUrl}/products?limit=1000&status=active`,
       {
-        cache: "no-store",
+        next: { revalidate: 3600 }, // 1 საათი cache
       }
     );
 
@@ -31,7 +31,7 @@ async function getCategories() {
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1";
     const response = await fetch(`${apiUrl}/categories?includeInactive=false`, {
-      cache: "no-store",
+      next: { revalidate: 3600 }, // 1 საათი cache
     });
 
     if (!response.ok) {
