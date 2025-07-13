@@ -102,6 +102,10 @@ export interface Product {
   };
   variants?: ProductVariant[];
   videoDescription?: string; // YouTube embed code or URL
+  // Discount functionality
+  discountPercentage?: number;
+  discountStartDate?: string;
+  discountEndDate?: string;
 }
 
 export enum ProductStatus {

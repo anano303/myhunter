@@ -329,6 +329,14 @@ export class ProductsService {
     if (data.categoryStructure)
       updateFields.categoryStructure = data.categoryStructure;
 
+    // Add discount fields
+    if (data.discountPercentage !== undefined)
+      updateFields.discountPercentage = data.discountPercentage;
+    if (data.discountStartDate !== undefined)
+      updateFields.discountStartDate = data.discountStartDate;
+    if (data.discountEndDate !== undefined)
+      updateFields.discountEndDate = data.discountEndDate;
+
     // Always update category fields separately to ensure they're set correctly
     if (data.category) updateFields.category = data.category;
     if (data.mainCategory !== undefined) {

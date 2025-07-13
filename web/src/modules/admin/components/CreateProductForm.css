@@ -351,6 +351,34 @@
   margin-top: 0.5rem;
 }
 
+/* Discount section styles */
+.discount-section {
+  background-color: #2a2a2a;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #444444;
+  margin: 1rem 0;
+}
+
+.discount-section h3 {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #4b5320;
+}
+
+.discount-section .create-product-input {
+  background-color: #333333;
+  border: 1px solid #555555;
+  color: #e0e0e0;
+}
+
+.discount-section .create-product-input:focus {
+  border-color: #4b5320;
+  box-shadow: 0 0 5px rgba(75, 83, 32, 0.3);
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

@@ -34,6 +34,10 @@ interface ProductFormData extends BaseProductFormData {
     ageGroup?: string;
   };
   videoDescription?: string; // YouTube embed code or URL
+  // Discount functionality
+  discountPercentage?: number;
+  discountStartDate?: string;
+  discountEndDate?: string;
 }
 
 interface CreateProductFormProps {
@@ -93,6 +97,11 @@ export function CreateProductForm({
   );
   const [minDeliveryDays, setMinDeliveryDays] = useState("");
   const [maxDeliveryDays, setMaxDeliveryDays] = useState("");
+
+  // Discount functionality states
+  const [discountPercentage, setDiscountPercentage] = useState<string>("");
+  const [discountStartDate, setDiscountStartDate] = useState<string>("");
+  const [discountEndDate, setDiscountEndDate] = useState<string>("");
 
   const [pending, setPending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -258,6 +267,17 @@ export function CreateProductForm({
       }
       if (initialData.maxDeliveryDays) {
         setMaxDeliveryDays(initialData.maxDeliveryDays.toString());
+      }
+
+      // Set discount fields
+      if (initialData.discountPercentage) {
+        setDiscountPercentage(initialData.discountPercentage.toString());
+      }
+      if (initialData.discountStartDate) {
+        setDiscountStartDate(initialData.discountStartDate);
+      }
+      if (initialData.discountEndDate) {
+        setDiscountEndDate(initialData.discountEndDate);
       }
 
       // Extract category ID correctly, handling both object and string formats
@@ -555,6 +575,38 @@ export function CreateProductForm({
         return;
       }
 
+      // Validate discount fields
+      if (discountPercentage && parseFloat(discountPercentage) > 0) {
+        const discountValue = parseFloat(discountPercentage);
+        if (discountValue < 0 || discountValue > 100) {
+          setServerError(
+            language === "en"
+              ? "Discount percentage must be between 0 and 100"
+              : "ფასდაკლების პროცენტი უნდა იყოს 0-სა და 100-ს შორის"
+          );
+          setPending(false);
+          return;
+        }
+
+        // If discount is set, validate dates
+        if (discountStartDate && discountEndDate) {
+          const startDate = new Date(discountStartDate);
+          const endDate = new Date(discountEndDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          if (endDate <= startDate) {
+            setServerError(
+              language === "en"
+                ? "Discount end date must be after start date"
+                : "ფასდაკლების დასრულების თარიღი უნდა იყოს დაწყების თარიღის შემდეგ"
+            );
+            setPending(false);
+            return;
+          }
+        }
+      }
+
       const token = getAccessToken();
       if (!token) {
         setServerError(t("adminProducts.authError"));
@@ -639,6 +691,17 @@ export function CreateProductForm({
       if (deliveryType === "SELLER") {
         formDataToSend.append("minDeliveryDays", minDeliveryDays);
         formDataToSend.append("maxDeliveryDays", maxDeliveryDays);
+      }
+
+      // Add discount fields
+      if (discountPercentage && parseFloat(discountPercentage) > 0) {
+        formDataToSend.append("discountPercentage", discountPercentage);
+      }
+      if (discountStartDate) {
+        formDataToSend.append("discountStartDate", discountStartDate);
+      }
+      if (discountEndDate) {
+        formDataToSend.append("discountEndDate", discountEndDate);
       }
 
       // Handle images - separate existing images from new ones
@@ -834,6 +897,83 @@ export function CreateProductForm({
             placeholder="Paste YouTube embed code or iframe here"
             rows={3}
           />
+        </div>
+        {/* Discount Section */}
+        <div className="discount-section">
+          <h3>
+            {language === "en"
+              ? "Discount Settings"
+              : "ფასდაკლების პარამეტრები"}
+          </h3>
+
+          <div>
+            <label htmlFor="discountPercentage">
+              {language === "en"
+                ? "Discount Percentage (%)"
+                : "ფასდაკლების პროცენტი (%)"}
+            </label>
+            <input
+              id="discountPercentage"
+              type="number"
+              value={discountPercentage}
+              onChange={(e) => setDiscountPercentage(e.target.value)}
+              className="create-product-input"
+              placeholder={
+                language === "en"
+                  ? "Enter discount percentage (0-100)"
+                  : "შეიყვანეთ ფასდაკლების პროცენტი (0-100)"
+              }
+              min={0}
+              max={100}
+              step={0.01}
+            />
+            <small
+              style={{
+                color: "#666",
+                fontSize: "0.9rem",
+                display: "block",
+                marginTop: "4px",
+              }}
+            >
+              {language === "en"
+                ? "Leave empty or set to 0 for no discount"
+                : "დატოვეთ ცარიელი ან დააყენეთ 0 ფასდაკლების გარეშე"}
+            </small>
+          </div>
+
+          {discountPercentage && parseFloat(discountPercentage) > 0 && (
+            <>
+              <div>
+                <label htmlFor="discountStartDate">
+                  {language === "en"
+                    ? "Discount Start Date"
+                    : "ფასდაკლების დაწყების თარიღი"}
+                </label>
+                <input
+                  id="discountStartDate"
+                  type="date"
+                  value={discountStartDate}
+                  onChange={(e) => setDiscountStartDate(e.target.value)}
+                  className="create-product-input"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="discountEndDate">
+                  {language === "en"
+                    ? "Discount End Date"
+                    : "ფასდაკლების დასრულების თარიღი"}
+                </label>
+                <input
+                  id="discountEndDate"
+                  type="date"
+                  value={discountEndDate}
+                  onChange={(e) => setDiscountEndDate(e.target.value)}
+                  className="create-product-input"
+                />
+              </div>
+            </>
+          )}
         </div>
         <div>
           <label htmlFor="name">{t("adminProducts.productNameGe")}</label>

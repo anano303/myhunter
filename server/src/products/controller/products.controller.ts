@@ -438,6 +438,16 @@ export class ProductsController {
         hashtags,
         variants: parseVariants,
         videoDescription: productData.videoDescription,
+        // Add discount fields
+        discountPercentage: productData.discountPercentage
+          ? Number(productData.discountPercentage)
+          : undefined,
+        discountStartDate: productData.discountStartDate
+          ? new Date(productData.discountStartDate)
+          : undefined,
+        discountEndDate: productData.discountEndDate
+          ? new Date(productData.discountEndDate)
+          : undefined,
       };
 
       console.log('UPDATING PRODUCT WITH DATA:', updateData);

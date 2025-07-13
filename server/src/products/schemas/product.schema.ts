@@ -178,6 +178,16 @@ export class Product {
   @Prop({ required: true, default: 0 })
   price!: number;
 
+  // Discount functionality
+  @Prop({ type: Number, min: 0, max: 100 })
+  discountPercentage?: number;
+
+  @Prop({ type: Date })
+  discountStartDate?: Date;
+
+  @Prop({ type: Date })
+  discountEndDate?: Date;
+
   // Legacy single inventory field (keeping for backward compatibility)
   @Prop({ required: true, default: 0 })
   countInStock!: number;

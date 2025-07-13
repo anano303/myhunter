@@ -74,6 +74,17 @@ export class ProductDto {
   @IsNumber()
   price!: number;
 
+  // Discount functionality
+  @IsNumber()
+  @IsOptional()
+  discountPercentage?: number;
+
+  @IsOptional()
+  discountStartDate?: Date;
+
+  @IsOptional()
+  discountEndDate?: Date;
+
   @IsString()
   description!: string;
 
