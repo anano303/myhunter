@@ -11,6 +11,7 @@
   position: relative;
   overflow: hidden;
   overflow-x: auto;
+  z-index: 1;
 }
 .variant-info {
   display: flex;
