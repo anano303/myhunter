@@ -112,8 +112,7 @@
   height: 500px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)),
     url("/mainImage.webP");
-  background-size: cover;
-  background-position: center;
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -121,6 +120,9 @@
   animation: zoomAnimation 15s ease-in-out infinite alternate;
   overflow: hidden;
   box-sizing: border-box;
+  background-size: cover !important;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
 }
 
 /* Dynamic banner content */
