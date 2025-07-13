@@ -125,7 +125,7 @@
 .filter-toggle-btn {
   padding: 0 20px;
   margin: 0 2%;
-  background: rgba(75, 83, 32, 0.835);
+  background: #4b532054;
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 50px;
@@ -156,7 +156,7 @@
 }
 
 .filter-toggle-btn:hover {
-  background: #4b5320;
+  background: #4b532054;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -485,7 +485,7 @@
   min-height: 80px;
   align-items: center;
   justify-content: space-evenly;
-  background: rgb(75, 83, 32);
+  background: #5c652538;
   /* backdrop-filter: blur(4px); */
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 80px;
@@ -1133,7 +1133,7 @@
     overflow-x: auto !important;
     overflow-y: visible !important;
     z-index: 2;
-    background: rgb(75, 83, 32) !important; /* Ensure background stays */
+    background: #4b532054 !important; /* Ensure background stays */
   }
 
   /* Force subcategories to always be visible and properly positioned */
