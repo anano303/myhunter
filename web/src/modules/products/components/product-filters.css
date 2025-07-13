@@ -187,6 +187,9 @@
   background: #e6cd9f;
   transform: rotate(90deg);
 }
+.filter-option span {
+  color: #e6cd9f;
+}
 
 /* Common input styles for all form elements */
 .filter-option,
