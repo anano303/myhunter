@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useCategories,
   useCreateCategory,
@@ -10,6 +10,7 @@ import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import { Loader } from "lucide-react";
 import "./styles/categories-list.css";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Category {
   id: string;
@@ -52,11 +53,27 @@ export const CategoriesList = () => {
   });
 
   const { t, language } = useLanguage();
+  const queryClient = useQueryClient();
 
-  const { data: categories, isLoading } = useCategories(showInactive);
+  // Get categories with refetch capability
+  const {
+    data: categories,
+    isLoading,
+    refetch,
+    isError,
+    
+  } = useCategories(showInactive);
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
+
+  // Refetch categories when component mounts or when showInactive changes
+  useEffect(() => {
+    console.log("Refetching categories...");
+    refetch();
+    // Also invalidate the query to ensure fresh data
+    queryClient.invalidateQueries({ queryKey: ["categories"] });
+  }, [refetch, queryClient, showInactive]);
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -101,8 +118,6 @@ export const CategoriesList = () => {
         if (formData.isActive !== undefined) {
           updatedFields.isActive = formData.isActive;
         }
-
-      
 
         await updateCategory.mutateAsync({
           id: isEditing,
@@ -266,7 +281,15 @@ export const CategoriesList = () => {
       )}{" "}
       {isLoading ? (
         <div className="loading-container">
-          <Loader />
+          <Loader className="animate-spin" />
+          <p>{t("adminCategories.loading")}</p>
+        </div>
+      ) : isError ? (
+        <div className="error-container">
+          <p>{t("adminCategories.errorLoading")}</p>
+          <button onClick={() => refetch()} className="btn-retry">
+            {t("adminCategories.retry")}
+          </button>
         </div>
       ) : (
         <div className="categories-list">

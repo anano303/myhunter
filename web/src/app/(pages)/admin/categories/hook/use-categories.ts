@@ -92,14 +92,23 @@ interface ExtendedError extends Error {
 
 // Fetch categories
 export const useCategories = (includeInactive = false) => {
-  return useQuery<Category[]>({
+  return useQuery<Category[], Error>({
     queryKey: ["categories", { includeInactive }],
     queryFn: async () => {
-      const response = await apiClient.get(
-        `/categories?includeInactive=${includeInactive}`
-      );
-      return response.data;
+      try {
+        const response = await apiClient.get(
+          `/categories?includeInactive=${includeInactive}`
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        throw error;
+      }
     },
+    staleTime: 1000, // Consider data stale after 1 second
+    refetchOnMount: "always", // Always refetch when the component mounts
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    retry: 2, // Retry failed requests up to 2 times
   });
 };
 
