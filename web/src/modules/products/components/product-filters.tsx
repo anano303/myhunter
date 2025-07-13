@@ -104,6 +104,7 @@ export function ProductFilters({
   const [isClosing, setIsClosing] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [brandSearchTerm, setBrandSearchTerm] = useState<string>("");
+  const [hasHorizontalScroll, setHasHorizontalScroll] = useState(false);
 
   // Update local state when props change
   useEffect(() => {
@@ -375,6 +376,122 @@ export function ProductFilters({
     }, 500); // matches animation duration
   };
 
+  // Check for horizontal scroll on categories grid
+  useEffect(() => {
+    const checkScroll = () => {
+      const gridElement = document.querySelector(
+        ".main-categories-grid"
+      ) as HTMLElement;
+      if (gridElement) {
+        const hasScroll = gridElement.scrollWidth > gridElement.clientWidth;
+        setHasHorizontalScroll(hasScroll);
+      }
+    };
+
+    // Run check after categories are loaded
+    if (categories.length > 0) {
+      setTimeout(checkScroll, 100); // Small delay to ensure DOM is updated
+    }
+
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [categories]);
+  // Adjust subcategory positioning on mobile - use fixed positioning
+  useEffect(() => {
+    const adjustSubcategoryPositioning = () => {
+      if (window.innerWidth <= 768 && showSubcategories && selectedCategoryId) {
+        const selectedCategory = document.querySelector(
+          ".main-category-option.selected"
+        );
+        const subcategoryOverlay = document.querySelector(
+          ".subcategories-overlay"
+        ) as HTMLElement;
+
+        if (selectedCategory && subcategoryOverlay) {
+          const categoryRect = selectedCategory.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+
+          // Position dropdown below the selected category
+          const topPosition = categoryRect.bottom + 10;
+
+          // Ensure dropdown doesn't go off screen
+          const dropdownHeight = 200; // Approximate height
+          const finalTop =
+            topPosition + dropdownHeight > viewportHeight
+              ? Math.max(10, categoryRect.top - dropdownHeight - 10)
+              : topPosition;
+
+          subcategoryOverlay.style.position = "fixed";
+          subcategoryOverlay.style.top = `${finalTop}px`;
+          subcategoryOverlay.style.left = "50%";
+          subcategoryOverlay.style.transform = "translateX(-50%)";
+          subcategoryOverlay.style.zIndex = "999999";
+        }
+      }
+    };
+
+    if (showSubcategories && selectedCategoryId) {
+      // Small delay to ensure DOM is ready
+      setTimeout(adjustSubcategoryPositioning, 100);
+    }
+
+    window.addEventListener("resize", adjustSubcategoryPositioning);
+    window.addEventListener("scroll", adjustSubcategoryPositioning);
+    return () => {
+      window.removeEventListener("resize", adjustSubcategoryPositioning);
+      window.removeEventListener("scroll", adjustSubcategoryPositioning);
+    };
+  }, [showSubcategories, selectedCategoryId]);
+
+  // Scroll selected category into view on mobile
+  useEffect(() => {
+    if (selectedCategoryId && window.innerWidth <= 768) {
+      setTimeout(() => {
+        const selectedCategory = document.querySelector(
+          ".main-category-option.selected"
+        );
+        if (selectedCategory) {
+          selectedCategory.scrollIntoView({
+            behavior: "smooth",
+            inline: "center",
+            block: "nearest",
+          });
+        }
+      }, 200);
+    }
+  }, [selectedCategoryId]);
+
+  // Click outside handler to close subcategories dropdown on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showSubcategories && window.innerWidth <= 768) {
+        const target = event.target as HTMLElement;
+        const categoriesGrid = document.querySelector(".main-categories-grid");
+        const subcategoriesOverlay = document.querySelector(
+          ".subcategories-overlay"
+        );
+
+        // Check if click is outside both the categories grid and subcategories overlay
+        if (
+          categoriesGrid &&
+          subcategoriesOverlay &&
+          !categoriesGrid.contains(target) &&
+          !subcategoriesOverlay.contains(target)
+        ) {
+          setShowSubcategories(false);
+        }
+      }
+    };
+
+    if (showSubcategories) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSubcategories]);
+
   return (
     <div className="product-filters">
       {/* Categories section */}
@@ -400,7 +517,11 @@ export function ProductFilters({
             )}
           </div>
           <div className="filter-options">
-            <div className="main-categories-grid">
+            <div
+              className={`main-categories-grid ${
+                hasHorizontalScroll ? "has-scroll" : ""
+              }`}
+            >
               {isCategoriesLoading ? (
                 <div className="loading">
                   <HeartLoading size="medium" />

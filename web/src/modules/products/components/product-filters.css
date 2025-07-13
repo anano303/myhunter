@@ -487,10 +487,11 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 80px;
   margin: 0;
-  overflow: visible;
+  overflow: visible; /* Keep visible to allow subcategories to show */
   scrollbar-width: none;
   -ms-overflow-style: none;
   box-sizing: border-box;
+  position: relative; /* Added for z-index context */
 }
 
 /* Removed problematic scroll indicator that was causing white shadow */
@@ -499,23 +500,7 @@
   display: none;
 }
 
-/* Main category button */
-.main-category-option {
-  position: relative;
-  flex: 0 0 auto;
-  min-width: 140px;
-  max-width: 220px;
-  padding: 8px 15px;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  transition: all 0.2s ease;
-  margin-right: 5px;
-}
+/* Main category button - merged with global fix above */
 
 .main-category-option:hover {
   transform: translateY(-2px);
@@ -591,24 +576,58 @@
   transform: rotate(180deg);
 }
 
-/* Subcategories dropdown */
+/* Subcategories dropdown - enhanced to always be visible */
 .subcategories-overlay {
   position: absolute;
-  top: 100%; /* Changed from 90% to 100% to position it directly below */
+  top: calc(100% + 5px); /* Space below the button */
   left: 50%;
-  transform: translateX(
-    -50%
-  ); /* Center the dropdown under the category button */
+  transform: translateX(-50%); /* Center horizontally */
   width: 220px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 10px 0;
-  z-index: 999999; /* High z-index to ensure visibility above scroll effects */
+  z-index: 999999; /* Very high z-index */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  overflow: visible; /* Changed from hidden to visible */
-  margin-top: 5px; /* Added margin to create space between button and dropdown */
+  overflow: visible;
+}
+
+/* Special handling for subcategories when horizontal scroll is present */
+.main-categories-grid.has-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.main-categories-grid.has-scroll .subcategories-overlay {
+  position: fixed;
+  z-index: 888;
+}
+
+/* Global fix to ensure subcategories always appear */
+.main-category-option {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: 140px;
+  max-width: 220px;
+  padding: 8px 15px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: all 0.2s ease;
+  margin-right: 5px;
+  z-index: 1; /* Ensure proper stacking context */
+}
+
+/* Ensure parent containers don't clip overflow */
+.product-filters,
+.categories-section,
+.filter-section {
+  overflow: visible !important;
 }
 
 /* Subcategory items */
@@ -877,10 +896,19 @@
     width: 12px !important;
     height: 12px !important;
   }
+
+  /* Hide separator line on very small screens to prevent overlap */
+  .main-category-option:not(:last-child)::after {
+    display: none;
+  }
 }
 
 /* Enhanced mobile responsiveness for categories */
 @media (max-width: 768px) {
+  .category-content {
+    display: flex;
+    flex-direction: column;
+  }
   .filters-top-section {
     flex-direction: column;
     align-items: stretch;
@@ -899,6 +927,16 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     justify-content: flex-start;
+    position: static; /* Change from relative to static to prevent clipping */
+  }
+
+  /* Ensure parent container allows overflow for subcategories */
+  .categories-section {
+    overflow: visible;
+  }
+
+  .filter-section {
+    overflow: visible;
   }
 
   .main-categories-grid::-webkit-scrollbar {
@@ -934,13 +972,22 @@
     width: 180px;
     left: 50%;
     transform: translateX(-50%);
-    top: 100%; /* Changed from default to ensure consistency */
-    margin-top: 5px; /* Added spacing between button and dropdown */
-    z-index: 1050; /* Increased z-index to ensure it appears above other elements */
+    top: 100%;
+    margin-top: 5px;
+    z-index: 9999;
+    /* Positioning will be handled by the main mobile media query */
   }
 }
 
 @media (max-width: 576px) {
+  .main-category-option:not(:last-child)::after {
+    right: 0;
+    height: 30%;
+  }
+  .category-content {
+    display: flex;
+    flex-direction: column;
+  }
   .filters-top-section {
     padding: 0 10px;
   }
@@ -1018,7 +1065,7 @@
 
   .main-category-option:not(:last-child)::after {
     right: 0;
-    height: 30%;
+    height: 25%;
   }
 
   .category-name {
@@ -1066,5 +1113,85 @@
   .brands-scrollable .filter-option {
     padding: 12px;
     font-size: 16px;
+  }
+}
+
+/* Comprehensive mobile fix for subcategories visibility */
+@media (max-width: 768px) {
+  /* Ensure main container allows overflow */
+  .categories-section {
+    position: relative;
+    overflow: visible !important;
+    z-index: 1;
+  }
+
+  .main-categories-grid {
+    position: relative !important; /* Keep normal positioning */
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    z-index: 2;
+    background: rgb(75, 83, 32) !important; /* Ensure background stays */
+  }
+
+  /* Force subcategories to always be visible and properly positioned */
+  .main-category-option {
+    position: relative;
+    z-index: 3;
+  }
+
+  .subcategories-overlay {
+    position: fixed !important; /* Use fixed positioning to escape all containers */
+
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 85vw !important; /* Responsive width */
+    max-width: 280px !important;
+    min-width: 180px !important;
+    z-index: 999999 !important;
+
+    /* Better box shadow for mobile */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+
+    /* Ensure it doesn't go off screen */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Smaller screens adjustments */
+@media (max-width: 480px) {
+  .main-categories-grid {
+    position: relative !important;
+  }
+
+  .subcategories-overlay {
+    position: fixed !important; /* Use fixed positioning */
+    width: 90vw !important;
+    max-width: 250px !important;
+    min-width: 160px !important;
+  }
+
+  .subcategory-item {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-categories-grid {
+    position: relative !important;
+  }
+
+  .subcategories-overlay {
+    position: fixed !important; /* Use fixed positioning */
+    width: 95vw !important;
+    max-width: 220px !important;
+    min-width: 150px !important;
+  }
+
+  .subcategory-item {
+    padding: 6px 10px !important;
+    font-size: 13px !important;
   }
 }
