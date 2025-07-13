@@ -14,7 +14,7 @@ const userMenuStyles = {
   fontFamily: '"FiraGo", sans-serif',
 };
 
-export default function UserMenu() {
+export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
   const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -22,6 +22,11 @@ export default function UserMenu() {
 
   // Add state to store profile image URL
   const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
+    onNavigate?.();
+  };
 
   // Update profile image when user changes
   useEffect(() => {
@@ -54,7 +59,7 @@ export default function UserMenu() {
 
   if (!user) {
     return (
-      <Link href="/login" className="button">
+      <Link href="/login" className="button" onClick={handleLinkClick}>
         <Image
           src={iconAuth}
           width={20}
@@ -62,7 +67,10 @@ export default function UserMenu() {
           alt={t("navigation.login")}
           style={{ marginRight: "5px" }}
         />
-        <span className="icon"> {t("navigation.login")}</span>
+        <span className="icon" onClick={handleLinkClick}>
+          {" "}
+          {t("navigation.login")}
+        </span>
       </Link>
     );
   }
@@ -96,14 +104,14 @@ export default function UserMenu() {
             <Link
               href="/profile"
               className="dropdown-item"
-              onClick={() => setIsOpen(false)}
+              onClick={handleLinkClick}
             >
               {t("navigation.profile")}
             </Link>
             <Link
               href="/profile/orders"
               className="dropdown-item"
-              onClick={() => setIsOpen(false)}
+              onClick={handleLinkClick}
             >
               {t("navigation.orders")}
             </Link>
@@ -117,7 +125,7 @@ export default function UserMenu() {
                 <Link
                   href="/admin/products"
                   className="dropdown-item"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleLinkClick}
                 >
                   {t("navigation.products")}
                 </Link>
@@ -128,7 +136,7 @@ export default function UserMenu() {
                 <Link
                   href="/admin/banners"
                   className="dropdown-item"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleLinkClick}
                 >
                   ბანერები
                 </Link>
@@ -140,21 +148,21 @@ export default function UserMenu() {
                 <Link
                   href="/admin/categories"
                   className="dropdown-item"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleLinkClick}
                 >
                   კატეგორიები
                 </Link>
                 <Link
                   href="/admin/users"
                   className="dropdown-item"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleLinkClick}
                 >
                   {t("navigation.users")}
                 </Link>
                 <Link
                   href="/admin/orders"
                   className="dropdown-item"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleLinkClick}
                 >
                   {t("navigation.orders")}
                 </Link>
@@ -165,6 +173,7 @@ export default function UserMenu() {
             <button
               onClick={() => {
                 setIsOpen(false);
+                onNavigate?.();
                 logout();
               }}
               className="dropdown-item logout-button"

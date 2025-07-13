@@ -58,7 +58,7 @@ export default function Header() {
         <nav className={`side-nav ${isNavOpen ? "open" : ""}`}>
           <div className="side-nav-header">
             <div className="nav-user">
-              <UserMenu />
+              <UserMenu onNavigate={() => setIsNavOpen(false)} />
             </div>
             <div className="language-switcher-container">
               <LanguageSwitcher />
@@ -70,19 +70,31 @@ export default function Header() {
 
           <ul className="side-nav-links">
             <li className="nav-item">
-              <Link href="/" className="nav-link">
+              <Link
+                href="/"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
                 <Home size={20} className="nav-icon" />
                 <span>{t("navigation.home")}</span>
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/shop?page=1" className="nav-link">
+              <Link
+                href="/shop?page=1"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
                 <ShoppingBag size={20} className="nav-icon" />
                 <span>{t("navigation.shop")}</span>
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/about" className="nav-link">
+              <Link
+                href="/about"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
                 <Star size={20} className="nav-icon" />
                 <span>{t("navigation.about")}</span>
               </Link>
@@ -91,7 +103,7 @@ export default function Header() {
 
           <div className="side-nav-footer">
             <div className="side-nav-actions">
-              <CartIcon />
+              <CartIcon onNavigate={() => setIsNavOpen(false)} />
             </div>
           </div>
         </nav>
@@ -105,19 +117,31 @@ export default function Header() {
         <nav className="main-nav">
           <ul>
             <li>
-              <Link href="/" className="nav-link">
+              <Link
+                href="/"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
                 <Home size={16} className="nav-icon" />
                 <span>{t("navigation.home")}</span>
               </Link>
             </li>
             <li>
-              <Link href="/shop?page=1" className="nav-link">
+              <Link
+                href="/shop?page=1"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
                 <ShoppingBag size={16} className="nav-icon" />
                 <span>{t("navigation.shop")}</span>
               </Link>
             </li>
             <li>
-              <Link href="/about" className="nav-link">
+              <Link
+                href="/about"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
                 <Star size={16} className="nav-icon" />
                 <span>{t("navigation.about")}</span>
               </Link>
@@ -125,9 +149,9 @@ export default function Header() {
 
             <li className="mobile-menu-user-actions">
               <div className="user-menu">
-                <UserMenu />
+                <UserMenu onNavigate={() => setIsNavOpen(false)} />
               </div>
-              <CartIcon />
+              <CartIcon onNavigate={() => setIsNavOpen(false)} />
               <div className="language-switcher-container">
                 <LanguageSwitcher />
               </div>
