@@ -35,7 +35,8 @@ interface CartContextType {
     quantity?: number,
     size?: string,
     color?: string,
-    ageGroup?: string
+    ageGroup?: string,
+    price?: number
   ) => Promise<void>;
   totalItems: number;
 }
@@ -105,7 +106,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       quantity = 1,
       size = "",
       color = "",
-      ageGroup = ""
+      ageGroup = "",
+      price?: number
     ) => {
       // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
       if (!user) {
@@ -118,13 +120,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       setLoading(true);
       try {
-        const { data } = await apiClient.post("/cart/items", {
+        const requestData: {
+          productId: string;
+          qty: number;
+          size: string;
+          color: string;
+          ageGroup: string;
+          price?: number;
+        } = {
           productId,
           qty: quantity,
           size,
           color,
           ageGroup,
-        });
+        };
+
+        // Add price if provided (discounted price)
+        if (price !== undefined) {
+          requestData.price = price;
+        }
+
+        const { data } = await apiClient.post("/cart/items", requestData);
         setItems(data.items);
 
         // მხოლოდ წარმატებული ოპერაციის შემდეგ ვაჩვენოთ toast

@@ -107,6 +107,7 @@ export class CartService {
     size?: string,
     color?: string,
     ageGroup?: string,
+    price?: number,
   ): Promise<CartDocument> {
     const product = await this.productsService.findById(productId);
     if (!product) throw new NotFoundException('Product not found');
@@ -126,13 +127,17 @@ export class CartService {
 
     if (existingItem) {
       existingItem.qty = qty;
+      // Update price if provided (to handle discount changes)
+      if (price !== undefined) {
+        existingItem.price = price;
+      }
     } else {
       const cartItem: CartItem = {
         productId: product._id.toString(),
         name: product.name,
         nameEn: product.nameEn,
         image: product.images[0],
-        price: product.price,
+        price: price ?? product.price, // Use provided price (discounted) or fallback to product price
         countInStock:
           product.variants?.find(
             (v) =>

@@ -11,6 +11,10 @@ export class AddToCartDto {
   @IsString()
   productId!: string;
 
+  @IsNumber()
+  @IsOptional()
+  price?: number;
+
   @IsString()
   @IsOptional()
   size?: string;

@@ -29,7 +29,7 @@ export class CartController {
 
   @Post('items')
   addToCart(
-    @Body() { productId, qty, size, color, ageGroup }: AddToCartDto,
+    @Body() { productId, qty, size, color, ageGroup, price }: AddToCartDto,
     @CurrentUser() user: UserDocument,
   ) {
     if (!productId) {
@@ -42,6 +42,7 @@ export class CartController {
       size,
       color,
       ageGroup,
+      price,
     );
   }
 

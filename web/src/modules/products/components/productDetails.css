@@ -56,7 +56,7 @@
   grid-area: image;
   display: flex;
   justify-content: center;
-margin-top: 2%;
+  margin-top: 2%;
   width: 100%;
   height: 100%;
 }
@@ -173,11 +173,15 @@ margin-top: 2%;
   align-items: center;
   gap: 1rem;
   margin: 1.5rem 0;
-
   padding: 15px;
-
   position: relative;
   overflow: hidden;
+}
+
+.price-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .price {
@@ -188,7 +192,7 @@ margin-top: 2%;
   z-index: 2;
 }
 
-.original-price {
+.original-price-details {
   font-size: 1.3rem;
   text-decoration: line-through;
   color: #aaa;
@@ -196,15 +200,21 @@ margin-top: 2%;
   z-index: 2;
 }
 
+.discounted-price-details {
+  color: #e74c3c !important;
+  font-weight: 700;
+}
+
 .discount-badge {
-  background-color: #6b5c35;
-  color: #e6cd9f;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-weight: 600;
+  background-color: #e74c3c;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 0.9rem;
-  position: relative;
-  z-index: 2;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  width: fit-content;
 }
 
 /* Share buttons styling */
