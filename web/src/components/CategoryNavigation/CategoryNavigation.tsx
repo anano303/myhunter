@@ -89,7 +89,7 @@ const CategoryNavigation = () => {
               "/shop/categories";
 
           return (
-            <Link key={category.id} href={href} className="category-item">
+            <Link key={category.id} href={href} className="main-category-item">
               <div className="category-icon">
                 <Image
                   src={getCategoryIcon(category.name)}
