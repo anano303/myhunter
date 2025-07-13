@@ -19,7 +19,7 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, #4b5320, #5c6525, #4b5320);
+  background: #f48c06;
   background-size: 200% 100%;
   animation: gradientAnimation 3s infinite alternate;
   border-radius: 12px 12px 0 0;
@@ -71,7 +71,7 @@
 }
 
 .tab-button.active {
-  color: #4b5320;
+  color: #f48c06;
   font-weight: bold;
 }
 
@@ -82,11 +82,11 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #4b5320;
+  background-color: #f48c06;
 }
 
 .tab-button:hover {
-  color: #5c6525;
+  color: #f48c06;
   background-color: #222222;
 }
 

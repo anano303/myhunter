@@ -23,7 +23,7 @@
 }
 
 .attributes-tabs .tab-button.active {
-  color: #4b5320;
+  color: #f48c06;
   font-weight: 600;
 }
 
@@ -34,11 +34,11 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #4b5320;
+  background-color: #f48c06;
 }
 
 .attributes-tabs .tab-button:hover {
-  color: #5c6525;
+  color: #f48c06;
 }
 
 .attributes-header {
@@ -57,7 +57,7 @@
 }
 
 .attributes-content .btn-add {
-  background-color: #4b5320;
+  background-color: #f48c06;
   color: #fff;
   border: none;
   padding: 10px 18px;
@@ -71,7 +71,7 @@
 }
 
 .attributes-content .btn-add:hover {
-  background-color: #5c6525;
+  background-color: #a96205;
   box-shadow: 0 4px 8px rgba(75, 83, 32, 0.4);
 }
 
