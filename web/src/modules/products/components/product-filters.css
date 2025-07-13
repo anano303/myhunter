@@ -769,6 +769,12 @@
   font-size: 14px;
 }
 
+@media screen and (max-width: 1125px) {
+  .subcategories-overlay {
+    top: calc(15% + 5px) !important;
+  }
+}
+
 /* Responsive filter adjustments */
 @media (max-width: 768px) {
   .additional-filters {
