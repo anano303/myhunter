@@ -274,10 +274,18 @@ export function CreateProductForm({
         setDiscountPercentage(initialData.discountPercentage.toString());
       }
       if (initialData.discountStartDate) {
-        setDiscountStartDate(initialData.discountStartDate);
+        // Convert date to YYYY-MM-DD format for HTML date input
+        const startDate = new Date(initialData.discountStartDate);
+        if (!isNaN(startDate.getTime())) {
+          setDiscountStartDate(startDate.toISOString().split("T")[0]);
+        }
       }
       if (initialData.discountEndDate) {
-        setDiscountEndDate(initialData.discountEndDate);
+        // Convert date to YYYY-MM-DD format for HTML date input
+        const endDate = new Date(initialData.discountEndDate);
+        if (!isNaN(endDate.getTime())) {
+          setDiscountEndDate(endDate.toISOString().split("T")[0]);
+        }
       }
 
       // Extract category ID correctly, handling both object and string formats

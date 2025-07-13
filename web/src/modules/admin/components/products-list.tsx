@@ -114,6 +114,38 @@ export function ProductsList() {
     return language === "en" && product.nameEn ? product.nameEn : product.name;
   }
 
+  // Add discount calculation functions
+  const hasActiveDiscount = (product: Product): boolean => {
+    if (!product.discountPercentage || product.discountPercentage <= 0) {
+      return false;
+    }
+
+    const now = new Date();
+    const startDate = product.discountStartDate
+      ? new Date(product.discountStartDate)
+      : null;
+    const endDate = product.discountEndDate
+      ? new Date(product.discountEndDate)
+      : null;
+
+    // If no dates are set, consider discount as active
+    if (!startDate && !endDate) {
+      return true;
+    }
+
+    // Check if current date is within discount period
+    const isAfterStart = !startDate || now >= startDate;
+    const isBeforeEnd = !endDate || now <= endDate;
+
+    return isAfterStart && isBeforeEnd;
+  };
+
+  const calculateDiscountedPrice = (product: Product): number => {
+    if (!hasActiveDiscount(product)) return product.price;
+    const discountAmount = (product.price * product.discountPercentage!) / 100;
+    return product.price - discountAmount;
+  };
+
   // Add a new query to fetch all categories and subcategories for reference
   const { data: categoriesData } = useQuery<Category[]>({
     queryKey: ["all-categories", refreshKey], // Add refreshKey to force re-fetch
@@ -276,7 +308,44 @@ export function ProductsList() {
                     </div>
                   </td>
                   <td className="prd-td">{getDisplayName(product)}</td>
-                  <td className="prd-td">{product.price} ₾ </td>
+                  <td className="prd-td">
+                    {hasActiveDiscount(product) ? (
+                      <div className="price-display">
+                        <span
+                          className="original-price"
+                          style={{
+                            textDecoration: "line-through",
+                            color: "#999",
+                            fontSize: "0.9em",
+                          }}
+                        >
+                          {product.price} ₾
+                        </span>
+                        <br />
+                        <span
+                          className="discounted-price"
+                          style={{ color: "#e74c3c", fontWeight: "bold" }}
+                        >
+                          {calculateDiscountedPrice(product).toFixed(2)} ₾
+                        </span>
+                        <span
+                          className="discount-badge"
+                          style={{
+                            backgroundColor: "#e74c3c",
+                            color: "white",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            fontSize: "0.8em",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          -{product.discountPercentage}%
+                        </span>
+                      </div>
+                    ) : (
+                      <span>{product.price} ₾</span>
+                    )}
+                  </td>
                   <td className="prd-td">
                     {product.category && typeof product.category === "object"
                       ? product.category.name
@@ -344,7 +413,44 @@ export function ProductsList() {
                 </div>
               </td>
               <td className="prd-td">{getDisplayName(product)}</td>
-              <td className="prd-td">{product.price} ₾ </td>
+              <td className="prd-td">
+                {hasActiveDiscount(product) ? (
+                  <div className="price-display">
+                    <span
+                      className="original-price"
+                      style={{
+                        textDecoration: "line-through",
+                        color: "#999",
+                        fontSize: "0.9em",
+                      }}
+                    >
+                      {product.price} ₾
+                    </span>
+                    <br />
+                    <span
+                      className="discounted-price"
+                      style={{ color: "#e74c3c", fontWeight: "bold" }}
+                    >
+                      {calculateDiscountedPrice(product).toFixed(2)} ₾
+                    </span>
+                    <span
+                      className="discount-badge"
+                      style={{
+                        backgroundColor: "#e74c3c",
+                        color: "white",
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                        fontSize: "0.8em",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      -{product.discountPercentage}%
+                    </span>
+                  </div>
+                ) : (
+                  <span>{product.price} ₾</span>
+                )}
+              </td>
               <td className="prd-td">{getCategoryDisplayName(product)}</td>
               <td className="prd-td">{getSubcategoryDisplayName(product)}</td>
               <td className="prd-td">{product.countInStock}</td>
