@@ -35,6 +35,7 @@ export default function Header() {
               height={80}
               alt="Myhunter logo"
               className="header-logo"
+              priority={true}
             />
           </Link>
         </div>

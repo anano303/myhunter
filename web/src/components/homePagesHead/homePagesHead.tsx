@@ -75,6 +75,23 @@ const HomePagesHead = () => {
 
   const currentBanner = banners[currentBannerIndex];
 
+  // Preload the main background image
+  useEffect(() => {
+    const imageUrl = currentBanner?.imageUrl || "/mainImage.webP";
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = imageUrl;
+    document.head.appendChild(link);
+
+    return () => {
+      // Cleanup
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, [currentBanner]);
+
   // Determine background style based on whether we have dynamic banners
   const backgroundStyle =
     currentBanner && currentBanner.imageUrl
@@ -85,7 +102,7 @@ const HomePagesHead = () => {
         }
       : {
           backgroundImage:
-            'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url("/mainImage.png")',
+            'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url("/mainImage.webP")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         };

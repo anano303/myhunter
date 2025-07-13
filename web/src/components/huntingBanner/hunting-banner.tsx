@@ -82,7 +82,7 @@ export const HuntingBanner: React.FC = () => {
             alt={language === "ge" ? "სანადირო იარაღი" : "Hunting Weapon"}
             width={500}
             height={300}
-            
+            priority={true}
           />
         </div>
       </div>
@@ -115,7 +115,6 @@ export const HuntingBanner: React.FC = () => {
             alt={language === "ge" ? "სანადირო იარაღი" : "Hunting Weapon"}
             width={500}
             height={300}
-          
           />
         </div>
         <div className="hunting-banner-text">
