@@ -51,6 +51,7 @@ export class ProductsController {
     @Query('ageGroup') ageGroup: string,
     @Query('size') size: string,
     @Query('color') color: string,
+    @Query('discounted') discounted: string,
     @Query('includeVariants') includeVariants: string,
   ) {
     console.log('Getting products with filters:', {
@@ -59,6 +60,7 @@ export class ProductsController {
       ageGroup,
       size,
       color,
+      discounted,
     });
 
     return this.productsService.findMany({
@@ -74,6 +76,7 @@ export class ProductsController {
       ageGroup,
       size,
       color,
+      discounted: discounted === 'true',
       includeVariants: includeVariants === 'true',
     });
   }
@@ -103,6 +106,12 @@ export class ProductsController {
   async getPendingProducts() {
     console.log('Getting pending products');
     return this.productsService.findByStatus(ProductStatus.PENDING);
+  }
+
+  @Get('brands')
+  @ApiOperation({ summary: 'Get all available brands' })
+  async getBrands() {
+    return this.productsService.findAllBrands();
   }
 
   @Get('topRated')

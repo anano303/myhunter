@@ -209,7 +209,7 @@
   background-color: rgba(75, 83, 32, 0.15);
 
   border: none;
- 
+
   color: #ffffff;
   padding: 6px 12px;
   font-family: "BenchNine", sans-serif;
@@ -658,6 +658,95 @@
   margin-bottom: 15px;
 }
 
+/* Brand search input and scrollable container styles */
+.brand-search-container {
+  margin-bottom: 12px;
+}
+
+.brand-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  font-family: "BenchNine", sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+.brand-search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.brand-search-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.brands-scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 4px;
+  background-color: #fff;
+}
+
+.brands-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.brands-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.brands-scrollable::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.brands-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Brand option styles within scrollable container */
+.brands-scrollable .filter-option {
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  color: #333;
+  font-size: 14px;
+  text-align: left;
+  border: none;
+}
+
+.brands-scrollable .filter-option:hover {
+  background-color: #f5f5f5;
+  transform: none;
+}
+
+.brands-scrollable .filter-option.selected {
+  background-color: #007bff;
+  color: white;
+  transform: none;
+}
+
+/* No brands found message */
+.no-brands-message {
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  font-size: 14px;
+}
+
 /* Responsive filter adjustments */
 @media (max-width: 768px) {
   .additional-filters {
@@ -696,6 +785,20 @@
     font-size: 14px;
     padding: 6px 10px;
   }
+
+  .brands-scrollable {
+    max-height: 150px; /* Reduced height on mobile */
+  }
+
+  .brand-search-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 10px 12px; /* Slightly larger touch target */
+  }
+
+  .brands-scrollable .filter-option {
+    padding: 10px 12px; /* Larger touch targets on mobile */
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -732,6 +835,19 @@
   .filter-section h3 {
     font-size: 14px;
   }
+
+  .brands-scrollable {
+    max-height: 120px; /* Further reduced height on small screens */
+  }
+
+  .brand-search-input {
+    padding: 12px;
+  }
+
+  .brands-scrollable .filter-option {
+    padding: 12px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 400px) {
@@ -748,34 +864,22 @@
   .price-inputs {
     justify-content: center;
   }
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .filters-top-section {
-    width: 100%;
-    gap: 15px;
-    padding: 0 15px;
-  }
-
-  .main-categories-grid {
-    padding: 0 20px;
-    height: 70px;
-  }
 
   .filter-toggle-btn {
-    height: 70px;
-    font-size: 28px;
-    padding: 0 30px;
-    font-family: "FiraGo", "Noto Sans Georgian";
-    font-weight: 800;
+    font-size: 10px;
+    padding: 0 6px;
+    height: 35px;
+    border-radius: 6px;
+    width: 42%;
   }
 
-  .category-name {
-    font-size: 28px;
+  .filter-toggle-btn .filter-icon {
+    width: 12px !important;
+    height: 12px !important;
   }
 }
 
+/* Enhanced mobile responsiveness for categories */
 @media (max-width: 768px) {
   .filters-top-section {
     flex-direction: column;
@@ -933,311 +1037,34 @@
   }
 }
 
-/* Enhanced mobile responsiveness for categories */
+/* Mobile responsive improvements for brand filter */
 @media (max-width: 768px) {
-  .filters-top-section {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 8px;
-    width: 100%;
-    padding: 0 5px;
+  .brands-scrollable {
+    max-height: 150px; /* Reduced height on mobile */
   }
 
-  .main-categories-grid {
-    flex-direction: column;
-    width: 58%;
-    height: auto;
-    min-height: 300px;
-    padding: 10px 6px;
-    border-radius: 15px;
-    background: rgba(75, 83, 32, 0.9);
-    overflow: visible;
-    justify-content: flex-start;
-    align-items: stretch;
-    gap: 6px;
-    margin: 0;
+  .brand-search-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 10px 12px; /* Slightly larger touch target */
   }
 
-  .main-category-option {
-    width: 100%;
-    min-width: auto;
-    max-width: none;
-    padding: 10px 8px;
-    flex-shrink: 0;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 0;
-    position: relative;
+  .brands-scrollable .filter-option {
+    padding: 10px 12px; /* Larger touch targets on mobile */
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .brands-scrollable {
+    max-height: 120px; /* Further reduced height on small screens */
   }
 
-  .main-category-option:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: none;
+  .brand-search-input {
+    padding: 12px;
   }
 
-  .main-category-option.selected {
-    background: rgba(255, 255, 255, 0.3);
-    border-bottom: none;
-    border-left: 3px solid #ffffff;
-  }
-
-  .main-category-option:not(:last-child)::after {
-    display: none;
-  }
-
-  .category-content {
-    justify-content: space-between;
-    gap: 8px;
-    padding-right: 0;
-  }
-
-  .category-name {
+  .brands-scrollable .filter-option {
+    padding: 12px;
     font-size: 16px;
-    text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-    line-height: 1.2;
-  }
-
-  .category-content::after {
-    content: " ▶ ";
-    font-size: 12px;
-    transform: none;
-  }
-
-  .category-content.subcategories-open::after {
-    content: " ▼ ";
-    transform: none;
-  }
-
-  .subcategories-overlay {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    transform: none;
-    width: 180px;
-    margin-top: 0;
-    margin-left: 8px;
-    z-index: 1050;
-  }
-
-  .filter-toggle-btn {
-    width: 40%;
-    height: 50px;
-    font-size: 16px;
-    border-radius: 15px;
-  }
-}
-
-@media (max-width: 576px) {
-  .filters-top-section {
-    padding: 0 4px;
-  }
-
-  .main-categories-grid {
-    padding: 8px 5px;
-    min-height: 250px;
-    gap: 5px;
-    width: 60%;
-  }
-
-  .main-category-option {
-    padding: 8px 6px;
-  }
-
-  .category-name {
-    font-size: 14px;
-    line-height: 1.1;
-  }
-
-  .category-content::after {
-    font-size: 10px;
-  }
-
-  .subcategories-overlay {
-    width: 160px;
-    margin-left: 6px;
-  }
-
-  .subcategory-item {
-    font-size: 13px;
-    padding: 6px 8px;
-  }
-
-  .filter-toggle-btn {
-    width: 38%;
-    font-size: 14px;
-    height: 45px;
-    border-radius: 12px;
-    padding: 0 8px;
-  }
-
-  .filter-toggle-btn .filter-icon {
-    width: 14px !important;
-    height: 14px !important;
-  }
-
-  .category-icon {
-    width: 14px !important;
-    height: 14px !important;
-    margin-right: 2px;
-  }
-
-  .additional-filters {
-    padding: 8px;
-    margin: 0 4px;
-  }
-
-  .filters-close-btn {
-    width: 25px;
-    height: 25px;
-    font-size: 16px;
-  }
-}
-
-/* Small mobile screens (550px and below) */
-@media (max-width: 550px) {
-  .filters-top-section {
-    padding: 0 3px;
-    gap: 6px;
-  }
-
-  .main-categories-grid {
-    padding: 6px 4px;
-    min-height: 220px;
-    gap: 4px;
-    width: 62%;
-  }
-
-  .main-category-option {
-    padding: 6px 5px;
-  }
-
-  .category-name {
-    font-size: 13px;
-    line-height: 1.1;
-  }
-
-  .category-icon {
-    width: 12px !important;
-    height: 12px !important;
-    margin-right: 2px;
-  }
-
-  .category-content::after {
-    font-size: 9px;
-  }
-
-  .subcategories-overlay {
-    width: 140px;
-    margin-left: 5px;
-  }
-
-  .subcategory-item {
-    font-size: 12px;
-    padding: 5px 7px;
-  }
-
-  .filter-toggle-btn {
-    width: 36%;
-    font-size: 13px;
-    height: 42px;
-    border-radius: 10px;
-    padding: 0 6px;
-  }
-}
-
-/* Very small mobile screens (400px and below) */
-@media (max-width: 400px) {
-  .filters-top-section {
-    padding: 0 2px;
-    gap: 4px;
-  }
-
-  .main-categories-grid {
-    padding: 5px 3px;
-    min-height: 200px;
-    gap: 3px;
-    width: 64%;
-  }
-
-  .main-category-option {
-    padding: 5px 4px;
-  }
-
-  .category-name {
-    font-size: 12px;
-    line-height: 1.0;
-  }
-
-  .category-icon {
-    width: 11px !important;
-    height: 11px !important;
-    margin-right: 1px;
-  }
-
-  .category-content::after {
-    font-size: 8px;
-  }
-
-  .subcategories-overlay {
-    width: 120px;
-    margin-left: 4px;
-  }
-
-  .subcategory-item {
-    font-size: 11px;
-    padding: 4px 6px;
-  }
-
-  .filter-toggle-btn {
-    width: 34%;
-    font-size: 12px;
-    height: 38px;
-    border-radius: 8px;
-    padding: 0 5px;
-  }
-
-  .filter-toggle-btn .filter-icon {
-    width: 12px !important;
-    height: 12px !important;
-  }
-}
-
-/* Extra small screens (very small mobile devices) */
-@media (max-width: 320px) {
-  .filter-toggle-btn {
-    font-size: 10px;
-    padding: 0 6px;
-    height: 35px;
-    border-radius: 6px;
-    width: 42%;
-  }
-
-  .filter-toggle-btn .filter-icon {
-    width: 12px !important;
-    height: 12px !important;
-  }
-
-  .main-categories-grid {
-    width: 56%;
-    min-height: 180px;
-    padding: 6px 4px;
-  }
-
-  .category-name {
-    font-size: 11px;
-  }
-
-  .category-icon {
-    width: 10px !important;
-    height: 10px !important;
-  }
-
-  .subcategories-overlay {
-    width: 120px;
-  }
-
-  .subcategory-item {
-    font-size: 10px;
-    padding: 4px 6px;
   }
 }

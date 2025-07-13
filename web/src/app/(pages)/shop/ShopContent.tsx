@@ -28,6 +28,7 @@ const ShopContent = () => {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [showDiscountedOnly, setShowDiscountedOnly] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [sorting, setSorting] = useState<{
     field: string;
@@ -57,6 +58,9 @@ const ShopContent = () => {
     const sizeParam = searchParams ? searchParams.get("size") || "" : "";
     const colorParam = searchParams ? searchParams.get("color") || "" : "";
     const brandParam = searchParams ? searchParams.get("brand") || "" : "";
+    const discountParam = searchParams
+      ? searchParams.get("discountOnly") === "true"
+      : false;
     const minPriceParam = searchParams
       ? parseInt(searchParams.get("minPrice") || "0")
       : 0;
@@ -77,6 +81,7 @@ const ShopContent = () => {
     setSelectedSize(sizeParam);
     setSelectedColor(colorParam);
     setSelectedBrand(brandParam);
+    setShowDiscountedOnly(discountParam);
     setPriceRange([minPriceParam, maxPriceParam]);
     setSorting({ field: sortByParam, direction: sortDirectionParam });
 
@@ -110,6 +115,7 @@ const ShopContent = () => {
       if (selectedBrand) params.brand = selectedBrand;
       if (priceRange[0] > 0) params.minPrice = priceRange[0].toString();
       if (priceRange[1] < 1000) params.maxPrice = priceRange[1].toString();
+      if (showDiscountedOnly) params.discounted = "true";
 
       const response = await getProducts(currentPage, 20, params);
 
@@ -133,6 +139,7 @@ const ShopContent = () => {
     selectedBrand,
     priceRange,
     sorting,
+    showDiscountedOnly,
   ]);
 
   // Fetch products when filters change
@@ -163,6 +170,7 @@ const ShopContent = () => {
     if (sorting.direction !== "desc")
       params.set("sortDirection", sorting.direction);
     if (currentPage > 1) params.set("page", currentPage.toString());
+    if (showDiscountedOnly) params.set("discounted", "true");
 
     router.replace(`/shop?${params.toString()}`);
   }, [
@@ -176,6 +184,7 @@ const ShopContent = () => {
     priceRange,
     sorting,
     currentPage,
+    showDiscountedOnly,
   ]);
 
   // Update URL when filters change
@@ -193,6 +202,7 @@ const ShopContent = () => {
     priceRange,
     sorting,
     currentPage,
+    showDiscountedOnly,
     updateUrl,
   ]);
 
@@ -269,6 +279,14 @@ const ShopContent = () => {
     setSelectedBrand(brand);
   }, []);
 
+  const handleDiscountFilterChange = useCallback(
+    (showDiscountedOnly: boolean) => {
+      setCurrentPage(1);
+      setShowDiscountedOnly(showDiscountedOnly);
+    },
+    []
+  );
+
   const handlePriceRangeChange = useCallback((range: [number, number]) => {
     setCurrentPage(1);
     setPriceRange(range);
@@ -303,6 +321,7 @@ const ShopContent = () => {
               onSizeChange={handleSizeChange}
               onColorChange={handleColorChange}
               onBrandChange={handleBrandChange}
+              onDiscountFilterChange={handleDiscountFilterChange}
               onPriceRangeChange={handlePriceRangeChange}
               onSortChange={handleSortChange}
               selectedCategoryId={selectedCategoryId}
@@ -311,6 +330,7 @@ const ShopContent = () => {
               selectedSize={selectedSize}
               selectedColor={selectedColor}
               selectedBrand={selectedBrand}
+              showDiscountedOnly={showDiscountedOnly}
               priceRange={priceRange}
             />
           </div>
@@ -339,6 +359,7 @@ const ShopContent = () => {
                     setSelectedSize("");
                     setSelectedColor("");
                     setSelectedBrand("");
+                    setShowDiscountedOnly(false);
                     setPriceRange([0, 1000]);
                     setSorting({ field: "createdAt", direction: "desc" });
                     setCurrentPage(1);

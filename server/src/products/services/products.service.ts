@@ -43,6 +43,7 @@ interface FindManyParams {
   ageGroup?: string;
   size?: string;
   color?: string;
+  discounted?: boolean;
   includeVariants?: boolean;
 }
 
@@ -77,6 +78,7 @@ export class ProductsService {
       ageGroup,
       size,
       color,
+      discounted,
       includeVariants = false,
     } = params;
 
@@ -141,6 +143,28 @@ export class ProductsService {
       filter.colors = color;
     }
 
+    // Filter by discount status
+    if (discounted === true) {
+      const now = new Date();
+      filter.$and = [
+        { discountPercentage: { $exists: true, $gt: 0 } },
+        {
+          $or: [
+            { discountStartDate: { $exists: false } },
+            { discountStartDate: null },
+            { discountStartDate: { $lte: now } },
+          ],
+        },
+        {
+          $or: [
+            { discountEndDate: { $exists: false } },
+            { discountEndDate: null },
+            { discountEndDate: { $gte: now } },
+          ],
+        },
+      ];
+    }
+
     const sort: any = {};
     sort[sortBy] = sortDirection === 'asc' ? 1 : -1;
 
@@ -169,6 +193,19 @@ export class ProductsService {
       page: pageNumber,
       pages: Math.ceil(count / limitNumber),
     };
+  }
+
+  async findAllBrands(): Promise<string[]> {
+    try {
+      const brands = await this.productModel.distinct('brand', {
+        status: ProductStatus.APPROVED,
+        brand: { $exists: true, $ne: null, $nin: ['', undefined] },
+      });
+      return brands.sort();
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      return [];
+    }
   }
 
   async findById(id: string): Promise<ProductDocument> {

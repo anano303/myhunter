@@ -65,12 +65,14 @@ interface FilterProps {
     direction: "asc" | "desc";
   }) => void;
   onBrandChange: (brand: string) => void;
+  onDiscountFilterChange: (showDiscountedOnly: boolean) => void;
   selectedCategoryId?: string;
   selectedSubCategoryId?: string;
   selectedAgeGroup?: string;
   selectedSize?: string;
   selectedColor?: string;
   selectedBrand?: string;
+  showDiscountedOnly?: boolean;
   priceRange?: [number, number]; // min, max
   onPriceRangeChange: (range: [number, number]) => void;
 }
@@ -83,6 +85,7 @@ export function ProductFilters({
   onColorChange,
   onSortChange,
   onBrandChange,
+  onDiscountFilterChange,
   onPriceRangeChange,
   selectedCategoryId,
   selectedSubCategoryId,
@@ -90,6 +93,7 @@ export function ProductFilters({
   selectedSize,
   selectedColor,
   selectedBrand,
+  showDiscountedOnly = false,
   priceRange = [0, 1000],
 }: FilterProps) {
   const { language, t } = useLanguage();
@@ -99,6 +103,7 @@ export function ProductFilters({
   const [showFilters, setShowFilters] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
+  const [brandSearchTerm, setBrandSearchTerm] = useState<string>("");
 
   // Update local state when props change
   useEffect(() => {
@@ -177,9 +182,26 @@ export function ProductFilters({
     queryKey: ["brands"],
     queryFn: async () => {
       try {
-        const response = await fetchWithAuth("/products/");
+        const response = await fetchWithAuth("/products/brands");
         if (!response.ok) {
-          return []; // Silently fail if brands endpoint doesn't exist
+          // Try alternative endpoint
+          const altResponse = await fetchWithAuth(
+            "/products?page=1&limit=1000"
+          );
+          if (!altResponse.ok) {
+            return []; // Silently fail if brands endpoint doesn't exist
+          }
+          const productsData = await altResponse.json();
+          const products = productsData.items || productsData;
+          // Extract unique brands from products
+          const brands = [
+            ...new Set(
+              products
+                .map((product: { brand?: string }) => product.brand)
+                .filter(Boolean)
+            ),
+          ];
+          return brands;
         }
         return response.json();
       } catch (err) {
@@ -270,6 +292,19 @@ export function ProductFilters({
     return ageGroupName;
   };
 
+  // Filter brands based on search term
+  const getFilteredBrands = (): string[] => {
+    if (!brandSearchTerm.trim()) {
+      return availableBrands;
+    }
+    const searchTerm = brandSearchTerm.toLowerCase().trim();
+    return availableBrands.filter(
+      (brand) =>
+        brand.toLowerCase().includes(searchTerm) ||
+        brand.toLowerCase().startsWith(searchTerm)
+    );
+  };
+
   // Handle price range changes with validation
   const handlePriceChange = () => {
     // Validation
@@ -325,6 +360,8 @@ export function ProductFilters({
     onSizeChange("");
     onColorChange("");
     onBrandChange("");
+    onDiscountFilterChange(false);
+    setBrandSearchTerm("");
     setMinPrice(0);
     setMaxPrice(1000);
     onPriceRangeChange([0, 1000]);
@@ -391,11 +428,14 @@ export function ProductFilters({
                       }
                     }}
                   >
-                    <div className={`category-content ${
-                      selectedCategoryId === (category.id || category._id) && showSubcategories 
-                        ? "subcategories-open" 
-                        : ""
-                    }`}>
+                    <div
+                      className={`category-content ${
+                        selectedCategoryId === (category.id || category._id) &&
+                        showSubcategories
+                          ? "subcategories-open"
+                          : ""
+                      }`}
+                    >
                       <Image
                         src={getCategoryIcon(category.name)}
                         alt={category.name}
@@ -405,7 +445,7 @@ export function ProductFilters({
                       />
                       <span className="category-name">
                         {getLocalizedName(category.name, category)}
-                      </span> 
+                      </span>
                     </div>
                     {subcategories.length > 0 &&
                       selectedCategoryId === (category.id || category._id) &&
@@ -589,19 +629,38 @@ export function ProductFilters({
                 <div className="filter-header">
                   {" "}
                   <h3 className="filter-title">{t("shop.brands")}</h3>
-                  {selectedBrand && (
+                  {(selectedBrand || brandSearchTerm) && (
                     <button
                       className="filter-clear-btn"
-                      onClick={() => onBrandChange("")}
+                      onClick={() => {
+                        onBrandChange("");
+                        setBrandSearchTerm("");
+                      }}
                       aria-label="Clear brand filter"
                     >
                       {t("shop.clear")}
                     </button>
                   )}
                 </div>
+
+                {/* Brand Search Input */}
+                <div className="brand-search-container">
+                  <input
+                    type="text"
+                    placeholder={
+                      language === "en"
+                        ? "Search brands..."
+                        : "ძებნა ბრენდებში..."
+                    }
+                    value={brandSearchTerm}
+                    onChange={(e) => setBrandSearchTerm(e.target.value)}
+                    className="brand-search-input"
+                  />
+                </div>
+
                 <div className="filter-options">
-                  <div className="filter-group">
-                    {availableBrands.slice(0, 10).map((brand) => (
+                  <div className="filter-group brands-scrollable">
+                    {getFilteredBrands().map((brand) => (
                       <div
                         key={brand}
                         className={`filter-option ${
@@ -614,10 +673,73 @@ export function ProductFilters({
                         {brand}
                       </div>
                     ))}
+
+                    {/* Show message if no brands found */}
+                    {getFilteredBrands().length === 0 && brandSearchTerm && (
+                      <div className="no-brands-message">
+                        {language === "en"
+                          ? "No brands found"
+                          : "ბრენდი ვერ მოიძებნა"}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             )}{" "}
+          {/* Discount Filter */}
+          <div className="filter-section">
+            <div className="filter-header">
+              <h3 className="filter-title">
+                {language === "en"
+                  ? "Show Discounted Products"
+                  : "ფასდაკლებული პროდუქტები"}
+              </h3>
+              {showDiscountedOnly && (
+                <button
+                  className="filter-clear-btn"
+                  onClick={() => onDiscountFilterChange(false)}
+                  aria-label="Clear discount filter"
+                >
+                  {t("shop.clear")}
+                </button>
+              )}
+            </div>
+            <div className="filter-options">
+              <div className="filter-group">
+                <div
+                  className={`filter-option discount-filter ${
+                    showDiscountedOnly ? "selected" : ""
+                  }`}
+                  onClick={() => onDiscountFilterChange(!showDiscountedOnly)}
+                  style={{
+                    padding: "12px 16px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    border: "2px solid",
+                    borderColor: showDiscountedOnly ? "#e74c3c" : "#ddd",
+                    backgroundColor: showDiscountedOnly
+                      ? "#e74c3c"
+                      : "transparent",
+                    color: showDiscountedOnly ? "white" : "#333",
+                    fontWeight: showDiscountedOnly ? "bold" : "normal",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <span style={{ fontSize: "18px" }}>
+                    {showDiscountedOnly ? "✓" : "○"}
+                  </span>
+                  <span>
+                    {language === "en"
+                      ? "Only discounted products"
+                      : "მხოლოდ ფასდაკლებული"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
           {/* Price Range Filter */}
           <div className="filter-section">
             {" "}
@@ -690,6 +812,7 @@ export function ProductFilters({
             selectedSize ||
             selectedColor ||
             selectedBrand ||
+            showDiscountedOnly ||
             minPrice > 0 ||
             maxPrice < 1000) && (
             <div className="filter-section">
