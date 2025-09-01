@@ -17,15 +17,13 @@ export default function Footer() {
           <div className="footer-navigation">
             <div className="footer-links">
               <Link href="/" className="footer-link">
-                {/* {t("navigation.shop")} */}
-                მთავარი გვერდი
+                {t("navigation.homePage")}
               </Link>
               <Link href="/" className="footer-link">
                 {t("navigation.shop")}
               </Link>
               <Link href="/about" className="footer-link">
-                {/* {t("navigation.shop")} */}
-                ჩვენს შესახებ
+                {t("navigation.about")}
               </Link>
             </div>
           </div>

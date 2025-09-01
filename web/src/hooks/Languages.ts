@@ -14,13 +14,13 @@ export const TRANSLATIONS: Translations = {
     navigation: {
       home: "მთავარი",
       homePage: "მთავარი გვერდი",
-
       shop: "პროდუქტები",
+      popular: "პოპულარული პროდუქტები",
       auction: "აუქციონი",
       myOrders: "ჩემი შეკვეთები",
       forum: "ფორუმი",
       about: "ჩვენს შესახებ",
-      login: "შესვლა",
+      login: "ავტორიზაცია",
       profile: "პროფილი",
       orders: "შეკვეთები",
       adminPanel: "ადმინ პანელი",
@@ -301,7 +301,7 @@ export const TRANSLATIONS: Translations = {
       ge: "ქარ",
     },
     auth: {
-      login: "შესვლა",
+      login: "ავტორიზაცია",
       register: "რეგისტრაცია",
       name: "სახელი",
       email: "ელ-ფოსტა",
@@ -310,7 +310,7 @@ export const TRANSLATIONS: Translations = {
       rememberMe: "დამიმახსოვრე",
       forgotPassword: "დაგავიწყდათ პაროლი?",
       fullName: "სრული სახელი",
-      loginButton: "შესვლა",
+      loginButton: "ავტორიზაცია",
       registerButton: "რეგისტრაცია",
       alreadyHaveAccount: "უკვე გაქვთ ანგარიში?",
       dontHaveAccount: "არ გაქვთ ანგარიში?",
@@ -333,9 +333,9 @@ export const TRANSLATIONS: Translations = {
       confirmNewPassword: "დაადასტურეთ ახალი პაროლი",
       registrationSuccessful: "რეგისტრაცია წარმატებულია",
       accountCreatedSuccessfully: "ანგარიში წარმატებით შეიქმნა",
-      redirectingToLogin: "მიმდინარეობს გადამისამართება შესვლის გვერდზე",
+      redirectingToLogin: "მიმდინარეობს გადამისამართება ავტორიზაციის გვერდზე",
       loginSuccess: "წარმატებით შეხვედით",
-      loginFailed: "შესვლა ვერ მოხერხდა",
+      loginFailed: "ავტორიზაცია ვერ მოხერხდა",
       invalidCredentials: "არასწორი მეილი ან პაროლი",
       registrationFailed: "რეგისტრაცია ვერ მოხერხდა",
       emailAlreadyExists: "ეს ელ-ფოსტა უკვე რეგისტრირებულია",
@@ -665,6 +665,11 @@ export const TRANSLATIONS: Translations = {
       brandRequired: "ბრენდის მითითება აუცილებელია",
       brandInvalid: "ბრენდის სახელი არასწორია",
     },
+
+    brand: {
+      ourPartners: "ჩვენი პარტნიორები",
+      brandSubtitle: "მაღალი ხარისხის ნადირობის აღჭურვილობა წამყვანი ბრენდებისგან"
+    },
   },
 
   en: {
@@ -673,6 +678,7 @@ export const TRANSLATIONS: Translations = {
       home: "Home",
       homePage: "Home Page",
       shop: "Shop Products",
+      popular: "Popular Products",
       auction: "Auction",
       myOrders: "My Orders",
       forum: "Forum",
@@ -1305,5 +1311,9 @@ export const TRANSLATIONS: Translations = {
       deleteError: "Failed to delete subcategory",
       retry: "Retry",
     },
-  },
+    brand: {
+      ourPartners: "Our Partners",
+      brandSubtitle: "High-quality hunting equipment from leading brands"
+    }
+},
 };

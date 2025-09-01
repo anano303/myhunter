@@ -9,7 +9,7 @@ import CategoryNavigation from "@/components/CategoryNavigation/CategoryNavigati
 import "./homePagesHead.css";
 
 const HomePagesHead = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage(); // 👉 აქ ერთში მოვქციე
   const [banners, setBanners] = useState<Banner[]>([]);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -85,14 +85,12 @@ const HomePagesHead = () => {
     document.head.appendChild(link);
 
     return () => {
-      // Cleanup
       if (document.head.contains(link)) {
         document.head.removeChild(link);
       }
     };
   }, [currentBanner]);
 
-  // Determine background style based on whether we have dynamic banners
   const backgroundStyle =
     currentBanner && currentBanner.imageUrl
       ? {
@@ -133,7 +131,7 @@ const HomePagesHead = () => {
           </div>
         )}
 
-        {/* Carousel navigation (only show if multiple banners) */}
+        {/* Carousel navigation */}
         {banners.length > 1 && (
           <>
             <button
@@ -166,17 +164,17 @@ const HomePagesHead = () => {
           </>
         )}
 
-        {/* Original action buttons - always visible */}
+        {/* Action buttons */}
         <div className="action-buttons">
           <Link href="/register" className="registration-btn">
-            <span className="btn-text">რეგისტრაცია</span>
+            <span className="btn-text" >{t("auth.register")}</span>
           </Link>
           <Link href="/login" className="auth-btn">
-            <span className="btn-text">ავტორიზაცია</span>
+            <span className="btn-text">{t("auth.login")}</span>
           </Link>
         </div>
 
-        {/* Original navigation icons - now using CategoryNavigation component */}
+        {/* CategoryNavigation */}
         <CategoryNavigation />
       </div>
     </div>

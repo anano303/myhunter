@@ -129,7 +129,7 @@
   }
 
   .footer-logo-image {
-    width: 160px; /* Reduced size for tablets */
+    width: 360px; /* Reduced size for tablets */
   }
 }
 
@@ -150,7 +150,7 @@
   }
 
   .footer-logo-image {
-    width: 100px;
+    width: 260px;
   }
 
   .contact-info p {
@@ -162,5 +162,8 @@
 @media (max-width: 400px) {
   .footer-logo-image {
     width: 80px;
+  }
+   .footer-logo-image {
+    width: 200px;
   }
 }

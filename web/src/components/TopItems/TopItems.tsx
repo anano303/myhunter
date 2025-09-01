@@ -8,6 +8,7 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Product } from "@/types";
 import LoadingAnim from "../loadingAnim/loadingAnim";
 import { ProductCard } from "@/modules/products/components/product-card";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const TopItems: React.FC = () => {
   const [isScrolling, setIsScrolling] = useState(false);
@@ -65,6 +66,10 @@ const TopItems: React.FC = () => {
     };
   }, []);
 
+  const { t } = useLanguage();
+
+
+
   if (isLoading) {
     return (
       <div className="top-items-container loading">
@@ -76,7 +81,9 @@ const TopItems: React.FC = () => {
   return (
     <div className="top-items-container">
       <div className="top-items-title-container">
-        <h2 className="top-items-title">პოპულარული პროდუქტები</h2>
+        <h2 className="top-items-title">
+          {t("navigation.popular")}
+        </h2>
       </div>
 
       <div

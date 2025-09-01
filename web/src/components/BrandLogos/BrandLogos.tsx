@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import "./BrandLogos.css";
 import noPhoto from "../../assets/nophoto.webp";
 import { Product } from "@/types";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 // Type for brand data
 interface Brand {
@@ -35,6 +36,7 @@ const BrandLogos = () => {
   const [isAnimationPaused, setIsAnimationPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const { t } = useLanguage();
 
   // Fetch product data directly without relying on a separate brands endpoint
   const { data: productData, isLoading } = useQuery({
@@ -163,9 +165,10 @@ const BrandLogos = () => {
   return (
     <div className="brand-logos-section">
       <div className="brand-logos-header">
-        <h2 className="brand-logos-title">ჩვენი პარტნიორები</h2>
+        <h2 className="brand-logos-title">{t("brand.ourPartners")}</h2>
         <div className="brand-logos-subtitle">
-          მაღალი ხარისხის ნადირობის აღჭურვილობა წამყვანი ბრენდებისგან
+          {t("brand.brandSubtitle")}
+          {/* მაღალი ხარისხის ნადირობის აღჭურვილობა წამყვანი ბრენდებისგან */}
         </div>
       </div>
 
