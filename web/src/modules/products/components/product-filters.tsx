@@ -105,6 +105,8 @@ export function ProductFilters({
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [brandSearchTerm, setBrandSearchTerm] = useState<string>("");
   const [hasHorizontalScroll, setHasHorizontalScroll] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showFloatingPopup, setShowFloatingPopup] = useState(false);
 
   // Update local state when props change
   useEffect(() => {
@@ -396,6 +398,21 @@ export function ProductFilters({
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
   }, [categories]);
+
+  // Scroll detection for floating button
+  useEffect(() => {
+    const handleScroll = () => {
+      const filtersElement = document.querySelector(".product-filters");
+
+      if (filtersElement) {
+        const filtersBottom = filtersElement.getBoundingClientRect().bottom;
+        setIsScrolled(filtersBottom < 0); // Show floating button when filters are scrolled out of view
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   // Adjust subcategory positioning on mobile - use fixed positioning
   useEffect(() => {
     const adjustSubcategoryPositioning = () => {
@@ -493,470 +510,699 @@ export function ProductFilters({
   }, [showSubcategories]);
 
   return (
-    <div className="product-filters">
-      {/* Categories section */}
-      <div className="categories-section">
-        {error && (
-          <div className="filter-error">
-            <p>{error}</p>
-            <button onClick={() => setError(null)}>{t("shop.close")}</button>
-          </div>
-        )}
-
-        <div className="filter-section">
-          <div className="filter-header">
-            {/* <h3 className="filter-title">კატეგორიები</h3> */}{" "}
-            {selectedCategoryId && (
-              <button
-                className="filter-clear-btn"
-                onClick={clearCategoryFilter}
-                aria-label="Clear category filter"
-              >
-                {t("shop.clear")}
-              </button>
-            )}
-          </div>
-          <div className="filter-options">
-            <div
-              className={`main-categories-grid ${
-                hasHorizontalScroll ? "has-scroll" : ""
-              }`}
-            >
-              {isCategoriesLoading ? (
-                <div className="loading">
-                  <HeartLoading size="medium" />
-                </div>
-              ) : categories.length > 0 ? (
-                categories.map((category) => (
-                  <div
-                    key={category.id || category._id}
-                    className={`main-category-option ${
-                      selectedCategoryId === category.id ||
-                      selectedCategoryId === category._id
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      const categoryId = category.id || category._id || "";
-                      if (selectedCategoryId === categoryId) {
-                        // If same category is clicked, just toggle subcategories visibility
-                        setShowSubcategories(!showSubcategories);
-                      } else {
-                        // Select new category and show subcategories
-                        onCategoryChange(categoryId);
-                        onSubCategoryChange(""); // Clear subcategory when changing main category
-                        setShowSubcategories(true);
-                      }
-                    }}
-                  >
-                    <div
-                      className={`category-content ${
-                        selectedCategoryId === (category.id || category._id) &&
-                        showSubcategories
-                          ? "subcategories-open"
-                          : ""
-                      }`}
-                    >
-                      <Image
-                        src={getCategoryIcon(category.name)}
-                        alt={category.name}
-                        width={24}
-                        height={24}
-                        className="category-icon"
-                      />
-                      <span className="filter-category-name">
-                        {getLocalizedName(category.name, category)}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="no-data">{t("shop.noCategories")}</div>
-              )}
-            </div>
-          </div>
+    <>
+      {/* Floating Filter Button - Shows when scrolled */}
+      {isScrolled && (
+        <div className="floating-filter-container">
+          <button
+            className="floating-filter-btn"
+            onClick={() => setShowFloatingPopup(true)}
+            aria-label="Open filters"
+          >
+            <Image
+              src="/filter.png"
+              alt="Filter"
+              className="filter-icon"
+              width={20}
+              height={20}
+            />
+            <span>{t("shop.filters")}</span>
+          </button>
         </div>
+      )}
 
-        {/* Subcategories Section - Below Categories */}
-        {selectedCategoryId &&
-          subcategories.length > 0 &&
-          showSubcategories && (
-            <div className="subcategories-section">
-              <div className="subcategories-grid">
-                {isSubcategoriesLoading ? (
-                  <div className="loading">
-                    <HeartLoading size="medium" />
-                  </div>
-                ) : (
-                  subcategories.map((sub) => (
-                    <div
-                      key={sub.id || sub._id}
-                      className={`subcategory-option ${
-                        selectedSubCategoryId === (sub.id || sub._id)
+      {/* Floating Popup Modal */}
+      {showFloatingPopup && (
+        <div
+          className="floating-popup-overlay"
+          onClick={() => setShowFloatingPopup(false)}
+        >
+          <div
+            className="floating-popup-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="floating-popup-header">
+              <h3>{t("shop.filters")}</h3>
+              <button
+                className="floating-popup-close"
+                onClick={() => setShowFloatingPopup(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="floating-popup-body">
+              {/* Categories */}
+              <div className="popup-section">
+                <h4>{t("shop.categories")}</h4>
+                <div className="popup-options-grid">
+                  {categories.map((category) => (
+                    <button
+                      key={category.id || category._id}
+                      className={`popup-option-btn ${
+                        selectedCategoryId === (category.id || category._id)
                           ? "selected"
                           : ""
                       }`}
                       onClick={() => {
-                        onSubCategoryChange(sub.id || sub._id || "");
+                        const categoryId = category.id || category._id || "";
+                        onCategoryChange(
+                          categoryId === selectedCategoryId ? "" : categoryId
+                        );
                       }}
                     >
-                      <span className="filter-subcategory-name">
+                      {getLocalizedName(category.name, category)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Subcategories */}
+              {selectedCategoryId && subcategories.length > 0 && (
+                <div className="popup-section">
+                  <h4>{t("shop.subcategories")}</h4>
+                  <div className="popup-options-grid">
+                    {subcategories.map((sub) => (
+                      <button
+                        key={sub.id || sub._id}
+                        className={`popup-option-btn ${
+                          selectedSubCategoryId === (sub.id || sub._id)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          const subId = sub.id || sub._id || "";
+                          onSubCategoryChange(
+                            subId === selectedSubCategoryId ? "" : subId
+                          );
+                        }}
+                      >
                         {getLocalizedName(sub.name, sub)}
-                      </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Age Groups */}
+              {selectedSubCategoryId &&
+                getAvailableAttributes("ageGroups").length > 0 && (
+                  <div className="popup-section">
+                    <h4>{t("shop.ageGroupFilter")}</h4>
+                    <div className="popup-options-grid">
+                      {getAvailableAttributes("ageGroups").map((ageGroup) => (
+                        <button
+                          key={ageGroup}
+                          className={`popup-option-btn ${
+                            selectedAgeGroup === ageGroup ? "selected" : ""
+                          }`}
+                          onClick={() => {
+                            onAgeGroupChange(
+                              ageGroup === selectedAgeGroup ? "" : ageGroup
+                            );
+                          }}
+                        >
+                          {getLocalizedAgeGroupName(ageGroup)}
+                        </button>
+                      ))}
                     </div>
-                  ))
+                  </div>
                 )}
+
+              {/* Sizes */}
+              {selectedSubCategoryId &&
+                getAvailableAttributes("sizes").length > 0 && (
+                  <div className="popup-section">
+                    <h4>{t("shop.sizes")}</h4>
+                    <div className="popup-options-grid">
+                      {getAvailableAttributes("sizes").map((size) => (
+                        <button
+                          key={size}
+                          className={`popup-option-btn ${
+                            selectedSize === size ? "selected" : ""
+                          }`}
+                          onClick={() => {
+                            onSizeChange(size === selectedSize ? "" : size);
+                          }}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Colors */}
+              {selectedSubCategoryId &&
+                getAvailableAttributes("colors").length > 0 && (
+                  <div className="popup-section">
+                    <h4>{t("shop.colors")}</h4>
+                    <div className="popup-options-grid">
+                      {getAvailableAttributes("colors").map((color) => (
+                        <button
+                          key={color}
+                          className={`popup-option-btn ${
+                            selectedColor === color ? "selected" : ""
+                          }`}
+                          onClick={() => {
+                            onColorChange(color === selectedColor ? "" : color);
+                          }}
+                        >
+                          {getLocalizedColorName(color)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Brands */}
+              {selectedSubCategoryId && availableBrands.length > 0 && (
+                <div className="popup-section">
+                  <h4>{t("shop.brands")}</h4>
+                  <div className="popup-options-grid">
+                    {getFilteredBrands()
+                      .slice(0, 10)
+                      .map((brand) => (
+                        <button
+                          key={brand}
+                          className={`popup-option-btn ${
+                            selectedBrand === brand ? "selected" : ""
+                          }`}
+                          onClick={() => {
+                            onBrandChange(brand === selectedBrand ? "" : brand);
+                          }}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Price Range */}
+              <div className="popup-section">
+                <h4>{t("shop.priceRange")}</h4>
+                <div className="popup-price-inputs">
+                  <input
+                    type="number"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(Number(e.target.value))}
+                    placeholder={t("shop.min")}
+                    className="popup-price-input"
+                  />
+                  <input
+                    type="number"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    placeholder={t("shop.max")}
+                    className="popup-price-input"
+                  />
+                  <button
+                    className="popup-price-apply"
+                    onClick={handlePriceChange}
+                  >
+                    {t("shop.apply")}
+                  </button>
+                </div>
+              </div>
+
+              {/* Clear All Filters */}
+              <div className="popup-section">
+                <button className="popup-clear-all" onClick={resetAllFilters}>
+                  {t("shop.clearAllFilters")}
+                </button>
               </div>
             </div>
-          )}
-      </div>
-
-      {/* Filter toggle button */}
-      {!showFilters && (
-        <button
-          className="filter-toggle-btn"
-          onClick={() => setShowFilters(true)}
-        >
-          <Image
-            src="/filter.png"
-            alt="Filter"
-            className="filter-icon"
-            width={20}
-            height={20}
-          />
-          {t("shop.filterToggle")}
-        </button>
+          </div>
+        </div>
       )}
 
-      {/* Additional filters section */}
-      {showFilters && (
-        <div className={`additional-filters ${isClosing ? "closing" : ""}`}>
-          <div className="filters-header">
-            <button
-              className="filters-close-btn"
-              onClick={handleClose}
-              aria-label="Close filters"
-            >
-              ✕
-            </button>
-          </div>
-          {/* Age Group Filter */}
-          {selectedSubCategoryId &&
-            getAvailableAttributes("ageGroups").length > 0 && (
-              <div className="filter-section">
-                <div className="filter-header">
-                  {" "}
-                  <h3 className="filter-title">{t("shop.ageGroupFilter")}</h3>
-                  {selectedAgeGroup && (
-                    <button
-                      className="filter-clear-btn"
-                      onClick={() => onAgeGroupChange("")}
-                      aria-label="Clear age group filter"
-                    >
-                      {t("shop.clear")}
-                    </button>
-                  )}
-                </div>
-                <div className="filter-options">
-                  <div className="filter-group">
-                    {getAvailableAttributes("ageGroups").map((ageGroup) => (
-                      <div
-                        key={ageGroup}
-                        className={`filter-option ${
-                          selectedAgeGroup === ageGroup ? "selected" : ""
-                        }`}
-                        onClick={() =>
-                          onAgeGroupChange(
-                            ageGroup === selectedAgeGroup ? "" : ageGroup
-                          )
-                        }
-                      >
-                        {" "}
-                        {getLocalizedAgeGroupName(ageGroup)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          {/* Size Filter */}
-          {selectedSubCategoryId &&
-            getAvailableAttributes("sizes").length > 0 && (
-              <div className="filter-section">
-                <div className="filter-header">
-                  {" "}
-                  <h3 className="filter-title">{t("shop.sizes")}</h3>
-                  {selectedSize && (
-                    <button
-                      className="filter-clear-btn"
-                      onClick={() => onSizeChange("")}
-                      aria-label="Clear size filter"
-                    >
-                      {t("shop.clear")}
-                    </button>
-                  )}
-                </div>
-                <div className="filter-options">
-                  <div className="filter-group size-group">
-                    {getAvailableAttributes("sizes").map((size) => (
-                      <div
-                        key={size}
-                        className={`filter-option size ${
-                          selectedSize === size ? "selected" : ""
-                        }`}
-                        onClick={() =>
-                          onSizeChange(size === selectedSize ? "" : size)
-                        }
-                      >
-                        {size}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}{" "}
-          {/* Color Filter */}
-          {selectedSubCategoryId &&
-            getAvailableAttributes("colors").length > 0 && (
-              <div className="filter-section">
-                <div className="filter-header">
-                  {" "}
-                  <h3 className="filter-title">{t("shop.colors")}</h3>
-                  {selectedColor && (
-                    <button
-                      className="filter-clear-btn"
-                      onClick={() => onColorChange("")}
-                      aria-label="Clear color filter"
-                    >
-                      {t("shop.clear")}
-                    </button>
-                  )}
-                </div>
-                <div className="filter-options">
-                  <div className="filter-group color-group">
-                    {getAvailableAttributes("colors").map((color) => (
-                      <div
-                        key={color}
-                        className={`filter-option color ${
-                          selectedColor === color ? "selected" : ""
-                        }`}
-                        onClick={() =>
-                          onColorChange(color === selectedColor ? "" : color)
-                        }
-                      >
-                        {getLocalizedColorName(color)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          {/* Brand Filter */}
-          {!isBrandsLoading &&
-            availableBrands &&
-            availableBrands.length > 0 && (
-              <div className="filter-section">
-                <div className="filter-header">
-                  {" "}
-                  <h3 className="filter-title">{t("shop.brands")}</h3>
-                  {(selectedBrand || brandSearchTerm) && (
-                    <button
-                      className="filter-clear-btn"
-                      onClick={() => {
-                        onBrandChange("");
-                        setBrandSearchTerm("");
-                      }}
-                      aria-label="Clear brand filter"
-                    >
-                      {t("shop.clear")}
-                    </button>
-                  )}
-                </div>
+      <div className="product-filters">
+        {/* Categories section */}
+        <div className="categories-section">
+          {error && (
+            <div className="filter-error">
+              <p>{error}</p>
+              <button onClick={() => setError(null)}>{t("shop.close")}</button>
+            </div>
+          )}
 
-                {/* Brand Search Input */}
-                <div className="brand-search-container">
-                  <input
-                    type="text"
-                    placeholder={
-                      language === "en"
-                        ? "Search brands..."
-                        : "ძებნა ბრენდებში..."
-                    }
-                    value={brandSearchTerm}
-                    onChange={(e) => setBrandSearchTerm(e.target.value)}
-                    className="brand-search-input"
-                  />
-                </div>
-
-                <div className="filter-options">
-                  <div className="filter-group brands-scrollable">
-                    {getFilteredBrands().map((brand) => (
-                      <div
-                        key={brand}
-                        className={`filter-option ${
-                          selectedBrand === brand ? "selected" : ""
-                        }`}
-                        onClick={() =>
-                          onBrandChange(brand === selectedBrand ? "" : brand)
-                        }
-                      >
-                        {brand}
-                      </div>
-                    ))}
-
-                    {/* Show message if no brands found */}
-                    {getFilteredBrands().length === 0 && brandSearchTerm && (
-                      <div className="no-brands-message">
-                        {language === "en"
-                          ? "No brands found"
-                          : "ბრენდი ვერ მოიძებნა"}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}{" "}
-          {/* Discount Filter */}
           <div className="filter-section">
             <div className="filter-header">
-              <h3 className="filter-title">
-                {language === "en"
-                  ? "Show Discounted Products"
-                  : "ფასდაკლებული პროდუქტები"}
-              </h3>
-              {showDiscountedOnly && (
+              {/* <h3 className="filter-title">კატეგორიები</h3> */}{" "}
+              {selectedCategoryId && (
                 <button
                   className="filter-clear-btn"
-                  onClick={() => onDiscountFilterChange(false)}
-                  aria-label="Clear discount filter"
+                  onClick={clearCategoryFilter}
+                  aria-label="Clear category filter"
                 >
                   {t("shop.clear")}
                 </button>
               )}
             </div>
             <div className="filter-options">
-              <div className="filter-group">
-                <div
-                  className={`filter-option discount-filter ${
-                    showDiscountedOnly ? "selected" : ""
-                  }`}
-                  onClick={() => onDiscountFilterChange(!showDiscountedOnly)}
-                  style={{
-                    padding: "12px 16px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    border: "2px solid",
-                    borderColor: showDiscountedOnly ? "#e74c3c" : "#ddd",
-                    backgroundColor: showDiscountedOnly
-                      ? "#e74c3c"
-                      : "transparent",
+              <div
+                className={`main-categories-grid ${
+                  hasHorizontalScroll ? "has-scroll" : ""
+                }`}
+              >
+                {isCategoriesLoading ? (
+                  <div className="loading">
+                    <HeartLoading size="medium" />
+                  </div>
+                ) : categories.length > 0 ? (
+                  categories.map((category) => (
+                    <div
+                      key={category.id || category._id}
+                      className={`main-category-option ${
+                        selectedCategoryId === category.id ||
+                        selectedCategoryId === category._id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        const categoryId = category.id || category._id || "";
+                        if (selectedCategoryId === categoryId) {
+                          // If same category is clicked, just toggle subcategories visibility
+                          setShowSubcategories(!showSubcategories);
+                        } else {
+                          // Select new category and show subcategories
+                          onCategoryChange(categoryId);
+                          onSubCategoryChange(""); // Clear subcategory when changing main category
+                          setShowSubcategories(true);
+                        }
+                      }}
+                    >
+                      <div
+                        className={`category-content ${
+                          selectedCategoryId ===
+                            (category.id || category._id) && showSubcategories
+                            ? "subcategories-open"
+                            : ""
+                        }`}
+                      >
+                        <Image
+                          src={getCategoryIcon(category.name)}
+                          alt={category.name}
+                          width={24}
+                          height={24}
+                          className="category-icon"
+                        />
+                        <span className="filter-category-name">
+                          {getLocalizedName(category.name, category)}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-data">{t("shop.noCategories")}</div>
+                )}
+              </div>
+            </div>
+          </div>
 
-                    fontWeight: showDiscountedOnly ? "bold" : "normal",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <span style={{ fontSize: "18px" }}>
-                    {showDiscountedOnly ? "✓" : "○"}
-                  </span>
-                  <span>
-                    {language === "en"
-                      ? "Only discounted products"
-                      : "მხოლოდ ფასდაკლებული"}
-                  </span>
+          {/* Subcategories Section - Below Categories */}
+          {selectedCategoryId &&
+            subcategories.length > 0 &&
+            showSubcategories && (
+              <div className="subcategories-section">
+                <div className="subcategories-grid">
+                  {isSubcategoriesLoading ? (
+                    <div className="loading">
+                      <HeartLoading size="medium" />
+                    </div>
+                  ) : (
+                    subcategories.map((sub) => (
+                      <div
+                        key={sub.id || sub._id}
+                        className={`subcategory-option ${
+                          selectedSubCategoryId === (sub.id || sub._id)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          onSubCategoryChange(sub.id || sub._id || "");
+                        }}
+                      >
+                        <span className="filter-subcategory-name">
+                          {getLocalizedName(sub.name, sub)}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+        </div>
+
+        {/* Filter toggle button */}
+        {!showFilters && (
+          <button
+            className="filter-toggle-btn"
+            onClick={() => setShowFilters(true)}
+          >
+            <Image
+              src="/filter.png"
+              alt="Filter"
+              className="filter-icon"
+              width={20}
+              height={20}
+            />
+            {t("shop.filterToggle")}
+          </button>
+        )}
+
+        {/* Additional filters section */}
+        {showFilters && (
+          <div className={`additional-filters ${isClosing ? "closing" : ""}`}>
+            <div className="filters-header">
+              <button
+                className="filters-close-btn"
+                onClick={handleClose}
+                aria-label="Close filters"
+              >
+                ✕
+              </button>
+            </div>
+            {/* Age Group Filter */}
+            {selectedSubCategoryId &&
+              getAvailableAttributes("ageGroups").length > 0 && (
+                <div className="filter-section">
+                  <div className="filter-header">
+                    {" "}
+                    <h3 className="filter-title">{t("shop.ageGroupFilter")}</h3>
+                    {selectedAgeGroup && (
+                      <button
+                        className="filter-clear-btn"
+                        onClick={() => onAgeGroupChange("")}
+                        aria-label="Clear age group filter"
+                      >
+                        {t("shop.clear")}
+                      </button>
+                    )}
+                  </div>
+                  <div className="filter-options">
+                    <div className="filter-group">
+                      {getAvailableAttributes("ageGroups").map((ageGroup) => (
+                        <div
+                          key={ageGroup}
+                          className={`filter-option ${
+                            selectedAgeGroup === ageGroup ? "selected" : ""
+                          }`}
+                          onClick={() =>
+                            onAgeGroupChange(
+                              ageGroup === selectedAgeGroup ? "" : ageGroup
+                            )
+                          }
+                        >
+                          {" "}
+                          {getLocalizedAgeGroupName(ageGroup)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            {/* Size Filter */}
+            {selectedSubCategoryId &&
+              getAvailableAttributes("sizes").length > 0 && (
+                <div className="filter-section">
+                  <div className="filter-header">
+                    {" "}
+                    <h3 className="filter-title">{t("shop.sizes")}</h3>
+                    {selectedSize && (
+                      <button
+                        className="filter-clear-btn"
+                        onClick={() => onSizeChange("")}
+                        aria-label="Clear size filter"
+                      >
+                        {t("shop.clear")}
+                      </button>
+                    )}
+                  </div>
+                  <div className="filter-options">
+                    <div className="filter-group size-group">
+                      {getAvailableAttributes("sizes").map((size) => (
+                        <div
+                          key={size}
+                          className={`filter-option size ${
+                            selectedSize === size ? "selected" : ""
+                          }`}
+                          onClick={() =>
+                            onSizeChange(size === selectedSize ? "" : size)
+                          }
+                        >
+                          {size}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}{" "}
+            {/* Color Filter */}
+            {selectedSubCategoryId &&
+              getAvailableAttributes("colors").length > 0 && (
+                <div className="filter-section">
+                  <div className="filter-header">
+                    {" "}
+                    <h3 className="filter-title">{t("shop.colors")}</h3>
+                    {selectedColor && (
+                      <button
+                        className="filter-clear-btn"
+                        onClick={() => onColorChange("")}
+                        aria-label="Clear color filter"
+                      >
+                        {t("shop.clear")}
+                      </button>
+                    )}
+                  </div>
+                  <div className="filter-options">
+                    <div className="filter-group color-group">
+                      {getAvailableAttributes("colors").map((color) => (
+                        <div
+                          key={color}
+                          className={`filter-option color ${
+                            selectedColor === color ? "selected" : ""
+                          }`}
+                          onClick={() =>
+                            onColorChange(color === selectedColor ? "" : color)
+                          }
+                        >
+                          {getLocalizedColorName(color)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            {/* Brand Filter */}
+            {!isBrandsLoading &&
+              availableBrands &&
+              availableBrands.length > 0 && (
+                <div className="filter-section">
+                  <div className="filter-header">
+                    {" "}
+                    <h3 className="filter-title">{t("shop.brands")}</h3>
+                    {(selectedBrand || brandSearchTerm) && (
+                      <button
+                        className="filter-clear-btn"
+                        onClick={() => {
+                          onBrandChange("");
+                          setBrandSearchTerm("");
+                        }}
+                        aria-label="Clear brand filter"
+                      >
+                        {t("shop.clear")}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Brand Search Input */}
+                  <div className="brand-search-container">
+                    <input
+                      type="text"
+                      placeholder={
+                        language === "en"
+                          ? "Search brands..."
+                          : "ძებნა ბრენდებში..."
+                      }
+                      value={brandSearchTerm}
+                      onChange={(e) => setBrandSearchTerm(e.target.value)}
+                      className="brand-search-input"
+                    />
+                  </div>
+
+                  <div className="filter-options">
+                    <div className="filter-group brands-scrollable">
+                      {getFilteredBrands().map((brand) => (
+                        <div
+                          key={brand}
+                          className={`filter-option ${
+                            selectedBrand === brand ? "selected" : ""
+                          }`}
+                          onClick={() =>
+                            onBrandChange(brand === selectedBrand ? "" : brand)
+                          }
+                        >
+                          {brand}
+                        </div>
+                      ))}
+
+                      {/* Show message if no brands found */}
+                      {getFilteredBrands().length === 0 && brandSearchTerm && (
+                        <div className="no-brands-message">
+                          {language === "en"
+                            ? "No brands found"
+                            : "ბრენდი ვერ მოიძებნა"}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}{" "}
+            {/* Discount Filter */}
+            <div className="filter-section">
+              <div className="filter-header">
+                <h3 className="filter-title">
+                  {language === "en"
+                    ? "Show Discounted Products"
+                    : "ფასდაკლებული პროდუქტები"}
+                </h3>
+                {showDiscountedOnly && (
+                  <button
+                    className="filter-clear-btn"
+                    onClick={() => onDiscountFilterChange(false)}
+                    aria-label="Clear discount filter"
+                  >
+                    {t("shop.clear")}
+                  </button>
+                )}
+              </div>
+              <div className="filter-options">
+                <div className="filter-group">
+                  <div
+                    className={`filter-option discount-filter ${
+                      showDiscountedOnly ? "selected" : ""
+                    }`}
+                    onClick={() => onDiscountFilterChange(!showDiscountedOnly)}
+                    style={{
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      border: "2px solid",
+                      borderColor: showDiscountedOnly ? "#e74c3c" : "#ddd",
+                      backgroundColor: showDiscountedOnly
+                        ? "#e74c3c"
+                        : "transparent",
+
+                      fontWeight: showDiscountedOnly ? "bold" : "normal",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <span style={{ fontSize: "18px" }}>
+                      {showDiscountedOnly ? "✓" : "○"}
+                    </span>
+                    <span>
+                      {language === "en"
+                        ? "Only discounted products"
+                        : "მხოლოდ ფასდაკლებული"}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          {/* Price Range Filter */}
-          <div className="filter-section">
-            {" "}
-            <h3 className="filter-title">{t("shop.priceRange")}</h3>
-            <div className="price-range">
-              <div className="price-inputs">
-                <input
-                  type="number"
-                  value={minPrice}
-                  min={0}
+            {/* Price Range Filter */}
+            <div className="filter-section">
+              {" "}
+              <h3 className="filter-title">{t("shop.priceRange")}</h3>
+              <div className="price-range">
+                <div className="price-inputs">
+                  <input
+                    type="number"
+                    value={minPrice}
+                    min={0}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      setMinPrice(value >= 0 ? value : 0);
+                    }}
+                    placeholder={t("shop.min")}
+                    className="price-input"
+                  />
+                  <span className="price-separator">-</span>
+                  <input
+                    type="number"
+                    value={maxPrice}
+                    min={minPrice}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      setMaxPrice(value >= minPrice ? value : minPrice);
+                    }}
+                    placeholder={t("shop.max")}
+                    className="price-input"
+                  />
+                  <button
+                    className="price-apply-btn"
+                    onClick={handlePriceChange}
+                    aria-label="Apply price filter"
+                  >
+                    {t("shop.applyPrice")}
+                  </button>
+                </div>
+              </div>
+            </div>{" "}
+            {/* Sort Options */}
+            <div className="filter-section">
+              {" "}
+              <h3 className="filter-title">{t("shop.sortBy")}</h3>
+              <div className="sort-options">
+                <select
+                  className="sort-select"
                   onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setMinPrice(value >= 0 ? value : 0);
+                    const value = e.target.value;
+                    const [field, direction] = value.split("-");
+                    onSortChange({
+                      field,
+                      direction: direction as "asc" | "desc",
+                    });
                   }}
-                  placeholder={t("shop.min")}
-                  className="price-input"
-                />
-                <span className="price-separator">-</span>
-                <input
-                  type="number"
-                  value={maxPrice}
-                  min={minPrice}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setMaxPrice(value >= minPrice ? value : minPrice);
-                  }}
-                  placeholder={t("shop.max")}
-                  className="price-input"
-                />
-                <button
-                  className="price-apply-btn"
-                  onClick={handlePriceChange}
-                  aria-label="Apply price filter"
                 >
-                  {t("shop.applyPrice")}
-                </button>
+                  {" "}
+                  <option value="createdAt-desc">
+                    {t("shop.newest")}
+                  </option>{" "}
+                  <option value="price-asc">{t("shop.priceLowHigh")}</option>{" "}
+                  <option value="price-desc">{t("shop.priceHighLow")}</option>{" "}
+                  <option value="name-asc">{t("shop.nameAZ")}</option>{" "}
+                  <option value="name-desc">{t("shop.nameZA")}</option>{" "}
+                  <option value="rating-desc">{t("shop.ratingHigh")}</option>
+                </select>
               </div>
             </div>
-          </div>{" "}
-          {/* Sort Options */}
-          <div className="filter-section">
-            {" "}
-            <h3 className="filter-title">{t("shop.sortBy")}</h3>
-            <div className="sort-options">
-              <select
-                className="sort-select"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const [field, direction] = value.split("-");
-                  onSortChange({
-                    field,
-                    direction: direction as "asc" | "desc",
-                  });
-                }}
-              >
-                {" "}
-                <option value="createdAt-desc">{t("shop.newest")}</option>{" "}
-                <option value="price-asc">{t("shop.priceLowHigh")}</option>{" "}
-                <option value="price-desc">{t("shop.priceHighLow")}</option>{" "}
-                <option value="name-asc">{t("shop.nameAZ")}</option>{" "}
-                <option value="name-desc">{t("shop.nameZA")}</option>{" "}
-                <option value="rating-desc">{t("shop.ratingHigh")}</option>
-              </select>
-            </div>
+            {/* Clear All Filters Button */}
+            {(selectedCategoryId ||
+              selectedSubCategoryId ||
+              selectedAgeGroup ||
+              selectedSize ||
+              selectedColor ||
+              selectedBrand ||
+              showDiscountedOnly ||
+              minPrice > 0 ||
+              maxPrice < 1000) && (
+              <div className="filter-section">
+                <button
+                  className="clear-filters-btn"
+                  onClick={resetAllFilters}
+                  aria-label="Clear all filters"
+                >
+                  {t("shop.clearAllFilters")}
+                </button>
+              </div>
+            )}
           </div>
-          {/* Clear All Filters Button */}
-          {(selectedCategoryId ||
-            selectedSubCategoryId ||
-            selectedAgeGroup ||
-            selectedSize ||
-            selectedColor ||
-            selectedBrand ||
-            showDiscountedOnly ||
-            minPrice > 0 ||
-            maxPrice < 1000) && (
-            <div className="filter-section">
-              <button
-                className="clear-filters-btn"
-                onClick={resetAllFilters}
-                aria-label="Clear all filters"
-              >
-                {t("shop.clearAllFilters")}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
