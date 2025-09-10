@@ -54,6 +54,9 @@ export class Order {
       postalCode: { required: true, type: String },
       country: { required: true, type: String },
       phoneNumber: { required: true, type: String },
+      email: { required: false, type: String },
+      firstName: { required: false, type: String },
+      lastName: { required: false, type: String },
     },
   })
   shippingDetails!: ShippingDetails;

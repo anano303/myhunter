@@ -10,7 +10,7 @@ import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { UsersController } from './controller/users.controller';
 import { GoogleStrategy } from '@/strategies/google.strategy';
-import { EmailService } from '@/email/services/email.services';
+import { EmailModule } from '@/email/email.module';
 import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
 
 @Module({
@@ -28,6 +28,7 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
       signOptions: { expiresIn: '10m' },
     }),
     AwsS3Module, // Add this line to import AwsS3Module
+    EmailModule,
   ],
   controllers: [AuthController, UsersController],
   providers: [
@@ -37,7 +38,6 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module'; // Import the AwsS3Module
     JwtStrategy,
     AuthService,
     GoogleStrategy,
-    EmailService,
   ],
   exports: [UsersService],
 })

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { OrdersService } from '../orders/services/orders.service';
+import { EmailService } from '../email/services/email.services';
 
 interface BogTokenResponse {
   access_token: string;
@@ -22,6 +23,7 @@ export class PaymentsService {
   constructor(
     private readonly configService: ConfigService,
     private readonly ordersService: OrdersService,
+    private readonly emailService: EmailService,
   ) {}
 
   private async getToken(): Promise<string> {
@@ -219,6 +221,38 @@ export class PaymentsService {
             `Order ${external_order_id} successfully updated with payment status`,
           );
 
+          // Send email notifications
+          console.log('🚀 STARTING EMAIL NOTIFICATION PROCESS...');
+          try {
+            const order =
+              await this.ordersService.findByExternalOrderId(external_order_id);
+            console.log('🔍 FOUND ORDER FOR EMAIL:', {
+              orderId: order?._id,
+              hasOrder: !!order,
+              customerEmail:
+                order?.user?.email || order?.shippingDetails?.email,
+            });
+            if (order) {
+              // Send customer confirmation email
+              await this.sendOrderConfirmationEmail(order);
+              console.log(
+                `Order confirmation email sent for order ${external_order_id}`,
+              );
+
+              // Send admin notification email
+              await this.sendAdminNotificationEmail(order);
+              console.log(
+                `Admin notification email sent for order ${external_order_id}`,
+              );
+            }
+          } catch (emailError) {
+            console.error(
+              'Failed to send email notifications:',
+              emailError.message,
+            );
+            // Don't fail the payment processing if email fails
+          }
+
           return {
             success: true,
             message: 'Payment processed successfully and order updated',
@@ -270,5 +304,103 @@ export class PaymentsService {
 
   async getOrderByExternalId(externalOrderId: string) {
     return this.ordersService.findByExternalOrderId(externalOrderId);
+  }
+
+  private async sendOrderConfirmationEmail(order: any) {
+    try {
+      // Prepare order data for email
+      const orderData = {
+        customerEmail: order.user?.email || order.shippingDetails?.email,
+        orderId: order._id.toString(),
+        customerName:
+          `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim(),
+        items:
+          order.orderItems?.map((item: any) => ({
+            name: item.name,
+            quantity: item.qty,
+            price: item.price,
+            size: item.size,
+            color: item.color,
+            ageGroup: item.ageGroup,
+          })) || [],
+        totalAmount: order.totalPrice || 0,
+        shippingAddress: {
+          firstName: order.shippingDetails?.firstName || '',
+          lastName: order.shippingDetails?.lastName || '',
+          address: order.shippingDetails?.address || '',
+          city: order.shippingDetails?.city || '',
+          postalCode: order.shippingDetails?.postalCode,
+          phoneNumber: order.shippingDetails?.phoneNumber || '',
+        },
+        paymentMethod: order.paymentMethod || 'BOG',
+        orderDate: new Date(order.createdAt || Date.now()).toLocaleDateString(
+          'ka-GE',
+          {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          },
+        ),
+      };
+
+      // Only send email if we have customer email
+      if (orderData.customerEmail) {
+        await this.emailService.sendOrderConfirmationEmail(orderData);
+      } else {
+        console.log('No customer email found for order:', order._id);
+      }
+    } catch (error) {
+      console.error('Error preparing order confirmation email:', error.message);
+      throw error;
+    }
+  }
+
+  private async sendAdminNotificationEmail(order: any) {
+    try {
+      const orderData = {
+        orderId: order._id.toString(),
+        customerName:
+          `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim(),
+        customerEmail:
+          order.user?.email || order.shippingDetails?.email || 'N/A',
+        customerPhone: order.shippingDetails?.phoneNumber || 'N/A',
+        items:
+          order.orderItems?.map((item: any) => ({
+            name: item.name,
+            quantity: item.qty,
+            price: item.price,
+            size: item.size,
+            color: item.color,
+            ageGroup: item.ageGroup,
+          })) || [],
+        totalAmount: order.totalPrice || 0,
+        shippingAddress: {
+          firstName: order.shippingDetails?.firstName || '',
+          lastName: order.shippingDetails?.lastName || '',
+          address: order.shippingDetails?.address || '',
+          city: order.shippingDetails?.city || '',
+          postalCode: order.shippingDetails?.postalCode,
+          phoneNumber: order.shippingDetails?.phoneNumber || '',
+        },
+        paymentMethod: order.paymentMethod || 'BOG',
+        orderDate: new Date(order.createdAt || Date.now()).toLocaleDateString(
+          'ka-GE',
+          {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          },
+        ),
+      };
+
+      await this.emailService.sendAdminOrderNotification(orderData);
+    } catch (error) {
+      console.error('Error preparing admin notification email:', error.message);
+      throw error;
+    }
   }
 }

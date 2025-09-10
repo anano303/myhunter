@@ -10,6 +10,9 @@ export interface ShippingDetails {
   postalCode: string;
   country: string;
   phoneNumber: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface OrderItem {
