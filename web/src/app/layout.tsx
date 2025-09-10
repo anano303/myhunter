@@ -12,6 +12,7 @@ import Header from "@/components/header/header";
 import MessengerChatWrapper from "@/components/MessengerChat/MessengerChatWrapper";
 import { CartProvider } from "@/modules/cart/context/cart-context";
 import { CheckoutProvider } from "@/modules/checkout/context/checkout-context";
+import { FloatingCart } from "@/components/FloatingCart/FloatingCart";
 import {
   organizationSchema,
   websiteSchema,
@@ -134,6 +135,7 @@ export default function RootLayout({
                   <Header />
                   {children}
                   <Footer />
+                  <FloatingCart />
                 </LanguageProvider>
               </CheckoutProvider>
             </CartProvider>
