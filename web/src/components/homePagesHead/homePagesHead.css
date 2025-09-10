@@ -6,6 +6,7 @@
   width: 100%;
   max-width: 100vw;
   margin: 0;
+  margin-bottom: 60px; /* CategoryNavigation-ისთვის ადგილი */
   overflow: visible;
   box-sizing: border-box;
 }
@@ -118,11 +119,12 @@
   flex-direction: column;
   justify-content: space-between;
   animation: zoomAnimation 15s ease-in-out infinite alternate;
-  overflow: hidden;
+  overflow: visible; /* CategoryNavigation-ისთვის */
   box-sizing: border-box;
   background-size: cover !important;
   background-position: top center !important;
   background-repeat: no-repeat !important;
+  margin-bottom: 40px; /* CategoryNavigation-ისთვის ადგილი */
 }
 
 /* Dynamic banner content */
@@ -382,8 +384,13 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .home-pages-head {
+    margin-bottom: 50px;
+  }
+
   .rifle-banner {
     height: 400px;
+    margin-bottom: 30px;
   }
 
   .banner-content {
@@ -420,8 +427,13 @@
 }
 
 @media (max-width: 480px) {
+  .home-pages-head {
+    margin-bottom: 40px;
+  }
+
   .rifle-banner {
     height: 350px;
+    margin-bottom: 25px;
   }
 
   .banner-title {
@@ -437,10 +449,10 @@
     bottom: 60px;
   }
 
-  .indicator {
-    width: 10px;
-    height: 10px;
-  }
+  /* .indicator {
+    width: 7px;
+    height: auto
+  } */
 
   /* Keep action buttons hidden on mobile */
   .action-buttons {
