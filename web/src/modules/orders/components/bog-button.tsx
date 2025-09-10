@@ -34,7 +34,7 @@ export function BOGButton({ orderId, amount }: BOGButtonProps) {
           lastName: order.shippingAddress?.lastName || "Customer",
           personalId: order.shippingAddress?.personalId || "",
           address: order.shippingAddress?.address || "",
-          phoneNumber: order.shippingAddress?.phone || "",
+          phoneNumber: order.shippingAddress?.phoneNumber  || "",
           email: order.user?.email || "",
         },
         product: {

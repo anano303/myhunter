@@ -74,6 +74,10 @@ export function OrderReview() {
             {shippingDetails?.address}, {shippingDetails?.city},{" "}
             {shippingDetails?.postalCode}, {shippingDetails?.country}
           </p>
+          <p className="address-details">
+            <strong>Phone: </strong>
+            {shippingDetails?.phoneNumber}
+          </p>
         </div>
 
         {/* Payment Method */}
