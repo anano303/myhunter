@@ -564,6 +564,7 @@ export class ProductsService {
         throw new BadRequestException('Variants must be an array');
       }
 
+      // Filter out empty/invalid variants - only keep variants that have meaningful attributes
       if (data.variants && Array.isArray(data.variants)) {
         data.variants = data.variants.filter((variant: any) => {
           // Check for valid, non-empty string attributes
