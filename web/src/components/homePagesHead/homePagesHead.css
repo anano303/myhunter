@@ -449,10 +449,9 @@
     bottom: 60px;
   }
 
-  /* .indicator {
-    width: 7px;
-    height: auto
-  } */
+  .indicator {
+    display: none;
+  }
 
   /* Keep action buttons hidden on mobile */
   .action-buttons {
