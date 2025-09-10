@@ -78,10 +78,14 @@ export class PaymentsService {
       const token = await this.getToken();
       const externalOrderId = uuidv4();
 
+      // Fix floating-point precision issues for BOG API
+      const unitPrice = parseFloat(data.product.unitPrice.toFixed(2));
+      const totalPrice = parseFloat(data.product.totalPrice.toFixed(2));
+
       const basket = [
         {
           quantity: data.product.quantity,
-          unit_price: data.product.unitPrice,
+          unit_price: unitPrice,
           product_id: data.product.productId,
           description: data.product.productName,
         },
@@ -93,7 +97,7 @@ export class PaymentsService {
         external_order_id: externalOrderId,
         purchase_units: {
           currency: 'GEL',
-          total_amount: data.product.totalPrice,
+          total_amount: totalPrice,
           basket,
         },
         payment_method: ['card'],
