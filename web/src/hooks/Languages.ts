@@ -85,6 +85,13 @@ export const TRANSLATIONS: Translations = {
       // Error messages
       errorLoadingCategories: "კატეგორიების ჩატვირთვა ვერ მოხერხდა",
       errorLoadingSubcategories: "ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა",
+      // New translations
+      subcategories: "ქვეკატეგორიები",
+      apply: "გამოყენება",
+      searchBrands: "ძებნა ბრენდებში",
+      noBrandsFound: "ბრენდი ვერ მოიძებნა",
+      showDiscountedProducts: "მხოლოდ ფასდაკლებული პროდუქტები",
+      resetFilters: "ფილტრების განულება",
     }, // Product Details
     product: {
       ref: "Ref:",
@@ -356,6 +363,22 @@ export const TRANSLATIONS: Translations = {
       privacyPolicy: "კონფიდენციალურობის პოლიტიკას",
       privacyPolicyRequired:
         "კონფიდენციალურობის პოლიტიკაზე თანხმობა აუცილებელია",
+      // Forgot/Reset password
+      success: "წარმატება",
+      error: "შეცდომა",
+      checkEmailForResetLink:
+        "შეამოწმეთ თქვენი ელ-ფოსტა პაროლის აღდგენის ბმულისთვის",
+      somethingWentWrong: "რაღაც არასწორად მოხდა",
+      enterYourEmail: "შეიყვანეთ თქვენი ელ-ფოსტა",
+      sending: "იგზავნება...",
+      sendResetLink: "აღდგენის ბმულის გაგზავნა",
+      invalidResetLink: "არასწორი აღდგენის ბმული",
+      passwordResetSuccessful: "პაროლი წარმატებით შეიცვალა",
+      passwordUpdated: "თქვენი პაროლი განახლდა",
+      passwordResetFailed: "პაროლის შეცვლა ვერ მოხერხდა",
+      newPassword: "ახალი პაროლი",
+      updatingPassword: "პაროლი განახლდება...",
+      resetPassword: "პაროლის შეცვლა",
     },
 
     // Contact form
@@ -668,7 +691,8 @@ export const TRANSLATIONS: Translations = {
 
     brand: {
       ourPartners: "ჩვენი პარტნიორები",
-      brandSubtitle: "მაღალი ხარისხის ნადირობის აღჭურვილობა წამყვანი ბრენდებისგან"
+      brandSubtitle:
+        "მაღალი ხარისხის ნადირობის აღჭურვილობა წამყვანი ბრენდებისგან",
     },
   },
 
@@ -746,6 +770,13 @@ export const TRANSLATIONS: Translations = {
       // Error messages
       errorLoadingCategories: "Failed to load categories",
       errorLoadingSubcategories: "Failed to load subcategories",
+      // New translations
+      subcategories: "Subcategories",
+      apply: "Apply",
+      searchBrands: "Search Brands",
+      noBrandsFound: "No brands found",
+      showDiscountedProducts: "Show Discounted Products Only",
+      resetFilters: "Reset Filters",
     }, // Product Details
     product: {
       ref: "Ref:",
@@ -980,6 +1011,21 @@ export const TRANSLATIONS: Translations = {
       agreeToPrivacyPolicy: "I agree to the ",
       privacyPolicy: "Privacy Policy",
       privacyPolicyRequired: "You must accept the privacy policy to register",
+      // Forgot/Reset password
+      success: "Success",
+      error: "Error",
+      checkEmailForResetLink: "Check your email for the password reset link",
+      somethingWentWrong: "Something went wrong",
+      enterYourEmail: "Enter your email address",
+      sending: "Sending...",
+      sendResetLink: "Send Reset Link",
+      invalidResetLink: "Invalid reset link",
+      passwordResetSuccessful: "Password reset successful",
+      passwordUpdated: "Your password has been updated",
+      passwordResetFailed: "Password reset failed",
+      newPassword: "New Password",
+      updatingPassword: "Updating password...",
+      resetPassword: "Reset Password",
     },
 
     // Contact form
@@ -1313,7 +1359,7 @@ export const TRANSLATIONS: Translations = {
     },
     brand: {
       ourPartners: "Our Partners",
-      brandSubtitle: "High-quality hunting equipment from leading brands"
-    }
-},
+      brandSubtitle: "High-quality hunting equipment from leading brands",
+    },
+  },
 };

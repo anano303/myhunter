@@ -1020,11 +1020,7 @@ export function ProductFilters({
                   <div className="brand-search-container">
                     <input
                       type="text"
-                      placeholder={
-                        language === "en"
-                          ? "Search brands..."
-                          : "ძებნა ბრენდებში..."
-                      }
+                      placeholder={t("shop.searchBrands")}
                       value={brandSearchTerm}
                       onChange={(e) => setBrandSearchTerm(e.target.value)}
                       className="brand-search-input"
@@ -1050,9 +1046,7 @@ export function ProductFilters({
                       {/* Show message if no brands found */}
                       {getFilteredBrands().length === 0 && brandSearchTerm && (
                         <div className="no-brands-message">
-                          {language === "en"
-                            ? "No brands found"
-                            : "ბრენდი ვერ მოიძებნა"}
+                          {t("shop.noBrandsFound")}
                         </div>
                       )}
                     </div>
@@ -1104,11 +1098,7 @@ export function ProductFilters({
                     <span style={{ fontSize: "18px" }}>
                       {showDiscountedOnly ? "✓" : "○"}
                     </span>
-                    <span>
-                      {language === "en"
-                        ? "Only discounted products"
-                        : "მხოლოდ ფასდაკლებული"}
-                    </span>
+                    <span>{t("shop.showDiscountedProducts")}</span>
                   </div>
                 </div>
               </div>
