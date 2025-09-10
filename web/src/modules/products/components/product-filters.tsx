@@ -564,34 +564,10 @@ export function ProductFilters({
                         height={24}
                         className="category-icon"
                       />
-                      <span className="category-name">
+                      <span className="filter-category-name">
                         {getLocalizedName(category.name, category)}
                       </span>
                     </div>
-                    {subcategories.length > 0 &&
-                      selectedCategoryId === (category.id || category._id) &&
-                      showSubcategories && (
-                        <div className="subcategories-overlay">
-                          {isSubcategoriesLoading ? (
-                            <div className="loading">
-                              <HeartLoading size="medium" />
-                            </div>
-                          ) : (
-                            subcategories.map((sub) => (
-                              <div
-                                key={sub.id || sub._id}
-                                className="subcategory-item"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onSubCategoryChange(sub.id || sub._id || "");
-                                }}
-                              >
-                                {getLocalizedName(sub.name, sub)}
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      )}
                   </div>
                 ))
               ) : (
@@ -600,6 +576,39 @@ export function ProductFilters({
             </div>
           </div>
         </div>
+
+        {/* Subcategories Section - Below Categories */}
+        {selectedCategoryId &&
+          subcategories.length > 0 &&
+          showSubcategories && (
+            <div className="subcategories-section">
+              <div className="subcategories-grid">
+                {isSubcategoriesLoading ? (
+                  <div className="loading">
+                    <HeartLoading size="medium" />
+                  </div>
+                ) : (
+                  subcategories.map((sub) => (
+                    <div
+                      key={sub.id || sub._id}
+                      className={`subcategory-option ${
+                        selectedSubCategoryId === (sub.id || sub._id)
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        onSubCategoryChange(sub.id || sub._id || "");
+                      }}
+                    >
+                      <span className="filter-subcategory-name">
+                        {getLocalizedName(sub.name, sub)}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
       </div>
 
       {/* Filter toggle button */}
@@ -841,7 +850,7 @@ export function ProductFilters({
                     backgroundColor: showDiscountedOnly
                       ? "#e74c3c"
                       : "transparent",
-                    color: showDiscountedOnly ? "white" : "#333",
+
                     fontWeight: showDiscountedOnly ? "bold" : "normal",
                     display: "flex",
                     alignItems: "center",
