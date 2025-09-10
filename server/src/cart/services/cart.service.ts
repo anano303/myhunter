@@ -36,13 +36,20 @@ export class CartService {
       );
       if (product) {
         item.qty = Math.min(item.qty, product.countInStock);
-        item.countInStock =
-          product.variants.find(
-            (v) =>
-              v.size === item.size &&
-              v.color === item.color &&
-              v.ageGroup === item.ageGroup,
-          )?.stock || product.countInStock;
+        const variant = product.variants.find((v) => {
+          // Match size: if no size specified, variant shouldn't have size either
+          const sizeMatch = !item.size ? !v.size : v.size === item.size;
+          // Match color: if no color specified, variant shouldn't have color either
+          const colorMatch = !item.color ? !v.color : v.color === item.color;
+          // Match ageGroup: if no ageGroup specified, variant shouldn't have ageGroup either
+          const ageGroupMatch = !item.ageGroup
+            ? !v.ageGroup
+            : v.ageGroup === item.ageGroup;
+
+          return sizeMatch && colorMatch && ageGroupMatch;
+        });
+
+        item.countInStock = variant?.stock || product.countInStock;
       }
       return item;
     });
@@ -201,13 +208,26 @@ export class CartService {
     if (!product) throw new NotFoundException('Product not found');
 
     // Check stock for variant
-    if (size && color && product.variants && product.variants.length > 0) {
-      const variant = product.variants.find(
-        (v) => v.size === size && v.color === color,
-      );
-      if (!variant) throw new NotFoundException('Variant not found');
-      if (qty > variant.stock)
-        throw new BadRequestException('Not enough stock for this variant');
+    if ((size || color) && product.variants && product.variants.length > 0) {
+      const variant = product.variants.find((v) => {
+        // Match size: if no size specified, variant shouldn't have size either
+        const sizeMatch = !size ? !v.size : v.size === size;
+        // Match color: if no color specified, variant shouldn't have color either
+        const colorMatch = !color ? !v.color : v.color === color;
+
+        return sizeMatch && colorMatch;
+      });
+      if (!variant) {
+        // If variant not found but attributes specified, fall back to general stock
+        console.warn(
+          `Variant not found for product ${product.name} with size ${size}, color ${color}, using general stock`,
+        );
+        if (qty > item.countInStock)
+          throw new BadRequestException('Not enough stock');
+      } else {
+        if (qty > variant.stock)
+          throw new BadRequestException('Not enough stock for this variant');
+      }
     } else {
       // Fall back to general stock check
       if (qty > item.countInStock)

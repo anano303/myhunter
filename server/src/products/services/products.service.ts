@@ -564,6 +564,40 @@ export class ProductsService {
         throw new BadRequestException('Variants must be an array');
       }
 
+      if (data.variants && Array.isArray(data.variants)) {
+        data.variants = data.variants.filter((variant: any) => {
+          // Check for valid, non-empty string attributes
+          const hasValidSize =
+            variant.size &&
+            typeof variant.size === 'string' &&
+            variant.size.trim() !== '' &&
+            variant.size !== 'undefined' &&
+            variant.size !== 'null';
+
+          const hasValidColor =
+            variant.color &&
+            typeof variant.color === 'string' &&
+            variant.color.trim() !== '' &&
+            variant.color !== 'undefined' &&
+            variant.color !== 'null';
+
+          const hasValidAgeGroup =
+            variant.ageGroup &&
+            typeof variant.ageGroup === 'string' &&
+            variant.ageGroup.trim() !== '' &&
+            variant.ageGroup !== 'undefined' &&
+            variant.ageGroup !== 'null';
+
+          // A variant must have at least one meaningful attribute
+          return hasValidSize || hasValidColor || hasValidAgeGroup;
+        });
+
+        // If no valid variants remain, remove the variants field
+        if (data.variants.length === 0) {
+          delete data.variants;
+        }
+      }
+
       const status =
         productData.user.role === Role.Admin
           ? ProductStatus.APPROVED
@@ -628,9 +662,16 @@ export class ProductsService {
 
     // If the product has variants
     if (product.variants && product.variants.length > 0) {
-      const variant = product.variants.find(
-        (v) => v.size === size && v.color === color && v.ageGroup === ageGroup,
-      );
+      const variant = product.variants.find((v) => {
+        // Match size: if no size specified, variant shouldn't have size either
+        const sizeMatch = !size ? !v.size : v.size === size;
+        // Match color: if no color specified, variant shouldn't have color either
+        const colorMatch = !color ? !v.color : v.color === color;
+        // Match ageGroup: if no ageGroup specified, variant shouldn't have ageGroup either
+        const ageGroupMatch = !ageGroup ? !v.ageGroup : v.ageGroup === ageGroup;
+
+        return sizeMatch && colorMatch && ageGroupMatch;
+      });
       if (!variant) {
         return false;
       }
@@ -657,16 +698,29 @@ export class ProductsService {
 
     // If the product has variants
     if (product.variants && product.variants.length > 0) {
-      const variantIndex = product.variants.findIndex(
-        (v) =>
-          v.size === size &&
-          v.color === color &&
-          v.ageGroup === selectedAgeGroup,
-      );
+      const variantIndex = product.variants.findIndex((v) => {
+        // Match size: if no size specified, variant shouldn't have size either
+        const sizeMatch = !size ? !v.size : v.size === size;
+        // Match color: if no color specified, variant shouldn't have color either
+        const colorMatch = !color ? !v.color : v.color === color;
+        // Match ageGroup: if no ageGroup specified, variant shouldn't have ageGroup either
+        const ageGroupMatch = !selectedAgeGroup
+          ? !v.ageGroup
+          : v.ageGroup === selectedAgeGroup;
+
+        return sizeMatch && colorMatch && ageGroupMatch;
+      });
       if (variantIndex === -1) {
-        throw new NotFoundException(
-          `Variant with size ${size} and color ${color} not found`,
+        // If variant not found but attributes specified, fall back to general stock
+        console.warn(
+          `Variant not found for product ${product.name} with size ${size}, color ${color}, ageGroup ${selectedAgeGroup}, using general stock`,
         );
+        if (product.countInStock < quantity) {
+          throw new BadRequestException('Not enough stock');
+        }
+        product.countInStock -= quantity;
+        await product.save();
+        return;
       }
 
       if (product.variants[variantIndex].stock < quantity) {
@@ -677,6 +731,13 @@ export class ProductsService {
 
       // Update the specific variant's stock
       product.variants[variantIndex].stock -= quantity;
+
+      // Also update countInStock to reflect total available stock from all variants
+      product.countInStock = product.variants.reduce(
+        (total, variant) => total + variant.stock,
+        0,
+      );
+
       await product.save();
     } else {
       // Fall back to legacy countInStock if no variants
@@ -853,10 +914,17 @@ export class ProductsService {
       product.variants.length > 0 &&
       (size || color || ageGroup)
     ) {
-      // Find the specific variant
-      const variantIndex = product.variants.findIndex(
-        (v) => v.size === size && v.color === color && v.ageGroup === ageGroup,
-      );
+      // Find the specific variant with flexible matching
+      const variantIndex = product.variants.findIndex((v) => {
+        // Match size: if no size specified, variant shouldn't have size either
+        const sizeMatch = !size ? !v.size : v.size === size;
+        // Match color: if no color specified, variant shouldn't have color either
+        const colorMatch = !color ? !v.color : v.color === color;
+        // Match ageGroup: if no ageGroup specified, variant shouldn't have ageGroup either
+        const ageGroupMatch = !ageGroup ? !v.ageGroup : v.ageGroup === ageGroup;
+
+        return sizeMatch && colorMatch && ageGroupMatch;
+      });
 
       if (variantIndex >= 0) {
         // Update the variant stock
@@ -866,6 +934,12 @@ export class ProductsService {
         );
         console.log(
           `Updated variant stock for product ${product.name}, variant: ${size}/${color}/${ageGroup}, new stock: ${product.variants[variantIndex].stock}`,
+        );
+
+        // Also update countInStock to reflect total available stock from all variants
+        product.countInStock = product.variants.reduce(
+          (total, variant) => total + variant.stock,
+          0,
         );
       } else {
         // If variant not found but attributes were specified, log a warning

@@ -64,28 +64,50 @@ export class OrdersService {
             product.variants.length > 0 &&
             (item.size || item.color || item.ageGroup)
           ) {
-            // Find the specific variant
-            const variantIndex = product.variants.findIndex(
-              (v) =>
-                v.size === item.size &&
-                v.color === item.color &&
-                v.ageGroup === item.ageGroup,
-            );
+            // Find the specific variant with flexible matching
+            const variantIndex = product.variants.findIndex((v) => {
+              // Match size: if no size specified, variant shouldn't have size either
+              const sizeMatch = !item.size ? !v.size : v.size === item.size;
+              // Match color: if no color specified, variant shouldn't have color either
+              const colorMatch = !item.color
+                ? !v.color
+                : v.color === item.color;
+              // Match ageGroup: if no ageGroup specified, variant shouldn't have ageGroup either
+              const ageGroupMatch = !item.ageGroup
+                ? !v.ageGroup
+                : v.ageGroup === item.ageGroup;
+
+              return sizeMatch && colorMatch && ageGroupMatch;
+            });
 
             if (variantIndex === -1) {
-              throw new BadRequestException(
-                `Variant not found for product ${product.name} (${item.size}/${item.color}/${item.ageGroup})`,
+              // If variant not found but product has variants, fall back to general stock
+              console.warn(
+                `Variant not found for product ${product.name} (${item.size}/${item.color}/${item.ageGroup}), using general stock`,
+              );
+
+              if (product.countInStock < item.qty) {
+                throw new BadRequestException(
+                  `Not enough stock for product ${product.name}. Available: ${product.countInStock}, Requested: ${item.qty}`,
+                );
+              }
+              product.countInStock -= item.qty;
+            } else {
+              if (product.variants[variantIndex].stock < item.qty) {
+                throw new BadRequestException(
+                  `Not enough stock for product ${product.name} variant (${item.size}/${item.color}/${item.ageGroup}). Available: ${product.variants[variantIndex].stock}, Requested: ${item.qty}`,
+                );
+              }
+
+              // Reserve stock immediately (subtract from available stock)
+              product.variants[variantIndex].stock -= item.qty;
+
+              // Also update countInStock to reflect total available stock from all variants
+              product.countInStock = product.variants.reduce(
+                (total, variant) => total + variant.stock,
+                0,
               );
             }
-
-            if (product.variants[variantIndex].stock < item.qty) {
-              throw new BadRequestException(
-                `Not enough stock for product ${product.name} variant (${item.size}/${item.color}/${item.ageGroup}). Available: ${product.variants[variantIndex].stock}, Requested: ${item.qty}`,
-              );
-            }
-
-            // Reserve stock immediately (subtract from available stock)
-            product.variants[variantIndex].stock -= item.qty;
           } else {
             // Handle legacy products without variants
             if (product.countInStock < item.qty) {
