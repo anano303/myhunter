@@ -111,12 +111,40 @@ export class EmailService {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>შეკვეთის დადასტურება</title>
+          <style>
+            @media only screen and (max-width: 600px) {
+              .email-container { 
+                width: 100% !important; 
+                padding: 10px !important; 
+              }
+              .email-content { 
+                padding: 15px !important; 
+              }
+              .email-header h1 { 
+                font-size: 22px !important; 
+              }
+              .email-table { 
+                font-size: 14px !important; 
+              }
+              .email-table th, .email-table td { 
+                padding: 8px 4px !important; 
+                font-size: 12px !important; 
+              }
+              .total-row td { 
+                font-size: 14px !important; 
+              }
+              .contact-section { 
+                padding: 15px !important; 
+              }
+            }
+          </style>
         </head>
-        <body style="font-family: 'FiraGo', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
-          <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            
-            <!-- Header -->
-            <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #4b5320; padding-bottom: 20px;">
+        <body style="font-family: 'FiraGo', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f5;">
+          <div class="email-container" style="max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div class="email-content" style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              
+              <!-- Header -->
+              <div class="email-header" style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #4b5320; padding-bottom: 20px;">
               <h1 style="color: #4b5320; margin: 0; font-size: 28px;">🎯 MYHUNTER</h1>
               <p style="color: #666; margin: 5px 0 0 0; font-size: 16px;">ნადირობისა და თევზაობის ექსპერტები</p>
             </div>
@@ -150,11 +178,11 @@ export class EmailService {
             <!-- Items Table -->
             <div style="margin-bottom: 30px;">
               <h3 style="color: #4b5320; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;">🛒 შეკვეთილი პროდუქტები</h3>
-              <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+              <table class="email-table" style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
                 <thead>
                   <tr style="background-color: #f8f9fa;">
                     <th style="padding: 12px; text-align: left; border-right: 1px solid #eee; font-weight: bold; color: #4b5320;">პროდუქტი</th>
-                    <th style="padding: 12px; text-align: center; border-right: 1px solid #eee; font-weight: bold; color: #4b5320;">რაოდენობა</th>
+                    <th style="padding: 12px; text-align: center; border-right: 1px solid #eee; font-weight: bold; color: #4b5320;">რაოდ.</th>
                     <th style="padding: 12px; text-align: right; font-weight: bold; color: #4b5320;">ფასი</th>
                   </tr>
                 </thead>
@@ -162,7 +190,7 @@ export class EmailService {
                   ${itemsHtml}
                 </tbody>
                 <tfoot>
-                  <tr style="background-color: #2d8a3e; color: white; font-weight: bold;">
+                  <tr class="total-row" style="background-color: #2d8a3e; color: white; font-weight: bold;">
                     <td colspan="2" style="padding: 15px; text-align: right;">სულ ჯამი:</td>
                     <td style="padding: 15px; text-align: right; font-size: 18px;">${orderData.totalAmount.toFixed(2)} ლარი</td>
                   </tr>
@@ -193,7 +221,7 @@ export class EmailService {
             </div>
 
             <!-- Contact Info -->
-            <div style="background-color: #4b5320; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <div class="contact-section" style="background-color: #4b5320; color: white; padding: 20px; border-radius: 8px; text-align: center;">
               <h3 style="margin: 0 0 15px 0;">📞 კონტაქტი</h3>
               <p style="margin: 0 0 8px 0;">კითხვების შემთხვევაში დაგვიკავშირდით:</p>
               <p style="margin: 0 0 8px 0;">📧 info@myhunter.ge</p>
@@ -207,6 +235,7 @@ export class EmailService {
               <p style="margin: 10px 0 0 0;">© 2025 MYHUNTER. ყველა უფლება დაცულია.</p>
             </div>
 
+            </div>
           </div>
         </body>
         </html>
@@ -271,7 +300,7 @@ export class EmailService {
         .join('');
 
       // Admin email - send to store management
-      const adminEmail = process.env.ADMIN_EMAIL || 'admin@myhunter.ge';
+      const adminEmail = process.env.ADMIN_EMAIL || 'ssbbmarket@gmail.com';
 
       const mailOptions = {
         from: emailConfig.from,
@@ -282,13 +311,39 @@ export class EmailService {
         <html>
         <head>
           <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>ახალი შეკვეთა</title>
+          <style>
+            @media only screen and (max-width: 600px) {
+              .admin-email-container { 
+                width: 100% !important; 
+                padding: 10px !important; 
+              }
+              .admin-email-content { 
+                padding: 15px !important; 
+              }
+              .admin-header h1 { 
+                font-size: 22px !important; 
+              }
+              .admin-table { 
+                font-size: 14px !important; 
+              }
+              .admin-table th, .admin-table td { 
+                padding: 6px 3px !important; 
+                font-size: 11px !important; 
+              }
+              .admin-total-row td { 
+                font-size: 14px !important; 
+              }
+            }
+          </style>
         </head>
-        <body style="font-family: 'FiraGo', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
-          <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            
-            <!-- Header -->
-            <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #e74c3c; padding-bottom: 20px;">
+        <body style="font-family: 'FiraGo', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f5;">
+          <div class="admin-email-container" style="max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div class="admin-email-content" style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              
+              <!-- Header -->
+              <div class="admin-header" style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #e74c3c; padding-bottom: 20px;">
               <h1 style="color: #e74c3c; margin: 0; font-size: 28px;">🚨 ახალი შეკვეთა!</h1>
               <p style="color: #666; margin: 5px 0 0 0; font-size: 16px;">MYHUNTER Admin Panel</p>
             </div>
@@ -331,11 +386,11 @@ export class EmailService {
             <!-- Items -->
             <div style="margin-bottom: 25px;">
               <h3 style="color: #e74c3c; margin-bottom: 15px;">🛒 შეკვეთილი პროდუქტები</h3>
-              <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+              <table class="admin-table" style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
                 <thead>
                   <tr style="background-color: #e74c3c; color: white;">
                     <th style="padding: 10px; text-align: left;">პროდუქტი</th>
-                    <th style="padding: 10px; text-align: center;">რაოდენობა</th>
+                    <th style="padding: 10px; text-align: center;">რაოდ.</th>
                     <th style="padding: 10px; text-align: right;">ფასი</th>
                   </tr>
                 </thead>
@@ -343,7 +398,7 @@ export class EmailService {
                   ${itemsHtml}
                 </tbody>
                 <tfoot>
-                  <tr style="background-color: #28a745; color: white; font-weight: bold;">
+                  <tr class="admin-total-row" style="background-color: #28a745; color: white; font-weight: bold;">
                     <td colspan="2" style="padding: 12px; text-align: right;">სულ ჯამი:</td>
                     <td style="padding: 12px; text-align: right; font-size: 18px;">${orderData.totalAmount.toFixed(2)} ლარი</td>
                   </tr>

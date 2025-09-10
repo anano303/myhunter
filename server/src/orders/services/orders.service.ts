@@ -331,7 +331,9 @@ export class OrdersService {
   }
 
   async findByExternalOrderId(externalOrderId: string): Promise<OrderDocument> {
-    const order = await this.orderModel.findOne({ externalOrderId });
+    const order = await this.orderModel
+      .findOne({ externalOrderId })
+      .populate('user', 'name email firstName lastName');
 
     if (!order) {
       throw new NotFoundException(

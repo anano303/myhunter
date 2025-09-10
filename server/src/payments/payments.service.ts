@@ -309,11 +309,17 @@ export class PaymentsService {
   private async sendOrderConfirmationEmail(order: any) {
     try {
       // Prepare order data for email
+      console.log('📧 Preparing customer email - Order data:', {
+        user: order.user,
+        hasUser: !!order.user,
+        userEmail: order.user?.email,
+        userName: order.user?.name,
+      });
+
       const orderData = {
-        customerEmail: order.user?.email || order.shippingDetails?.email,
+        customerEmail: order.user?.email || null,
         orderId: order._id.toString(),
-        customerName:
-          `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim(),
+        customerName: order.user?.name || 'Customer',
         items:
           order.orderItems?.map((item: any) => ({
             name: item.name,
@@ -361,10 +367,8 @@ export class PaymentsService {
     try {
       const orderData = {
         orderId: order._id.toString(),
-        customerName:
-          `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim(),
-        customerEmail:
-          order.user?.email || order.shippingDetails?.email || 'N/A',
+        customerName: order.user?.name || 'Customer',
+        customerEmail: order.user?.email || 'N/A',
         customerPhone: order.shippingDetails?.phoneNumber || 'N/A',
         items:
           order.orderItems?.map((item: any) => ({
