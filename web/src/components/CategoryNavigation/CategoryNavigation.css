@@ -1,6 +1,6 @@
 .category-navigation {
   position: absolute;
-  bottom: -65px; /* ნახევარი ზედა დივში,.category-text {
+  bottom: -45px; /* ნახევარი ზედა დივში,.category-text {
   font-family: 'FiraGO', sans-serif;
   font-size: 14px;
   font-weight: 600;
@@ -13,7 +13,7 @@
   left: 0;
   right: 0;
   z-index: 20;
-  padding: 0 20px;
+ 
 }
 
 .category-scroll-container {
@@ -21,18 +21,18 @@
   align-items: center;
   gap: 30px; /* ნაკლები ახლოს ერთმანეთთან */
   overflow-x: auto;
-  padding: 20px 30px;
-  background: rgb(70 76 65 / 57%);
+  background:  rgb(70 76 65 / 57%);
   backdrop-filter: blur(10px);
   border-radius: 50px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(139, 119, 101, 0.3);
+  border: 1px solid rgba(91, 108, 24, 0.6); /* #5b6c18 ტონალობა */
   scroll-behavior: smooth;
   justify-content: flex-start; /* დიდი ეკრანზე 4 კატეგორია ჩასატევად */
 
   /* Hide scrollbar */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  padding: 5px 15px;
 }
 .category-scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
@@ -43,7 +43,7 @@
   flex-direction: row; /* ჰორიზონტალურად განლაგება */
   align-items: center;
   gap: 15px; /* აიქონსა და ტექსტს შორის */
-  padding: 20px 25px;
+
   border-radius: 25px;
   text-decoration: none;
   color: #f5f5dc;
@@ -56,9 +56,9 @@
 }
 
 .main-category-item:hover {
-  background: rgba(139, 119, 101, 0.7);
+  background: rgba(91, 108, 24, 0.6); /* #5b6c18 ტონალობა */
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(244, 140, 6, 0.4);
+  box-shadow: 0 6px 20px rgba(91, 108, 24, 0.5); /* #5b6c18 ტონალობა */
 }
 
 .main-category-item:active {
@@ -69,7 +69,7 @@
   width: 64px;
   height: 64px;
   padding: 12px;
-  background: rgba(244, 140, 6, 0.2);
+  background: rgba(91, 108, 24, 0.3); /* #5b6c18 ტონალობა */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -79,7 +79,7 @@
 }
 
 .main-category-item:hover .category-icon {
-  background: rgba(244, 140, 6, 0.4);
+  background: rgba(91, 108, 24, 0.6); /* #5b6c18 ტონალობა */
   transform: scale(1.1);
 }
 
@@ -92,8 +92,8 @@
 }
 
 .main-category-item:hover .category-icon .icon {
-  filter: brightness(0) saturate(100%) invert(75%) sepia(94%) saturate(1465%)
-    hue-rotate(347deg) brightness(103%) contrast(101%);
+  filter: brightness(0) saturate(100%) invert(69%) sepia(35%) saturate(472%)
+    hue-rotate(60deg) brightness(98%) contrast(85%); /* #5b6c18 ტონალობისთვის */
 }
 
 .category-text {
@@ -107,7 +107,7 @@
 }
 
 .main-category-item:hover .category-text {
-  color: #f48c06;
+  color: #8fb518; /* #5b6c18-ის ღია ვარიანტი */
 }
 
 /* Large desktop: 4 categories visible */
@@ -131,17 +131,18 @@
 /* Responsive */
 @media (max-width: 768px) {
   .category-navigation {
-    padding: 0 10px;
+ 
+    
     bottom: -50px;
   }
 
   .category-scroll-container {
     gap: 15px;
-    padding: 15px 20px;
+
   }
 
   .main-category-item {
-    padding: 15px 18px;
+    
     min-width: calc(50vw - 50px); /* 2 კატეგორია ეტეოდეს */
     gap: 12px;
   }
@@ -164,17 +165,18 @@
 
 @media (max-width: 480px) {
   .category-navigation {
-    padding: 0 5px;
-    bottom: -40px;
+   
+    
+    bottom: -30px;
   }
 
   .category-scroll-container {
     gap: 12px;
-    padding: 12px 15px;
+   
   }
 
   .main-category-item {
-    padding: 12px 15px;
+  
     min-width: calc(50vw - 35px); /* 2 კატეგორია ეტეოდეს პატარა ეკრანზეც */
     gap: 10px;
   }
