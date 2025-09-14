@@ -336,6 +336,9 @@ const ShopContent = () => {
           </div>
 
           <div className="products-area">
+            {/* <h2 id="shop-products-title" className="products-title">
+              {t("shop.products")}
+            </h2> */}
             {isLoading ? (
               <div className="loading-state">{t("shop.loading")}</div>
             ) : products.length > 0 ? (

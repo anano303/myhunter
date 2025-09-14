@@ -23,7 +23,7 @@
   overflow-x: auto;
   background:  rgb(70 76 65 / 57%);
   backdrop-filter: blur(10px);
-  border-radius: 50px;
+  border-radius: 8px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(91, 108, 24, 0.6); /* #5b6c18 ტონალობა */
   scroll-behavior: smooth;
@@ -44,7 +44,7 @@
   align-items: center;
   gap: 15px; /* აიქონსა და ტექსტს შორის */
 
-  border-radius: 25px;
+  border-radius: 8px;
   text-decoration: none;
   color: #f5f5dc;
   background: transparent;
@@ -70,7 +70,7 @@
   height: 64px;
   padding: 12px;
   background: rgba(91, 108, 24, 0.3); /* #5b6c18 ტონალობა */
-  border-radius: 50%;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
