@@ -107,6 +107,14 @@ export function CreateProductForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // Add state for hashtags input text
+  const [hashtagsInput, setHashtagsInput] = useState<string>("");
+
+  // Form data auto-save key for localStorage
+  const AUTO_SAVE_KEY = `product-form-data-${
+    isEdit ? formData._id || "edit" : "new"
+  }`;
+
   // Fetch categories
   const { data: categories, isLoading: isCategoriesLoading } = useQuery<
     Category[]
@@ -210,6 +218,193 @@ export function CreateProductForm({
       }
     }
   }, [subcategories, selectedSubcategory]);
+
+  // Enhanced auto-save form data to localStorage whenever form data changes
+  useEffect(() => {
+    const saveFormData = () => {
+      // Create comprehensive data to save including all form state
+      const dataToSave = {
+        formData: {
+          ...formData,
+          // Don't save File objects, but keep track of their names and count
+          images: formData.images.map((img, index) =>
+            typeof img === "string"
+              ? img
+              : {
+                  type: "file",
+                  name: img.name,
+                  size: img.size,
+                  index: index,
+                  savedAt: Date.now(),
+                }
+          ),
+          // Don't save brandLogo File objects but keep metadata
+          brandLogo:
+            typeof formData.brandLogo === "string"
+              ? formData.brandLogo
+              : formData.brandLogo
+              ? {
+                  type: "file",
+                  name: formData.brandLogo.name,
+                  size: formData.brandLogo.size,
+                  savedAt: Date.now(),
+                }
+              : undefined,
+        },
+        selectedCategory,
+        selectedSubcategory,
+        selectedAgeGroups,
+        selectedSizes,
+        selectedColors,
+        deliveryType,
+        minDeliveryDays,
+        maxDeliveryDays,
+        discountPercentage,
+        discountStartDate,
+        discountEndDate,
+        hashtagsInput,
+        timestamp: Date.now(),
+        version: "2.0", // Version to handle future migration
+        sessionId: sessionStorage.getItem("current-session") || "default", // Track session
+      };
+
+      try {
+        localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(dataToSave));
+
+        // Show subtle indication that data was saved
+        console.log(
+          "✅ Form data auto-saved at",
+          new Date().toLocaleTimeString()
+        );
+      } catch (error) {
+        console.warn("⚠️ Failed to auto-save form data:", error);
+
+        // If localStorage is full, try to clear old data
+        try {
+          const keys = Object.keys(localStorage).filter(
+            (key) => key.startsWith("product-form-") && key !== AUTO_SAVE_KEY
+          );
+          keys.forEach((key) => localStorage.removeItem(key));
+
+          // Try saving again
+          localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(dataToSave));
+          console.log("✅ Auto-save successful after cleanup");
+        } catch (retryError) {
+          console.error("❌ Auto-save failed even after cleanup:", retryError);
+        }
+      }
+    };
+
+    // Auto-save if form has any meaningful data or user started filling it
+    const hasData =
+      formData.name ||
+      formData.nameEn ||
+      formData.description ||
+      formData.descriptionEn ||
+      selectedCategory ||
+      selectedSubcategory ||
+      formData.price > 0 ||
+      formData.images.length > 0 ||
+      hashtagsInput ||
+      discountPercentage ||
+      selectedAgeGroups.length > 0 ||
+      selectedSizes.length > 0 ||
+      selectedColors.length > 0;
+
+    if (hasData && !isEdit) {
+      // Only auto-save for new products, not edits
+      const timeoutId = setTimeout(saveFormData, 500); // Faster debounce for better UX
+      return () => clearTimeout(timeoutId);
+    }
+  }, [
+    formData,
+    selectedCategory,
+    selectedSubcategory,
+    selectedAgeGroups,
+    selectedSizes,
+    selectedColors,
+    deliveryType,
+    minDeliveryDays,
+    maxDeliveryDays,
+    discountPercentage,
+    discountStartDate,
+    discountEndDate,
+    hashtagsInput,
+    AUTO_SAVE_KEY,
+  ]);
+
+  // Load saved form data on component mount
+  useEffect(() => {
+    if (!isEdit && !initialData) {
+      try {
+        const savedData = localStorage.getItem(AUTO_SAVE_KEY);
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+
+          // Check if data is not too old (24 hours)
+          const isDataFresh =
+            parsedData.timestamp &&
+            Date.now() - parsedData.timestamp < 24 * 60 * 60 * 1000;
+
+          if (isDataFresh && parsedData.formData) {
+            console.log("Restoring auto-saved form data");
+
+            // Restore form data
+            setFormData((prev) => ({
+              ...prev,
+              ...parsedData.formData,
+              // Reset images array since we can't restore File objects
+              images: [],
+            }));
+
+            // Restore selections
+            if (parsedData.selectedCategory)
+              setSelectedCategory(parsedData.selectedCategory);
+            if (parsedData.selectedSubcategory)
+              setSelectedSubcategory(parsedData.selectedSubcategory);
+            if (parsedData.selectedAgeGroups)
+              setSelectedAgeGroups(parsedData.selectedAgeGroups);
+            if (parsedData.selectedSizes)
+              setSelectedSizes(parsedData.selectedSizes);
+            if (parsedData.selectedColors)
+              setSelectedColors(parsedData.selectedColors);
+            if (parsedData.deliveryType)
+              setDeliveryType(parsedData.deliveryType);
+            if (parsedData.minDeliveryDays)
+              setMinDeliveryDays(parsedData.minDeliveryDays);
+            if (parsedData.maxDeliveryDays)
+              setMaxDeliveryDays(parsedData.maxDeliveryDays);
+            if (parsedData.discountPercentage)
+              setDiscountPercentage(parsedData.discountPercentage);
+            if (parsedData.discountStartDate)
+              setDiscountStartDate(parsedData.discountStartDate);
+            if (parsedData.discountEndDate)
+              setDiscountEndDate(parsedData.discountEndDate);
+            if (parsedData.hashtagsInput)
+              setHashtagsInput(parsedData.hashtagsInput);
+
+            // Show notification that data was restored
+            const imageCount = parsedData.formData.images?.length || 0;
+            const imageInfo =
+              imageCount > 0
+                ? ` (${imageCount} სურათი ახლიდან უნდა აირჩეს)`
+                : "";
+
+            toast({
+              title: "📝 მონაცემები აღდგა",
+              description: `თქვენი ძველი ფორმის მონაცემები წარმატებით აღდგა${imageInfo}`,
+            });
+          } else if (!isDataFresh) {
+            // Remove old data
+            localStorage.removeItem(AUTO_SAVE_KEY);
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to restore auto-saved form data:", error);
+        localStorage.removeItem(AUTO_SAVE_KEY);
+      }
+    }
+  }, [AUTO_SAVE_KEY, isEdit, initialData]);
 
   // Auto-fill seller info when user data loads
   useEffect(() => {
@@ -325,6 +520,56 @@ export function CreateProductForm({
     }
   }, [initialData, selectedCategory, subcategories]);
 
+  // Clear auto-saved data from localStorage
+  const clearAutoSavedData = () => {
+    try {
+      localStorage.removeItem(AUTO_SAVE_KEY);
+      console.log("Auto-saved data cleared");
+    } catch (error) {
+      console.warn("Failed to clear auto-saved data:", error);
+    }
+  };
+
+  // Check if there's auto-saved data and show option to clear it
+  const hasAutoSavedData = () => {
+    try {
+      const savedData = localStorage.getItem(AUTO_SAVE_KEY);
+      if (!savedData) return false;
+
+      const parsedData = JSON.parse(savedData);
+      const isDataFresh =
+        parsedData.timestamp &&
+        Date.now() - parsedData.timestamp < 24 * 60 * 60 * 1000;
+
+      return (
+        isDataFresh &&
+        parsedData.formData &&
+        (parsedData.formData.name ||
+          parsedData.formData.description ||
+          parsedData.selectedCategory)
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  // Manual clear function for user action
+  const handleClearAutoSavedData = () => {
+    if (
+      window.confirm(
+        language === "en"
+          ? "Are you sure you want to clear saved form data? This cannot be undone."
+          : "დარწმუნებული ხართ, რომ გსურთ შენახული ფორმის მონაცემების წაშლა? ეს ქმედება შეუქცევადია."
+      )
+    ) {
+      clearAutoSavedData();
+      toast({
+        title: "🗑️ მონაცემები წაიშალა",
+        description: "შენახული ფორმის მონაცემები წარმატებით წაიშალა",
+      });
+    }
+  };
+
   // Reset form to initial state
   const resetForm = () => {
     setFormData({
@@ -358,6 +603,12 @@ export function CreateProductForm({
     setDeliveryType("SoulArt");
     setMinDeliveryDays("");
     setMaxDeliveryDays("");
+    setDiscountPercentage("");
+    setDiscountStartDate("");
+    setDiscountEndDate("");
+
+    // Clear auto-saved data when form is reset
+    clearAutoSavedData();
   };
   const validateField = (field: keyof ProductFormData, value: unknown) => {
     // All validation is handled with translation keys for consistent language support
@@ -480,9 +731,6 @@ export function CreateProductForm({
       );
     }
   };
-
-  // Add state for hashtags input text
-  const [hashtagsInput, setHashtagsInput] = useState<string>("");
 
   // Hashtags handling functions
   const handleHashtagsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -619,8 +867,16 @@ export function CreateProductForm({
       if (!token) {
         setServerError(t("adminProducts.authError"));
         setPending(false);
+
+        // Show toast that data is saved and will redirect
+        toast({
+          title: "🔒 სესია ამოიწურა",
+          description:
+            "თქვენი მონაცემები შენახულია. შესვლის შემდეგ ავტომატურად აღდგება.",
+        });
+
         setTimeout(() => {
-          window.location.href = "/login?redirect=/admin/products";
+          window.location.href = "/login?redirect=/admin/products/create";
         }, 2000);
         return;
       }
@@ -814,9 +1070,41 @@ export function CreateProductForm({
       }
     } catch (error) {
       console.error("Error:", error);
-      setServerError(
-        error instanceof Error ? error.message : t("adminProducts.generalError")
-      );
+
+      let errorMessage =
+        error instanceof Error
+          ? error.message
+          : t("adminProducts.generalError");
+
+      // Check if it's an authentication error
+      if (
+        error instanceof Error &&
+        (error.message.includes("401") ||
+          error.message.includes("Unauthorized"))
+      ) {
+        errorMessage =
+          "სესია ამოიწურა. თქვენი მონაცემები შენახულია - შესვლის შემდეგ ავტომატურად აღდგება.";
+
+        toast({
+          title: "🔒 Authentication Error",
+          description:
+            "თქვენი მონაცემები დაცულია. შესვლის შემდეგ კვლავ შეგიძლიათ განაგრძოთ.",
+        });
+
+        setTimeout(() => {
+          window.location.href =
+            "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        }, 3000);
+      } else {
+        // For other errors, show that data is saved
+        toast({
+          title: "❌ Upload Error",
+          description:
+            "ატვირთვა ვერ მოხერხდა, მაგრამ თქვენი მონაცემები შენახულია. კვლავ სცადეთ.",
+        });
+      }
+
+      setServerError(errorMessage);
     } finally {
       setPending(false);
     }
@@ -886,6 +1174,21 @@ export function CreateProductForm({
           <p className="text-center">{success}</p>
         </div>
       )}
+
+      {/* Auto-save info banner */}
+      {!isEdit && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+          <div className="flex items-center gap-2 text-sm text-blue-800">
+            <span>💾</span>
+            <span>
+              {language === "en"
+                ? "Your form data is automatically saved. If upload fails or you get logged out, your data will be restored when you return."
+                : "თქვენი ფორმის მონაცემები ავტომატურად ინახება. ატვირთვის შეფერხების ან სისტემიდან გამოსვლის შემთხვევაში, მონაცემები აღდგება დაბრუნებისას."}
+            </span>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         {serverError && (
           <div className="server-error">
@@ -1528,45 +1831,63 @@ export function CreateProductForm({
             </ul>
           </div>
         )}{" "}
-        <button
-          type="submit"
-          className="create-product-button"
-          disabled={
-            pending ||
-            !formData.name ||
-            !selectedCategory ||
-            !selectedSubcategory ||
-            formData.images.length === 0 ||
-            Object.values(errors).some(
-              (error) => error !== undefined && error !== null && error !== ""
-            )
-          }
-          style={{
-            opacity:
+        <div className="flex gap-3 items-center">
+          <button
+            type="submit"
+            className="create-product-button flex-1"
+            disabled={
               pending ||
               !formData.name ||
               !selectedCategory ||
               !selectedSubcategory ||
               formData.images.length === 0 ||
-              Object.keys(errors).length > 0
-                ? 0.5
-                : 1,
-            cursor:
-              pending ||
-              !formData.name ||
-              !selectedCategory ||
-              !selectedSubcategory ||
-              formData.images.length === 0 ||
-              Object.keys(errors).length > 0
-                ? "not-allowed"
-                : "pointer",
-          }}
-        >
-          {pending && <Loader2 className="loader" />}
-          {isEdit
-            ? t("adminProducts.updateProduct")
-            : t("adminProducts.createProduct")}
-        </button>
+              Object.values(errors).some(
+                (error) => error !== undefined && error !== null && error !== ""
+              )
+            }
+            style={{
+              opacity:
+                pending ||
+                !formData.name ||
+                !selectedCategory ||
+                !selectedSubcategory ||
+                formData.images.length === 0 ||
+                Object.keys(errors).length > 0
+                  ? 0.5
+                  : 1,
+              cursor:
+                pending ||
+                !formData.name ||
+                !selectedCategory ||
+                !selectedSubcategory ||
+                formData.images.length === 0 ||
+                Object.keys(errors).length > 0
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            {pending && <Loader2 className="loader" />}
+            {isEdit
+              ? t("adminProducts.updateProduct")
+              : t("adminProducts.createProduct")}
+          </button>
+
+          {/* Clear auto-saved data button - only show if there's saved data and not editing */}
+          {!isEdit && hasAutoSavedData() && (
+            <button
+              type="button"
+              onClick={handleClearAutoSavedData}
+              className="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors"
+              title={
+                language === "en"
+                  ? "Clear saved form data"
+                  : "შენახული მონაცემების წაშლა"
+              }
+            >
+              🗑️
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
