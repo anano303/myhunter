@@ -4,7 +4,7 @@
 import * as React from "react";
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 3000;
+const TOAST_REMOVE_DELAY = 8000; // 8 წამი
 
 // Toast-ის ტიპი, CSS-ის მხარდაჭერით
 type ToasterToast = {
@@ -131,6 +131,11 @@ function toast(props: Toast) {
       },
     },
   });
+
+  // ავტომატური dismiss 8 წამის შემდეგ
+  setTimeout(() => {
+    dismiss();
+  }, TOAST_REMOVE_DELAY);
 
   return { id, dismiss, update };
 }
