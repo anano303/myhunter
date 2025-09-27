@@ -390,9 +390,17 @@ export function CreateProductForm({
                 ? ` (${imageCount} სურათი ახლიდან უნდა აირჩეს)`
                 : "";
 
-            toast({
+            const { dismiss } = toast({
               title: "📝 მონაცემები აღდგა",
               description: `თქვენი ძველი ფორმის მონაცემები წარმატებით აღდგა${imageInfo}`,
+              action: (
+                <button
+                  onClick={() => dismiss()}
+                  className="toast-dismiss-button"
+                >
+                  ✕
+                </button>
+              ),
             });
           } else if (!isDataFresh) {
             // Remove old data
@@ -563,9 +571,14 @@ export function CreateProductForm({
       )
     ) {
       clearAutoSavedData();
-      toast({
+      const { dismiss } = toast({
         title: "🗑️ მონაცემები წაიშალა",
         description: "შენახული ფორმის მონაცემები წარმატებით წაიშალა",
+        action: (
+          <button onClick={() => dismiss()} className="toast-dismiss-button">
+            ✕
+          </button>
+        ),
       });
     }
   };
@@ -869,10 +882,15 @@ export function CreateProductForm({
         setPending(false);
 
         // Show toast that data is saved and will redirect
-        toast({
+        const { dismiss } = toast({
           title: "🔒 სესია ამოიწურა",
           description:
             "თქვენი მონაცემები შენახულია. შესვლის შემდეგ ავტომატურად აღდგება.",
+          action: (
+            <button onClick={() => dismiss()} className="toast-dismiss-button">
+              ✕
+            </button>
+          ),
         });
 
         setTimeout(() => {
@@ -1046,11 +1064,16 @@ export function CreateProductForm({
         : t("adminProducts.productAddedSuccess");
       setSuccess(successMessage);
 
-      toast({
+      const { dismiss } = toast({
         title: isEdit
           ? t("adminProducts.productUpdatedToast")
           : t("adminProducts.productCreatedToast"),
         description: t("adminProducts.successTitle"),
+        action: (
+          <button onClick={() => dismiss()} className="toast-dismiss-button">
+            ✕
+          </button>
+        ),
       });
 
       if (!isEdit) {
@@ -1085,10 +1108,15 @@ export function CreateProductForm({
         errorMessage =
           "სესია ამოიწურა. თქვენი მონაცემები შენახულია - შესვლის შემდეგ ავტომატურად აღდგება.";
 
-        toast({
+        const { dismiss } = toast({
           title: "🔒 Authentication Error",
           description:
             "თქვენი მონაცემები დაცულია. შესვლის შემდეგ კვლავ შეგიძლიათ განაგრძოთ.",
+          action: (
+            <button onClick={() => dismiss()} className="toast-dismiss-button">
+              ✕
+            </button>
+          ),
         });
 
         setTimeout(() => {
@@ -1097,10 +1125,15 @@ export function CreateProductForm({
         }, 3000);
       } else {
         // For other errors, show that data is saved
-        toast({
+        const { dismiss } = toast({
           title: "❌ Upload Error",
           description:
             "ატვირთვა ვერ მოხერხდა, მაგრამ თქვენი მონაცემები შენახულია. კვლავ სცადეთ.",
+          action: (
+            <button onClick={() => dismiss()} className="toast-dismiss-button">
+              ✕
+            </button>
+          ),
         });
       }
 
@@ -1177,15 +1210,13 @@ export function CreateProductForm({
 
       {/* Auto-save info banner */}
       {!isEdit && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-          <div className="flex items-center gap-2 text-sm text-blue-800">
-            <span>💾</span>
-            <span>
-              {language === "en"
-                ? "Your form data is automatically saved. If upload fails or you get logged out, your data will be restored when you return."
-                : "თქვენი ფორმის მონაცემები ავტომატურად ინახება. ატვირთვის შეფერხების ან სისტემიდან გამოსვლის შემთხვევაში, მონაცემები აღდგება დაბრუნებისას."}
-            </span>
-          </div>
+        <div className="autosave-banner">
+          <span className="autosave-banner-icon">💾</span>
+          <span>
+            {language === "en"
+              ? "Your form data is automatically saved. If upload fails or you get logged out, your data will be restored when you return."
+              : "თქვენი ფორმის მონაცემები ავტომატურად ინახება. ატვირთვის შეფერხების ან სისტემიდან გამოსვლის შემთხვევაში, მონაცემები აღდგება დაბრუნებისას."}
+          </span>
         </div>
       )}
 
@@ -1831,10 +1862,10 @@ export function CreateProductForm({
             </ul>
           </div>
         )}{" "}
-        <div className="flex gap-3 items-center">
+        <div className="button-container">
           <button
             type="submit"
-            className="create-product-button flex-1"
+            className="create-product-button"
             disabled={
               pending ||
               !formData.name ||
@@ -1846,6 +1877,7 @@ export function CreateProductForm({
               )
             }
             style={{
+              flex: 1,
               opacity:
                 pending ||
                 !formData.name ||
@@ -1877,7 +1909,7 @@ export function CreateProductForm({
             <button
               type="button"
               onClick={handleClearAutoSavedData}
-              className="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors"
+              className="clear-autosave-button"
               title={
                 language === "en"
                   ? "Clear saved form data"

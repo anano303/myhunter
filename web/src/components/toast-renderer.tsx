@@ -15,10 +15,13 @@ export function ToastRenderer() {
             toast.variant === "destructive" ? "toast-error" : "toast-success"
           } ${toast.open ? "toast-show" : "toast-hide"}`}
         >
-          {toast.title && <div className="toast-title">{toast.title}</div>}
-          {toast.description && (
-            <div className="toast-description">{toast.description}</div>
-          )}
+          <div className="toast-content">
+            {toast.title && <div className="toast-title">{toast.title}</div>}
+            {toast.description && (
+              <div className="toast-description">{toast.description}</div>
+            )}
+          </div>
+          {toast.action && <div className="toast-action">{toast.action}</div>}
         </div>
       ))}
     </div>
