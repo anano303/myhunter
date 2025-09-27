@@ -34,6 +34,8 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
 
       if (!refreshToken) {
         clearTokens();
+        // Force reload to reset all state
+        window.location.reload();
         throw new Error("ავტორიზაცია საჭიროა");
       }
 
@@ -52,6 +54,8 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
 
         if (!refreshResponse.ok) {
           clearTokens();
+          // Force reload to reset all state
+          window.location.reload();
           throw new Error("სესია ვადაგასულია, გთხოვთ თავიდან შეხვიდეთ");
         }
 
@@ -62,10 +66,14 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
           response = await makeRequest();
         } else {
           clearTokens();
+          // Force reload to reset all state
+          window.location.reload();
           throw new Error("ტოკენის განახლება ვერ მოხერხდა");
         }
       } catch (refreshError) {
         clearTokens();
+        // Force reload to reset all state
+        window.location.reload();
         if (refreshError instanceof Error) {
           throw refreshError;
         }

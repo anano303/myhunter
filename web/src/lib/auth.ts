@@ -96,13 +96,18 @@ export const clearTokens = () => {
   }
 };
 
-// Check if user is logged in (has a token)
+// Check if user is logged in (has a valid, non-expired token)
 export const isLoggedIn = (): boolean => {
-  return !!getAccessToken();
+  const token = getAccessToken();
+  if (!token) return false;
+
+  // Check if token is expired
+  return !isTokenExpired();
 };
 
-// Check if a token is about to expire (within 5 minutes)
-export const isTokenAboutToExpire = (): boolean => {
+// Check if a token is expired or about to expire (within 1 hour for better UX)
+// Check if a token is expired
+export const isTokenExpired = (): boolean => {
   try {
     const token = getAccessToken();
     if (!token) return true;
@@ -121,12 +126,46 @@ export const isTokenAboutToExpire = (): boolean => {
 
     if (!exp) return true;
 
-    // Check if the token will expire in the next 5 minutes
+    // Check if the token is already expired
+    const expirationTime = exp * 1000; // Convert to milliseconds
+    const currentTime = Date.now();
+
+    return currentTime >= expirationTime;
+  } catch (error) {
+    console.error("Error checking token expiration:", error);
+    return true; // Assume token is expired if there's an error
+  }
+};
+
+// Check if a token is expired or about to expire (within 1 hour for better UX)
+export const isTokenAboutToExpire = (): boolean => {
+  try {
+    const token = getAccessToken();
+    if (!token) return true;
+
+    // First check if already expired
+    if (isTokenExpired()) return true;
+
+    // Decode the JWT to get the expiration time
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+
+    const { exp } = JSON.parse(jsonPayload);
+
+    if (!exp) return true;
+
+    // Check if the token will expire in the next hour (for 7-day tokens this gives better UX)
     const expirationTime = exp * 1000; // Convert to milliseconds
     const currentTime = Date.now();
     const timeUntilExpiration = expirationTime - currentTime;
 
-    return timeUntilExpiration < 5 * 60 * 1000; // 5 minutes in milliseconds
+    return timeUntilExpiration < 60 * 60 * 1000; // 1 hour in milliseconds
   } catch (error) {
     console.error("Error checking token expiration:", error);
     return true; // Assume token is about to expire if there's an error
@@ -169,6 +208,36 @@ export const parseTokensFromHash = (): {
   } catch (error) {
     console.error("Failed to parse tokens from hash:", error);
     return {};
+  }
+};
+
+// Get time remaining until token expiration (in milliseconds)
+export const getTokenTimeRemaining = (): number => {
+  try {
+    const token = getAccessToken();
+    if (!token) return 0;
+
+    // Decode the JWT to get the expiration time
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+
+    const { exp } = JSON.parse(jsonPayload);
+    if (!exp) return 0;
+
+    const expirationTime = exp * 1000; // Convert to milliseconds
+    const currentTime = Date.now();
+    const timeRemaining = expirationTime - currentTime;
+
+    return Math.max(0, timeRemaining); // Return 0 if already expired
+  } catch (error) {
+    console.error("Error getting token time remaining:", error);
+    return 0;
   }
 };
 

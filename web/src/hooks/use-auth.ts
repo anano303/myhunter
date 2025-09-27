@@ -27,12 +27,14 @@ export function useAuth() {
       } catch (error) {
         console.error("Error fetching user profile:", error);
 
-        // If unauthorized, clear tokens
+        // If unauthorized, clear tokens and invalidate the query
         if (
           (error as { response?: { status?: number } })?.response?.status ===
           401
         ) {
           clearTokens();
+          // Force reload to reset all state
+          window.location.reload();
           return null;
         }
 
@@ -80,8 +82,22 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: logoutApi,
     onSuccess: () => {
+      // Clear all query cache
+      queryClient.clear();
       queryClient.setQueryData(["user"], null);
-      window.location.href = "/login"; // Force a full page refresh to reset all state
+
+      // Clear all local storage and session storage
+      clearTokens();
+
+      // Force a full page refresh to reset all state
+      window.location.href = "/login";
+    },
+    onError: () => {
+      // Even if logout API fails, clear local state
+      queryClient.clear();
+      queryClient.setQueryData(["user"], null);
+      clearTokens();
+      window.location.href = "/login";
     },
   });
 
