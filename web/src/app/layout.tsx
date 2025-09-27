@@ -19,6 +19,7 @@ import {
   storeSchema,
 } from "@/lib/structured-data";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { ToastRenderer } from "@/components/toast-renderer";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -136,6 +137,7 @@ export default function RootLayout({
                   {children}
                   <Footer />
                   <FloatingCart />
+                  <ToastRenderer />
                 </LanguageProvider>
               </CheckoutProvider>
             </CartProvider>

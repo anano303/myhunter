@@ -6,6 +6,7 @@ import {
   getAccessToken,
   getTokenTimeRemaining,
 } from "@/lib/auth";
+import { toast } from "./use-toast";
 
 export function useTokenExpiry() {
   const { user, logout } = useAuth();
@@ -21,6 +22,11 @@ export function useTokenExpiry() {
       if (!token) {
         if (user) {
           console.log("No token found, logging out...");
+          toast({
+            title: "სესია დასრულდა",
+            description: "გთხოვთ თავიდან შეხვიდეთ",
+            variant: "destructive",
+          });
           clearTokens();
           logout();
         }
@@ -30,6 +36,11 @@ export function useTokenExpiry() {
       // Check if token is expired (use isTokenExpired for immediate logout)
       if (isTokenExpired()) {
         console.log("Token expired, logging out...");
+        toast({
+          title: "სესია ვადაგასულია",
+          description: "გთხოვთ თავიდან შეხვიდეთ სისტემაში",
+          variant: "destructive",
+        });
         clearTokens();
         logout();
         return;
