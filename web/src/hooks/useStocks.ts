@@ -144,8 +144,18 @@ export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
       setStocks((prevStocks) => {
         // Check if this combination exists
         if (!prevStocks[key]) {
-          console.warn(`Stock combination not found: ${JSON.stringify(combo)}`);
-          return prevStocks;
+          // For initial data loading, create the combination if it doesn't exist
+          // This happens when initial variants are loaded before combinations are generated
+          return {
+            ...prevStocks,
+            [key]: {
+              ageGroup: combo.ageGroup,
+              size: combo.size,
+              color: combo.color,
+              stock,
+              _id: (combo as any)._id, // Preserve the ID if it exists
+            },
+          };
         }
 
         // Return updated stocks
