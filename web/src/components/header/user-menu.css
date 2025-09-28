@@ -289,8 +289,21 @@
 
   /* Make sure the header itself doesn't clip */
   header,
-  header .wireframe-style {
+  header .wireframe-style,
+  .wireframe-style .header-container {
     overflow: visible !important;
+  }
+
+  /* Force body and html to not clip */
+  html,
+  body {
+    overflow-x: visible !important;
+  }
+
+  /* Ensure the dropdown container has proper stacking context */
+  .dropdown {
+    z-index: 9999;
+    position: relative;
   }
 
   .dropdown-menu {
@@ -299,13 +312,13 @@
     left: 0;
     right: auto;
     transform: none;
-    min-width: 300px;
-    width: 300px;
+    min-width: 320px;
+    width: 320px;
     margin: 0;
     /* Ensure dropdown can overflow parent containers */
     z-index: 10000;
-    /* Allow extending beyond parent container to the right */
-    white-space: nowrap;
+    /* Force the dropdown to extend beyond container */
+    margin-right: -320px;
 
     /* Enhanced desktop styling */
     background: linear-gradient(
@@ -326,7 +339,7 @@
     content: "";
     position: absolute;
     top: -10px;
-    left: 40px;
+    left: 50px;
     right: auto;
     transform: none;
     width: 0;
@@ -342,7 +355,7 @@
     content: "";
     position: absolute;
     top: -8px;
-    left: 42px;
+    left: 52px;
     right: auto;
     bottom: auto;
     transform: none;
