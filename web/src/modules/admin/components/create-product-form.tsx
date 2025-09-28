@@ -802,6 +802,51 @@ export function CreateProductForm({
     }));
   };
 
+  // Drag and drop functionality for reordering images
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/html", e.currentTarget.outerHTML);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      return;
+    }
+
+    setFormData((prev) => {
+      const newImages = [...prev.images];
+      const draggedImage = newImages[draggedIndex];
+
+      // Remove the dragged item
+      newImages.splice(draggedIndex, 1);
+
+      // Insert it at the new position
+      newImages.splice(dropIndex, 0, draggedImage);
+
+      return {
+        ...prev,
+        images: newImages,
+      };
+    });
+
+    setDraggedIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -1761,12 +1806,46 @@ export function CreateProductForm({
                   }`}
             </p>
           )}
+          {formData.images.length > 1 && (
+            <p
+              style={{
+                color: "#a5bda5",
+                fontSize: "0.85em",
+                marginTop: "8px",
+                fontStyle: "italic",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              <span>🔄</span>
+              {language === "en"
+                ? "Drag and drop images to reorder them"
+                : "სურათების გადაადგილება რიგითობის შესაცვლელად"}
+            </p>
+          )}
           <div className="image-preview-container">
             {formData.images.map((image, index) => {
               const imageUrl =
                 image instanceof File ? URL.createObjectURL(image) : image;
               return (
-                <div key={index} className="image-preview">
+                <div
+                  key={index}
+                  className={`image-preview ${
+                    draggedIndex === index ? "dragging" : ""
+                  }`}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  title={
+                    language === "en"
+                      ? "Drag to reorder"
+                      : "გადაიტანეთ რიგითობის შეცვლისთვის"
+                  }
+                >
+                  <div className="image-order-number">{index + 1}</div>
                   <Image
                     loader={({ src }) => src}
                     src={imageUrl}
@@ -1780,9 +1859,20 @@ export function CreateProductForm({
                     type="button"
                     onClick={() => handleRemoveImage(index)}
                     className="remove-image-button"
+                    title={language === "en" ? "Remove image" : "სურათის წაშლა"}
                   >
                     ✕
                   </button>
+                  <div
+                    className="drag-handle"
+                    title={
+                      language === "en"
+                        ? "Drag to reorder"
+                        : "გადაიტანეთ რიგითობის შეცვლისთვის"
+                    }
+                  >
+                    ⋮⋮
+                  </div>
                 </div>
               );
             })}
