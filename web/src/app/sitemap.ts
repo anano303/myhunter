@@ -5,12 +5,20 @@ async function getProducts() {
   try {
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1";
+
+    // Build time-ში timeout დავამატოთ
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 წამი timeout
+
     const response = await fetch(
-      `${apiUrl}/products?limit=1000&status=active`,
+      `${apiUrl}/products?limit=500&status=active`, // შევამცირეთ limit
       {
         next: { revalidate: 3600 }, // 1 საათი cache
+        signal: controller.signal,
       }
     );
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       console.error("Failed to fetch products for sitemap");
@@ -30,9 +38,17 @@ async function getCategories() {
   try {
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/v1";
+
+    // Build time-ში timeout დავამატოთ
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 წამი timeout
+
     const response = await fetch(`${apiUrl}/categories?includeInactive=false`, {
       next: { revalidate: 3600 }, // 1 საათი cache
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       console.error("Failed to fetch categories for sitemap");
@@ -91,27 +107,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // პროდუქტების გვერდები
-  const products = await getProducts();
-  const productPages = products.map(
-    (product: { _id: string; updatedAt?: string; createdAt: string }) => ({
-      url: `${baseUrl}/products/${product._id}`,
-      lastModified: new Date(product.updatedAt || product.createdAt),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })
-  );
+  // Build time-ში შეცდომების თავიდან აცილება
+  try {
+    // პროდუქტების გვერდები
+    const products = await getProducts();
+    const productPages = products.map(
+      (product: { _id: string; updatedAt?: string; createdAt: string }) => ({
+        url: `${baseUrl}/products/${product._id}`,
+        lastModified: new Date(product.updatedAt || product.createdAt),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      })
+    );
 
-  // კატეგორიების გვერდები
-  const categories = await getCategories();
-  const categoryPages = categories.map(
-    (category: { _id: string; updatedAt?: string; createdAt: string }) => ({
-      url: `${baseUrl}/shop?category=${category._id}`,
-      lastModified: new Date(category.updatedAt || category.createdAt),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    })
-  );
+    // კატეგორიების გვერდები
+    const categories = await getCategories();
+    const categoryPages = categories.map(
+      (category: { _id: string; updatedAt?: string; createdAt: string }) => ({
+        url: `${baseUrl}/shop?category=${category._id}`,
+        lastModified: new Date(category.updatedAt || category.createdAt),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      })
+    );
 
-  return [...staticPages, ...productPages, ...categoryPages];
+    return [...staticPages, ...productPages, ...categoryPages];
+  } catch (error) {
+    console.error("Error generating dynamic sitemap entries:", error);
+    // შეცდომის შემთხვევაში მხოლოდ static pages დავაბრუნოთ
+    return staticPages;
+  }
 }
