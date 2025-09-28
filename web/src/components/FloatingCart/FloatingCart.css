@@ -1,8 +1,6 @@
 /* Floating Cart Button */
 .floating-cart-button {
   position: fixed;
-  bottom: 120px;
-  left: 20px;
   width: 60px;
   height: 60px;
   background: #4b5320;
@@ -10,17 +8,53 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: grab;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   z-index: 1000;
   border: 2px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+  touch-action: none;
+  -webkit-user-drag: none;
 }
 
 .floating-cart-button:hover {
   background: #5c6525;
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.floating-cart-button:active {
+  cursor: grabbing;
+}
+
+.floating-cart-button.dragging {
+  cursor: grabbing;
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 8px 25px rgba(75, 83, 32, 0.5);
+  z-index: 1001;
+  border-color: rgba(244, 140, 6, 0.6);
+  background: linear-gradient(135deg, #5c6525, #4b5320);
+  transition: none;
+}
+
+/* Add a subtle drag indicator */
+.floating-cart-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.floating-cart-button:hover::before {
+  opacity: 1;
 }
 
 .floating-cart-button svg {

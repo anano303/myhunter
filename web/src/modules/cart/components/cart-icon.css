@@ -47,6 +47,12 @@ a:hover {
 }
 .cart-icon-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
 }
 
 .cart-icon {
@@ -57,8 +63,10 @@ a:hover {
 
 .shopping-cart-icon {
   color: #e6cd9f;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .shopping-cart-icon:hover {
@@ -72,11 +80,26 @@ a:hover {
   font-weight: 500;
   font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
   color: #e6cd9f;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .cart-text:hover {
   color: #f48c06;
+}
+
+/* Enhanced styling for side navigation */
+.side-nav-footer .cart-icon-container {
+  justify-content: center;
+  width: 100%;
+}
+
+.side-nav-footer .cart-icon-container:hover .cart-text {
+  color: #ffffff !important;
+}
+
+.side-nav-footer .cart-icon-container:hover .shopping-cart-icon {
+  filter: brightness(1.4) !important;
 }
 
 /* Hide text on mobile */
