@@ -182,7 +182,7 @@ export class ProductsController {
   @UseInterceptors(
     FileFieldsInterceptor(
       [
-        { name: 'images', maxCount: 10 },
+        { name: 'images', maxCount: 15 },
         { name: 'brandLogo', maxCount: 1 },
       ],
       {
@@ -312,7 +312,7 @@ export class ProductsController {
   @Put(':id')
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'images', maxCount: 10 },
+      { name: 'images', maxCount: 15 },
       { name: 'brandLogo', maxCount: 1 },
     ]),
   )

@@ -768,6 +768,26 @@ export function CreateProductForm({
     const { files } = e.target;
     if (files) {
       const newImages = Array.from(files);
+      const totalImages = formData.images.length + newImages.length;
+
+      // Check if total images exceed maximum limit of 15
+      if (totalImages > 15) {
+        const errorMessage =
+          language === "en"
+            ? `Maximum 15 images allowed. You selected ${totalImages} images.`
+            : `მაქსიმუმ 15 სურათი შეიძლება. თქვენ აირჩიეთ ${totalImages} სურათი.`;
+
+        toast({
+          variant: "destructive",
+          title: language === "en" ? "Too many images" : "ძალიან ბევრი სურათი",
+          description: errorMessage,
+        });
+
+        // Reset the input value
+        e.target.value = "";
+        return;
+      }
+
       setFormData((prev) => ({
         ...prev,
         images: [...prev.images, ...newImages],
@@ -828,11 +848,28 @@ export function CreateProductForm({
         }));
         setPending(false);
         return;
-      } // Verify we have at least one image
+      }
+
+      // Verify we have at least one image
       if (formData.images.length === 0) {
         setErrors((prev) => ({
           ...prev,
           images: t("adminProducts.noImageSelected"),
+        }));
+        setPending(false);
+        return;
+      }
+
+      // Verify we don't exceed maximum 15 images
+      if (formData.images.length > 15) {
+        const errorMessage =
+          language === "en"
+            ? `Maximum 15 images allowed. You have ${formData.images.length} images.`
+            : `მაქსიმუმ 15 სურათი შეიძლება. თქვენ გაქვთ ${formData.images.length} სურათი.`;
+
+        setErrors((prev) => ({
+          ...prev,
+          images: errorMessage,
         }));
         setPending(false);
         return;
@@ -1677,7 +1714,18 @@ export function CreateProductForm({
           )}
         </div>{" "}
         <div>
-          <label htmlFor="images">{t("adminProducts.images")}</label>
+          <label htmlFor="images">
+            {t("adminProducts.images")}
+            <span
+              style={{
+                fontSize: "0.9em",
+                color: formData.images.length > 15 ? "#ef4444" : "#6b7280",
+                marginLeft: "8px",
+              }}
+            >
+              ({formData.images.length}/15)
+            </span>
+          </label>
           <input
             id="images"
             name="images"
@@ -1690,6 +1738,27 @@ export function CreateProductForm({
           {formData.images.length === 0 && (
             <p className="upload-reminder">
               {t("adminProducts.uploadReminder")}
+            </p>
+          )}
+          {formData.images.length >= 12 && formData.images.length <= 15 && (
+            <p
+              style={{
+                color: formData.images.length === 15 ? "#ef4444" : "#f59e0b",
+                fontSize: "0.9em",
+                marginTop: "4px",
+              }}
+            >
+              {language === "en"
+                ? `${
+                    formData.images.length === 15
+                      ? "Maximum limit reached"
+                      : `${15 - formData.images.length} more images allowed`
+                  }`
+                : `${
+                    formData.images.length === 15
+                      ? "მაქსიმალური ლიმიტი მიღწეულია"
+                      : `კიდევ ${15 - formData.images.length} სურათი შეიძლება`
+                  }`}
             </p>
           )}
           <div className="image-preview-container">

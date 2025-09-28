@@ -512,3 +512,14 @@
     justify-content: center;
   }
 }
+
+/* Discount badge fix for admin pages - override absolute positioning */
+.discount-badge {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  display: inline-flex !important;
+  margin-left: 8px !important;
+  margin-top: 0 !important;
+  vertical-align: middle !important;
+}
