@@ -320,9 +320,16 @@ export class UsersService {
     // Get profile image URL if it exists
     let profileImage = null;
     if (user.profileImagePath) {
-      profileImage = await this.awsS3Service.getImageByFileId(
-        user.profileImagePath as string,
-      );
+      // Check if it's a Cloudinary URL (new format) or AWS S3 (legacy format)
+      if (user.profileImagePath.includes('cloudinary.com')) {
+        // For Cloudinary URLs, return as is
+        profileImage = user.profileImagePath;
+      } else {
+        // For legacy AWS S3 paths, get signed URL
+        profileImage = await this.awsS3Service.getImageByFileId(
+          user.profileImagePath as string,
+        );
+      }
     }
 
     return {
