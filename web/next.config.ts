@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: [],
   images: {
+    loader: "cloudinary",
+    path: "https://res.cloudinary.com/dsufx8uzd/image/upload/",
     domains: ["res.cloudinary.com", "fish-hunt.s3.eu-north-1.amazonaws.com"],
     remotePatterns: [
       {
@@ -29,8 +31,6 @@ const nextConfig: NextConfig = {
         pathname: "**",
       },
     ],
-    // Disable image optimization completely in development
-    unoptimized: true,
     // Add a larger deviceSizes array for better responsive images
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
