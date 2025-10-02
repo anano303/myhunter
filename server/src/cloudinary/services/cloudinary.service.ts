@@ -25,7 +25,7 @@ export class CloudinaryService {
   }
 
   async uploadImages(images: string[]): Promise<string[]> {
-    const uploadPromises = images.map(async imageUrl => {
+    const uploadPromises = images.map(async (imageUrl) => {
       const response = await fetch(imageUrl);
       const buffer = Buffer.from(await response.arrayBuffer());
 
@@ -49,21 +49,27 @@ export class CloudinaryService {
     return Promise.all(uploadPromises);
   }
 
-  async uploadBuffer(buffer: Buffer): Promise<string> {
+  async uploadBuffer(buffer: Buffer, folder = 'products'): Promise<string> {
     return new Promise((resolve, reject) => {
-      const upload = v2.uploader.upload_stream(
-        { folder: 'products' },
-        (error, result) => {
-          if (error) {
-            console.error('Cloudinary upload error:', error);
-            return reject(error);
-          }
-          resolve(result?.secure_url || '');
-        },
-      );
+      const upload = v2.uploader.upload_stream({ folder }, (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          return reject(error);
+        }
+        resolve(result?.secure_url || '');
+      });
 
       const stream = Readable.from(buffer);
       stream.pipe(upload);
     });
+  }
+
+  async deleteImage(publicId: string): Promise<void> {
+    try {
+      await v2.uploader.destroy(publicId);
+    } catch (error) {
+      console.error('Failed to delete image from Cloudinary:', error);
+      throw error;
+    }
   }
 }
