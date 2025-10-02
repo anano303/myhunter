@@ -9,6 +9,9 @@ import Image from "next/image";
 import { CartItem } from "@/types/cart";
 import "./FloatingCart.css";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 export function FloatingCart() {
   const [isOpen, setIsOpen] = useState(false);
   const { items, removeItem, updateQuantity, totalItems } = useCart();
@@ -203,13 +206,22 @@ export function FloatingCart() {
                   className="cart-item-mini"
                 >
                   <div className="item-image">
-                    <Image
-                      src={item.image}
-                      alt={getLocalizedName(item)}
-                      width={50}
-                      height={50}
-                      className="item-img"
-                    />
+                    {isCloudinaryImage(item.image) ? (
+                      <img
+                        src={item.image}
+                        alt={getLocalizedName(item)}
+                        className="item-img"
+                        style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <Image
+                        src={item.image}
+                        alt={getLocalizedName(item)}
+                        width={50}
+                        height={50}
+                        className="item-img"
+                      />
+                    )}
                   </div>
 
                   <div className="item-details">

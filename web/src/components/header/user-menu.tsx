@@ -10,7 +10,8 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import iconAuth from "../../assets/Images/Vector.png";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 // Add a style object for the FiraGo font
 const userMenuStyles = {
@@ -92,7 +93,12 @@ export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
                 src={profileImage || "/avatar.jpg"}
                 alt={user.name}
                 className="avatar-image"
-                style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '50%' }}
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                }}
               />
             ) : (
               <Image

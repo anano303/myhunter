@@ -13,6 +13,9 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Color, AgeGroupItem } from "@/types";
 import "./AdminOrderDetails.css";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 interface AdminOrderDetailsProps {
   order: Order;
 }
@@ -220,13 +223,22 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 </div>
                 {sellerDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
-                    <Image
-                      src={item.image}
-                      alt={getDisplayName(item)}
-                      width={80}
-                      height={80}
-                      className="item-image"
-                    />{" "}
+                    {isCloudinaryImage(item.image) ? (
+                      <img
+                        src={item.image}
+                        alt={getDisplayName(item)}
+                        className="item-image"
+                        style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <Image
+                        src={item.image}
+                        alt={getDisplayName(item)}
+                        width={80}
+                        height={80}
+                        className="item-image"
+                      />
+                    )}
                     <div>
                       <Link
                         href={`/products/${item.productId}`}
@@ -284,13 +296,22 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 </div>{" "}
                 {soulartDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
-                    <Image
-                      src={item.image}
-                      alt={getDisplayName(item)}
-                      width={80}
-                      height={80}
-                      className="item-image"
-                    />
+                    {isCloudinaryImage(item.image) ? (
+                      <img
+                        src={item.image}
+                        alt={getDisplayName(item)}
+                        className="item-image"
+                        style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <Image
+                        src={item.image}
+                        alt={getDisplayName(item)}
+                        width={80}
+                        height={80}
+                        className="item-image"
+                      />
+                    )}
                     <div>
                       <Link
                         href={`/products/${item.productId}`}

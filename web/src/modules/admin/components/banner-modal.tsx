@@ -9,6 +9,9 @@ import Image from "next/image";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import "./banner-modal.css";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 interface BannerModalProps {
   banner: Banner | null;
   onClose: () => void;
@@ -194,23 +197,41 @@ export function BannerModal({ banner, onClose, onSuccess }: BannerModalProps) {
             </div>
 
             {imagePreview && (
-              <Image
-                src={imagePreview}
-                alt="Preview"
-                width={200}
-                height={120}
-                className="image-preview"
-              />
+              isCloudinaryImage(imagePreview) ? (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="image-preview"
+                  style={{ width: '200px', height: '120px', objectFit: 'cover' }}
+                />
+              ) : (
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  width={200}
+                  height={120}
+                  className="image-preview"
+                />
+              )
             )}
 
             {isEditing && banner?.imageUrl && !imagePreview && (
-              <Image
-                src={banner.imageUrl}
-                alt="Current banner"
-                width={200}
-                height={120}
-                className="current-image"
-              />
+              isCloudinaryImage(banner.imageUrl) ? (
+                <img
+                  src={banner.imageUrl}
+                  alt="Current banner"
+                  className="current-image"
+                  style={{ width: '200px', height: '120px', objectFit: 'cover' }}
+                />
+              ) : (
+                <Image
+                  src={banner.imageUrl}
+                  alt="Current banner"
+                  width={200}
+                  height={120}
+                  className="current-image"
+                />
+              )
             )}
           </div>
 

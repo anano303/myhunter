@@ -11,6 +11,9 @@ import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import "./banner-list.css";
 import { BannerModal } from "./banner-modal";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 export function BannerList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
@@ -95,13 +98,22 @@ export function BannerList() {
             {banners.data.map((banner) => (
               <tr key={banner._id} className="banner-tr">
                 <td className="banner-td">
-                  <Image
-                    src={banner.imageUrl || ""}
-                    alt={banner.title}
-                    width={80}
-                    height={50}
-                    className="banner-image"
-                  />
+                  {isCloudinaryImage(banner.imageUrl || "") ? (
+                    <img
+                      src={banner.imageUrl || ""}
+                      alt={banner.title}
+                      className="banner-image"
+                      style={{ width: '80px', height: '50px', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <Image
+                      src={banner.imageUrl || ""}
+                      alt={banner.title}
+                      width={80}
+                      height={50}
+                      className="banner-image"
+                    />
+                  )}
                 </td>
                 <td className="banner-td">
                   <div>

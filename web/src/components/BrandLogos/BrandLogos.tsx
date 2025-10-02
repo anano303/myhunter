@@ -11,7 +11,8 @@ import { Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 // Type for brand data
 interface Brand {
@@ -198,7 +199,11 @@ const BrandLogos = () => {
                       src={brand.logo || noPhoto.src}
                       alt={`${brand.name} logo`}
                       className="brand-logo-image"
-                      style={{ width: '120px', height: '60px', objectFit: 'contain' }}
+                      style={{
+                        width: "120px",
+                        height: "60px",
+                        objectFit: "contain",
+                      }}
                     />
                   ) : (
                     <Image
@@ -227,7 +232,11 @@ const BrandLogos = () => {
                       src={brand.logo || noPhoto.src}
                       alt={`${brand.name} logo`}
                       className="brand-logo-image"
-                      style={{ width: '120px', height: '60px', objectFit: 'contain' }}
+                      style={{
+                        width: "120px",
+                        height: "60px",
+                        objectFit: "contain",
+                      }}
                     />
                   ) : (
                     <Image

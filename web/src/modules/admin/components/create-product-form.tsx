@@ -16,6 +16,9 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import { Category, SubCategory } from "@/types";
 import { useStocks } from "@/hooks/useStocks";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 // Extended ProductFormData to include all needed properties
 interface ProductFormData extends BaseProductFormData {
   _id?: string;
@@ -1846,15 +1849,24 @@ export function CreateProductForm({
                   }
                 >
                   <div className="image-order-number">{index + 1}</div>
-                  <Image
-                    loader={({ src }) => src}
-                    src={imageUrl}
-                    alt="Product preview"
-                    width={100}
-                    height={100}
-                    unoptimized
-                    className="preview-image"
-                  />
+                  {isCloudinaryImage(imageUrl) ? (
+                    <img
+                      src={imageUrl}
+                      alt="Product preview"
+                      className="preview-image"
+                      style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <Image
+                      loader={({ src }) => src}
+                      src={imageUrl}
+                      alt="Product preview"
+                      width={100}
+                      height={100}
+                      unoptimized
+                      className="preview-image"
+                    />
+                  )}
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(index)}
@@ -1886,20 +1898,39 @@ export function CreateProductForm({
           <div className="brand-logo-container">
             {(user?.storeLogo || typeof formData.brandLogo === "string") && (
               <div className="image-preview">
-                <Image
-                  loader={({ src }) => src}
-                  alt="Brand logo"
-                  src={
-                    user?.storeLogo ||
-                    (typeof formData.brandLogo === "string"
-                      ? formData.brandLogo
-                      : "")
-                  }
-                  width={100}
-                  height={100}
-                  unoptimized
-                  className="preview-image"
-                />
+                {isCloudinaryImage(
+                  user?.storeLogo ||
+                  (typeof formData.brandLogo === "string"
+                    ? formData.brandLogo
+                    : "")
+                ) ? (
+                  <img
+                    alt="Brand logo"
+                    src={
+                      user?.storeLogo ||
+                      (typeof formData.brandLogo === "string"
+                        ? formData.brandLogo
+                        : "")
+                    }
+                    className="preview-image"
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <Image
+                    loader={({ src }) => src}
+                    alt="Brand logo"
+                    src={
+                      user?.storeLogo ||
+                      (typeof formData.brandLogo === "string"
+                        ? formData.brandLogo
+                        : "")
+                    }
+                    width={100}
+                    height={100}
+                    unoptimized
+                    className="preview-image"
+                  />
+                )}
               </div>
             )}
             <input

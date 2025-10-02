@@ -14,7 +14,8 @@ import Image from "next/image";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 const formSchema = z
   .object({
@@ -264,7 +265,12 @@ export function ProfileForm() {
                   src={profileImage}
                   alt="Profile"
                   className="profile-image"
-                  style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '50%' }}
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    objectFit: "cover",
+                    borderRadius: "50%",
+                  }}
                 />
               ) : (
                 <Image
