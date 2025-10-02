@@ -9,6 +9,9 @@ import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 import "./cart-item.css";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 interface CartItemProps {
   item: CartItemType;
   getLocalizedColorName?: (colorName: string) => string;
@@ -100,12 +103,21 @@ export function CartItem({
   return (
     <div className="cart-item">
       <div className="cart-item-image">
-        <Image
-          src={item.image}
-          alt={displayName}
-          fill
-          className="object-cover rounded-md"
-        />
+        {isCloudinaryImage(item.image) ? (
+          <img
+            src={item.image}
+            alt={displayName}
+            className="object-cover rounded-md"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <Image
+            src={item.image}
+            alt={displayName}
+            fill
+            className="object-cover rounded-md"
+          />
+        )}
       </div>
       <div className="cart-item-details">
         <div className="cart-item-info">

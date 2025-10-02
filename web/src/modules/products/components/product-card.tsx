@@ -102,14 +102,24 @@ export function ProductCard({
           <div className="discount-badge">-{product.discountPercentage}%</div>
         )}
         <div className="product-image">
-          <Image
-            src={productImage}
-            alt={displayName}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority
-            className="image"
-          />
+          {productImage.includes('cloudinary') ? (
+            <img
+              src={productImage}
+              alt={displayName}
+              className="image"
+              loading="lazy"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            <Image
+              src={productImage}
+              alt={displayName}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority
+              className="image"
+            />
+          )}
         </div>
         <div className="product-info">
           <div className="product-name-rating">

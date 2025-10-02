@@ -22,6 +22,9 @@ import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
 import ProductSchema from "@/components/ProductSchema";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
   productId,
@@ -422,12 +425,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Image
-                src={image}
-                alt={`${displayName} view ${index + 1}`}
-                fill
-                className="object-cover"
-              />
+              {isCloudinaryImage(image) ? (
+                <img
+                  src={image}
+                  alt={`${displayName} view ${index + 1}`}
+                  className="object-cover"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <Image
+                  src={image}
+                  alt={`${displayName} view ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              )}
             </motion.button>
           ))}
         </div>
@@ -445,14 +457,23 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 className="image-wrapper"
                 onClick={openFullscreen} // Add click handler to open fullscreen
               >
-                <Image
-                  src={product.images[currentImageIndex]}
-                  alt={displayName}
-                  fill
-                  quality={90}
-                  priority
-                  className="details-image"
-                />
+                {isCloudinaryImage(product.images[currentImageIndex]) ? (
+                  <img
+                    src={product.images[currentImageIndex]}
+                    alt={displayName}
+                    className="details-image"
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
+                ) : (
+                  <Image
+                    src={product.images[currentImageIndex]}
+                    alt={displayName}
+                    fill
+                    quality={90}
+                    priority
+                    className="details-image"
+                  />
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
