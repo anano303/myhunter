@@ -141,7 +141,7 @@
   height: 90%;
   justify-content: center;
   text-align: left;
-  animation: fadeIn 1.5s ease-in-out;
+  animation: slideInFromLeft 1.5s ease-out;
   gap: 10%;
   align-items: center;
 }
