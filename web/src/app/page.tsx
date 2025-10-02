@@ -20,63 +20,15 @@ const Home = () => {
     ).matches;
     setReducedMotion(prefersReducedMotion);
 
-    // Precompute section positions for better performance
-    const sectionPositions = sectionsRef.current.map((section) =>
-      section ? section.getBoundingClientRect().top + window.pageYOffset : 0
-    );
-
-    const handleScroll = () => {
-      // Use requestAnimationFrame for better performance
-      requestAnimationFrame(() => {
-        const scrollPosition = window.scrollY + window.innerHeight * 0.95;
-
-        sectionsRef.current.forEach((section, index) => {
-          if (section) {
-            // More efficient check using precomputed positions
-            const isVisible = scrollPosition >= sectionPositions[index];
-
-            if (isVisible) {
-              section.classList.add("reveal-visible");
-            }
-          }
-        });
-      });
-    };
-
-    // Initial check - run immediately to ensure above-the-fold content appears right away
-    handleScroll();
-
-    // Update positions on resize
-    const handleResize = () => {
-      // Recalculate section positions when window is resized
-      sectionPositions.splice(0, sectionPositions.length);
-      sectionsRef.current.forEach((section, index) => {
-        sectionPositions[index] = section
-          ? section.getBoundingClientRect().top + window.pageYOffset
-          : 0;
-      });
-      handleScroll();
-    };
-
-    // Listen for scroll events with throttling for better performance
-    let scrollTimeout: number;
-    const throttledScroll = () => {
-      if (!scrollTimeout) {
-        scrollTimeout = window.setTimeout(() => {
-          scrollTimeout = 0;
-          handleScroll();
-        }, 10); // Small delay to throttle scroll events
+    // Disable scroll animations completely to prevent scroll interference
+    // All sections will be visible by default
+    sectionsRef.current.forEach((section) => {
+      if (section) {
+        section.classList.add("reveal-visible");
       }
-    };
+    });
 
-    window.addEventListener("scroll", throttledScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("scroll", throttledScroll);
-      window.removeEventListener("resize", handleResize);
-      window.clearTimeout(scrollTimeout);
-    };
+    // No scroll event listeners needed since animations are disabled
   }, []);
 
   return (

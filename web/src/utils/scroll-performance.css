@@ -11,7 +11,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* High-performance animations */
+/* Disable performance optimizations for animations since they're disabled */
 .reveal-section,
 .slide-left,
 .slide-right,
@@ -21,8 +21,8 @@ html {
 .scale-in,
 .product-section,
 .product-section .section-title {
-  will-change: transform, opacity;
-  backface-visibility: hidden;
+  will-change: auto; /* Remove performance hints that might interfere */
+  backface-visibility: visible; /* Reset to default */
 }
 
 /* Reset for reduced motion preference */
