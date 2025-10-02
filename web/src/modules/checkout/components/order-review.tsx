@@ -12,6 +12,9 @@ import Link from "next/link";
 import "./order-review.css";
 import { useCart } from "@/modules/cart/context/cart-context";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 export function OrderReview() {
   const { shippingAddress: shippingDetails, paymentMethod } = useCheckout();
   const { items, clearCart } = useCart();
@@ -106,12 +109,21 @@ export function OrderReview() {
                   className="order-item flex items-center space-x-4"
                 >
                   <div className="image-container relative h-20 w-20">
-                    <Image
-                      src={item.image}
-                      alt={displayName}
-                      fill
-                      className="object-cover rounded-md"
-                    />
+                    {isCloudinaryImage(item.image) ? (
+                      <img
+                        src={item.image}
+                        alt={displayName}
+                        className="object-cover rounded-md"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <Image
+                        src={item.image}
+                        alt={displayName}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    )}
                   </div>
                   <div className="order-item-details flex-1">
                     <Link

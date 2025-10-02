@@ -15,6 +15,9 @@ import { Role } from "@/types/role";
 import { useLanguage } from "@/hooks/LanguageContext";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 // Extended Product type to include mainCategory and subCategory properties
 interface ProductWithCategories extends Product {
   mainCategory?: { name: string; id?: string; _id?: string } | string;
@@ -299,12 +302,21 @@ export function ProductsList() {
                   </td>
                   <td className="prd-td">
                     <div className="prd-img-wrapper">
-                      <Image
-                        src={product.images[0]}
-                        alt={getDisplayName(product)}
-                        fill
-                        className="prd-img"
-                      />
+                      {isCloudinaryImage(product.images[0]) ? (
+                        <img
+                          src={product.images[0]}
+                          alt={getDisplayName(product)}
+                          className="prd-img"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <Image
+                          src={product.images[0]}
+                          alt={getDisplayName(product)}
+                          fill
+                          className="prd-img"
+                        />
+                      )}
                     </div>
                   </td>
                   <td className="prd-td">{getDisplayName(product)}</td>
@@ -404,12 +416,21 @@ export function ProductsList() {
               </td>
               <td className="prd-td">
                 <div className="prd-img-wrapper">
-                  <Image
-                    src={product.images[0]}
-                    alt={getDisplayName(product)}
-                    fill
-                    className="prd-img"
-                  />
+                  {isCloudinaryImage(product.images[0]) ? (
+                    <img
+                      src={product.images[0]}
+                      alt={getDisplayName(product)}
+                      className="prd-img"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <Image
+                      src={product.images[0]}
+                      alt={getDisplayName(product)}
+                      fill
+                      className="prd-img"
+                    />
+                  )}
                 </div>
               </td>
               <td className="prd-td">{getDisplayName(product)}</td>

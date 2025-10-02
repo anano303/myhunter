@@ -9,6 +9,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/hooks/LanguageContext";
 import iconAuth from "../../assets/Images/Vector.png";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 // Add a style object for the FiraGo font
 const userMenuStyles = {
   fontFamily: '"FiraGo", sans-serif',
@@ -84,13 +87,22 @@ export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
           aria-label="Toggle user menu"
         >
           <div className="user-avatar">
-            <Image
-              src={profileImage || "/avatar.jpg"}
-              alt={user.name}
-              width={32}
-              height={32}
-              className="avatar-image"
-            />
+            {isCloudinaryImage(profileImage || "/avatar.jpg") ? (
+              <img
+                src={profileImage || "/avatar.jpg"}
+                alt={user.name}
+                className="avatar-image"
+                style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '50%' }}
+              />
+            ) : (
+              <Image
+                src={profileImage || "/avatar.jpg"}
+                alt={user.name}
+                width={32}
+                height={32}
+                className="avatar-image"
+              />
+            )}
           </div>
           <span className="username">
             {user.name || t("navigation.profile")}

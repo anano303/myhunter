@@ -14,7 +14,8 @@ import { BOGButton } from "./bog-button";
 import "./order-details.css";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 // ლარი დოლარში გადამყვანი კურსი (1 ლარი = ~0.37 დოლარი)
 const GEL_TO_USD_RATE = 2.8;
@@ -211,7 +212,11 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                           src={item.image}
                           alt={getDisplayName(item)}
                           className="object-cover rounded-md"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         <Image
@@ -287,7 +292,11 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                           src={item.image}
                           alt={getDisplayName(item)}
                           className="object-cover rounded-md"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         <Image

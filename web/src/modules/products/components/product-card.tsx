@@ -102,13 +102,13 @@ export function ProductCard({
           <div className="discount-badge">-{product.discountPercentage}%</div>
         )}
         <div className="product-image">
-          {productImage.includes('cloudinary') ? (
+          {productImage.includes("cloudinary") ? (
             <img
               src={productImage}
               alt={displayName}
               className="image"
               loading="lazy"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           ) : (
             <Image

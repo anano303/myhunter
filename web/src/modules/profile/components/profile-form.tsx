@@ -13,6 +13,9 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/LanguageContext";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 const formSchema = z
   .object({
     name: z.string().min(1, "სახელის შეყვანა აუცილებელია"),
@@ -256,14 +259,23 @@ export function ProfileForm() {
         <div className="profile-image-section">
           {profileImage ? (
             <div className="profile-image-container">
-              <Image
-                src={profileImage}
-                alt="Profile"
-                width={150}
-                height={150}
-                className="profile-image"
-                unoptimized
-              />
+              {isCloudinaryImage(profileImage) ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="profile-image"
+                  style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '50%' }}
+                />
+              ) : (
+                <Image
+                  src={profileImage}
+                  alt="Profile"
+                  width={150}
+                  height={150}
+                  className="profile-image"
+                  unoptimized
+                />
+              )}
             </div>
           ) : (
             <div className="profile-image-container">

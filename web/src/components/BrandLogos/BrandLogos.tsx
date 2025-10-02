@@ -10,6 +10,9 @@ import noPhoto from "../../assets/nophoto.webp";
 import { Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 
+// Helper function to check if image is from Cloudinary
+const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+
 // Type for brand data
 interface Brand {
   name: string;
@@ -190,13 +193,22 @@ const BrandLogos = () => {
                 onClick={() => handleBrandClick(brand.name)}
               >
                 <div className="brand-logo-wrapper">
-                  <Image
-                    src={brand.logo || noPhoto.src}
-                    alt={`${brand.name} logo`}
-                    width={120}
-                    height={60}
-                    className="brand-logo-image"
-                  />
+                  {isCloudinaryImage(brand.logo || noPhoto.src) ? (
+                    <img
+                      src={brand.logo || noPhoto.src}
+                      alt={`${brand.name} logo`}
+                      className="brand-logo-image"
+                      style={{ width: '120px', height: '60px', objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <Image
+                      src={brand.logo || noPhoto.src}
+                      alt={`${brand.name} logo`}
+                      width={120}
+                      height={60}
+                      className="brand-logo-image"
+                    />
+                  )}
                 </div>
                 <div className="brand-name">{brand.name}</div>
               </div>
@@ -210,13 +222,22 @@ const BrandLogos = () => {
                 onClick={() => handleBrandClick(brand.name)}
               >
                 <div className="brand-logo-wrapper">
-                  <Image
-                    src={brand.logo || noPhoto.src}
-                    alt={`${brand.name} logo`}
-                    width={120}
-                    height={60}
-                    className="brand-logo-image"
-                  />
+                  {isCloudinaryImage(brand.logo || noPhoto.src) ? (
+                    <img
+                      src={brand.logo || noPhoto.src}
+                      alt={`${brand.name} logo`}
+                      className="brand-logo-image"
+                      style={{ width: '120px', height: '60px', objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <Image
+                      src={brand.logo || noPhoto.src}
+                      alt={`${brand.name} logo`}
+                      width={120}
+                      height={60}
+                      className="brand-logo-image"
+                    />
+                  )}
                 </div>
                 <div className="brand-name">{brand.name}</div>
               </div>

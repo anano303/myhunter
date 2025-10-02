@@ -10,7 +10,8 @@ import { formatPrice } from "@/lib/utils";
 import "./cart-item.css";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 interface CartItemProps {
   item: CartItemType;
@@ -108,7 +109,7 @@ export function CartItem({
             src={item.image}
             alt={displayName}
             className="object-cover rounded-md"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
           <Image

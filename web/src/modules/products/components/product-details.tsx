@@ -23,7 +23,8 @@ import { ProductReviews } from "./product-reviews";
 import ProductSchema from "@/components/ProductSchema";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -430,7 +431,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   src={image}
                   alt={`${displayName} view ${index + 1}`}
                   className="object-cover"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
                 <Image
@@ -462,7 +463,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     src={product.images[currentImageIndex]}
                     alt={displayName}
                     className="details-image"
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
                   />
                 ) : (
                   <Image
