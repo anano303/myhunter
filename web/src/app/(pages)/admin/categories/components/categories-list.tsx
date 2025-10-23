@@ -18,6 +18,7 @@ interface Category {
   nameEn?: string;
   description?: string;
   descriptionEn?: string;
+  icon?: string;
   isActive: boolean;
 }
 
@@ -26,6 +27,7 @@ interface CategoryCreateInput {
   nameEn?: string;
   description?: string;
   descriptionEn?: string;
+  icon?: string;
   isActive?: boolean;
 }
 
@@ -34,6 +36,7 @@ interface CategoryUpdateInput {
   nameEn?: string;
   description?: string;
   descriptionEn?: string;
+  icon?: string;
   isActive?: boolean;
 }
 
@@ -42,6 +45,8 @@ export const CategoriesList = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [showInactive, setShowInactive] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [iconFile, setIconFile] = useState<File | null>(null);
+  const [iconPreview, setIconPreview] = useState<string>("");
   const [formData, setFormData] = useState<
     CategoryCreateInput | CategoryUpdateInput
   >({
@@ -49,6 +54,7 @@ export const CategoriesList = () => {
     nameEn: "",
     description: "",
     descriptionEn: "",
+    icon: "",
     isActive: true,
   });
 
@@ -61,7 +67,6 @@ export const CategoriesList = () => {
     isLoading,
     refetch,
     isError,
-    
   } = useCategories(showInactive);
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
@@ -74,16 +79,34 @@ export const CategoriesList = () => {
     // Also invalidate the query to ensure fresh data
     queryClient.invalidateQueries({ queryKey: ["categories"] });
   }, [refetch, queryClient, showInactive]);
+  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIconFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setIconPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createCategory.mutateAsync(formData as CategoryCreateInput);
+      await createCategory.mutateAsync({
+        data: formData as CategoryCreateInput,
+        iconFile: iconFile || undefined,
+      });
       setIsCreating(false);
+      setIconFile(null);
+      setIconPreview("");
       setFormData({
         name: "",
         nameEn: "",
         description: "",
         descriptionEn: "",
+        icon: "",
         isActive: true,
       });
     } catch (error) {
@@ -122,14 +145,18 @@ export const CategoriesList = () => {
         await updateCategory.mutateAsync({
           id: isEditing,
           data: updatedFields,
+          iconFile: iconFile || undefined,
         });
 
         setIsEditing(null);
+        setIconFile(null);
+        setIconPreview("");
         setFormData({
           name: "",
           nameEn: "",
           description: "",
           descriptionEn: "",
+          icon: "",
           isActive: true,
         });
       } catch (error) {
@@ -139,11 +166,14 @@ export const CategoriesList = () => {
   };
   const startEditing = (category: Category) => {
     setIsEditing(category.id);
+    setIconFile(null);
+    setIconPreview(category.icon || "");
     setFormData({
       name: category.name,
       nameEn: category.nameEn || "",
       description: category.description || "",
       descriptionEn: category.descriptionEn || "",
+      icon: category.icon || "",
       isActive: category.isActive,
     });
   };
@@ -234,6 +264,29 @@ export const CategoriesList = () => {
                   setFormData({ ...formData, descriptionEn: e.target.value })
                 }
               />
+            </div>
+            <div className="form-group">
+              <label htmlFor="icon">აიქონი</label>
+              <input
+                type="file"
+                id="icon"
+                accept="image/*"
+                onChange={handleIconChange}
+              />
+              {iconPreview && (
+                <div className="icon-preview">
+                  <img
+                    src={iconPreview}
+                    alt="Icon preview"
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      objectFit: "contain",
+                      marginTop: "10px",
+                    }}
+                  />
+                </div>
+              )}
             </div>
             <div className="form-group checkbox">
               <label>
@@ -359,6 +412,29 @@ export const CategoriesList = () => {
                           })
                         }
                       />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor={`edit-icon-${category.id}`}>აიქონი</label>
+                      <input
+                        type="file"
+                        id={`edit-icon-${category.id}`}
+                        accept="image/*"
+                        onChange={handleIconChange}
+                      />
+                      {iconPreview && (
+                        <div className="icon-preview">
+                          <img
+                            src={iconPreview}
+                            alt="Icon preview"
+                            style={{
+                              width: "60px",
+                              height: "60px",
+                              objectFit: "contain",
+                              marginTop: "10px",
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="form-group checkbox">
                       <label>

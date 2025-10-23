@@ -37,6 +37,13 @@ export class Category {
   @Prop()
   descriptionEn?: string;
 
+  @ApiProperty({
+    description: 'Category icon URL',
+    example: 'https://res.cloudinary.com/...icon.png',
+  })
+  @Prop()
+  icon?: string;
+
   @ApiProperty({ description: 'Is category active', default: true })
   @Prop({ default: true })
   isActive: boolean;
@@ -75,6 +82,7 @@ CategorySchema.pre('save', function (next) {
     'nameEn',
     'description',
     'descriptionEn',
+    'icon',
     'isActive',
   ];
 

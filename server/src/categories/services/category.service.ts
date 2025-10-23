@@ -9,11 +9,13 @@ import { Model, isValidObjectId } from 'mongoose';
 import { Category, CategoryDocument } from '../schemas/category.schema';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto/category.dto';
 import { DEFAULT_CATEGORY_STRUCTURE } from '../categories.constants';
+import { AppService } from '@/app/services/app.service';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    private appService: AppService,
   ) {}
 
   async findAll(includeInactive = false): Promise<Category[]> {
@@ -47,7 +49,10 @@ export class CategoryService {
     return category;
   }
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async create(
+    createCategoryDto: CreateCategoryDto,
+    iconFile?: Express.Multer.File,
+  ): Promise<Category> {
     // Normalize name to prevent duplicates with different cases or whitespace
     const normalizedName = createCategoryDto.name.trim();
 
@@ -64,11 +69,26 @@ export class CategoryService {
       );
     }
 
-    // Create new category without any code field
+    // Upload icon if provided
+    let iconUrl: string | undefined;
+    if (iconFile) {
+      iconUrl = await this.appService.uploadImageToCloudinary(iconFile);
+    }
+
+    // Create new category
+    // Parse isActive from string to boolean if needed (for multipart form data)
+    const isActive =
+      typeof createCategoryDto.isActive === 'string'
+        ? createCategoryDto.isActive === 'true'
+        : (createCategoryDto.isActive ?? true);
+
     const newCategory = new this.categoryModel({
       name: normalizedName,
-      description: createCategoryDto.description,
-      isActive: createCategoryDto.isActive ?? true,
+      nameEn: createCategoryDto.nameEn?.trim() || undefined,
+      description: createCategoryDto.description?.trim() || undefined,
+      descriptionEn: createCategoryDto.descriptionEn?.trim() || undefined,
+      icon: iconUrl,
+      isActive,
     });
 
     return newCategory.save();
@@ -77,7 +97,20 @@ export class CategoryService {
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
+    iconFile?: Express.Multer.File,
   ): Promise<Category> {
+    console.log('=== Update Category Service ===');
+    console.log('Icon file received:', iconFile ? 'YES' : 'NO');
+    if (iconFile) {
+      console.log('Icon file details:', {
+        fieldname: iconFile.fieldname,
+        originalname: iconFile.originalname,
+        mimetype: iconFile.mimetype,
+        size: iconFile.size,
+      });
+    }
+    console.log('Update DTO:', updateCategoryDto);
+
     // Check if updating name and if it already exists
     if (updateCategoryDto.name) {
       const existingCategory = await this.categoryModel
@@ -94,13 +127,43 @@ export class CategoryService {
       }
     }
 
+    // Upload new icon if provided
+    const updateData: any = { ...updateCategoryDto };
+    if (iconFile) {
+      console.log('Uploading icon to Cloudinary...');
+      const iconUrl = await this.appService.uploadImageToCloudinary(iconFile);
+      console.log('Icon uploaded successfully:', iconUrl);
+      updateData.icon = iconUrl;
+    }
+
+    // Parse isActive from string to boolean if needed (for multipart form data)
+    if (
+      updateData.isActive !== undefined &&
+      typeof updateData.isActive === 'string'
+    ) {
+      updateData.isActive = updateData.isActive === 'true';
+    }
+
+    // Trim string fields
+    if (updateData.name) updateData.name = updateData.name.trim();
+    if (updateData.nameEn) updateData.nameEn = updateData.nameEn.trim();
+    if (updateData.description)
+      updateData.description = updateData.description.trim();
+    if (updateData.descriptionEn)
+      updateData.descriptionEn = updateData.descriptionEn.trim();
+
+    console.log('Update data to be saved:', updateData);
+
     const updatedCategory = await this.categoryModel
-      .findByIdAndUpdate(id, updateCategoryDto, { new: true })
+      .findByIdAndUpdate(id, updateData, { new: true })
       .exec();
 
     if (!updatedCategory) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
+
+    console.log('Updated category from DB:', updatedCategory);
+    console.log('Has icon in response:', updatedCategory.icon ? 'YES' : 'NO');
 
     return updatedCategory;
   }

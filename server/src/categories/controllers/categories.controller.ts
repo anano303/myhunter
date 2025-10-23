@@ -9,7 +9,10 @@ import {
   Query,
   UseGuards,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CategoryService } from '../services/category.service';
 
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto/category.dto';
@@ -108,6 +111,7 @@ export class CategoriesController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @UseInterceptors(FileInterceptor('icon'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new category' })
   @ApiResponse({
@@ -115,23 +119,43 @@ export class CategoriesController {
     description: 'The category has been created',
     type: CategoryResponseDto,
   })
-  createCategory(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  async createCategory(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @UploadedFile() icon?: Express.Multer.File,
+  ) {
+    return this.categoryService.create(createCategoryDto, icon);
   }
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @UseInterceptors(FileInterceptor('icon'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a category' })
   @ApiParam({ name: 'id', description: 'Category ID' })
   @ApiResponse({ status: 200, description: 'The category has been updated' })
   @ApiResponse({ status: 404, description: 'Category not found' })
-  updateCategory(
+  async updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
+    @UploadedFile() icon?: Express.Multer.File,
   ) {
-    return this.categoryService.update(id, updateCategoryDto);
+    console.log('=== Update Category Controller ===');
+    console.log('Category ID:', id);
+    console.log('Icon file in controller:', icon ? 'YES' : 'NO');
+    console.log('Body DTO:', updateCategoryDto);
+
+    const result = await this.categoryService.update(
+      id,
+      updateCategoryDto,
+      icon,
+    );
+
+    console.log(
+      'Controller returning result with icon:',
+      result.icon ? 'YES' : 'NO',
+    );
+    return result;
   }
 
   @Delete(':id')

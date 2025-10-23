@@ -75,6 +75,15 @@ export class CreateCategoryDto {
   descriptionEn?: string;
 
   @ApiProperty({
+    description: 'Category icon URL',
+    required: false,
+    example: 'https://res.cloudinary.com/.../icon.png',
+  })
+  @IsString()
+  @IsOptional()
+  icon?: string;
+
+  @ApiProperty({
     description: 'Is category active',
     required: false,
     default: true,
@@ -120,6 +129,15 @@ export class UpdateCategoryDto {
   @IsString()
   @IsOptional()
   descriptionEn?: string;
+
+  @ApiProperty({
+    description: 'Category icon URL',
+    required: false,
+    example: 'https://res.cloudinary.com/.../icon.png',
+  })
+  @IsString()
+  @IsOptional()
+  icon?: string;
 
   @ApiProperty({ description: 'Is category active', required: false })
   @IsBoolean()

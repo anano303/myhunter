@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import { getAccessToken } from "@/lib/auth";
 import { toast } from "react-hot-toast";
 
 // Types for categories
@@ -32,6 +33,7 @@ export interface CategoryCreateInput {
   nameEn?: string;
   description?: string;
   descriptionEn?: string;
+  icon?: string;
   isActive?: boolean;
 }
 
@@ -40,6 +42,7 @@ export interface CategoryUpdateInput {
   nameEn?: string;
   description?: string;
   descriptionEn?: string;
+  icon?: string;
   isActive?: boolean;
 }
 
@@ -129,8 +132,28 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CategoryCreateInput) => {
-      const response = await apiClient.post("/categories", data);
+    mutationFn: async ({
+      data,
+      iconFile,
+    }: {
+      data: CategoryCreateInput;
+      iconFile?: File;
+    }) => {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      if (data.nameEn) formData.append("nameEn", data.nameEn);
+      if (data.description) formData.append("description", data.description);
+      if (data.descriptionEn)
+        formData.append("descriptionEn", data.descriptionEn);
+      if (data.isActive !== undefined)
+        formData.append("isActive", String(data.isActive));
+      if (iconFile) formData.append("icon", iconFile);
+
+      const response = await apiClient.post("/categories", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     },
     onSuccess: () => {
@@ -154,11 +177,53 @@ export const useUpdateCategory = () => {
     mutationFn: async ({
       id,
       data,
+      iconFile,
     }: {
       id: string;
       data: CategoryUpdateInput;
+      iconFile?: File;
     }) => {
-      const response = await apiClient.put(`/categories/${id}`, data);
+      console.log("=== UPDATE CATEGORY REQUEST ===");
+      console.log("Category ID:", id);
+      console.log("Data:", data);
+      console.log("Icon File:", iconFile);
+
+      const formData = new FormData();
+      if (data.name) formData.append("name", data.name);
+      if (data.nameEn) formData.append("nameEn", data.nameEn);
+      if (data.description) formData.append("description", data.description);
+      if (data.descriptionEn)
+        formData.append("descriptionEn", data.descriptionEn);
+      if (data.isActive !== undefined)
+        formData.append("isActive", String(data.isActive));
+      if (iconFile) {
+        console.log("Appending icon file to FormData:", {
+          name: iconFile.name,
+          type: iconFile.type,
+          size: iconFile.size,
+        });
+        formData.append("icon", iconFile);
+      }
+
+      // Log FormData contents
+      console.log("FormData entries:");
+      for (const [key, value] of formData.entries()) {
+        console.log(`  ${key}:`, value);
+      }
+
+      console.log("Making PUT request to:", `/categories/${id}`);
+
+      // Use apiClient which handles auth automatically
+      const response = await apiClient.put(`/categories/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Response status:", response.status);
+      console.log("Response data:", response.data);
+      console.log("Response has icon:", response.data.icon ? "YES" : "NO");
+
       return response.data;
     },
     onSuccess: (_, variables) => {

@@ -13,6 +13,7 @@ import { AgeGroup, AgeGroupSchema } from './schemas/age-group.schema';
 import { ColorService } from './services/color.service';
 import { SizeService } from './services/size.service';
 import { AgeGroupService } from './services/age-group.service';
+import { SharedServicesModule } from '../app/shared-services.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AgeGroupService } from './services/age-group.service';
       { name: Size.name, schema: SizeSchema },
       { name: AgeGroup.name, schema: AgeGroupSchema },
     ]),
+    SharedServicesModule,
   ],
   controllers: [
     CategoriesController,

@@ -9,9 +9,24 @@ import { Category, SubCategory, Color, AgeGroupItem } from "@/types";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import Image from "next/image";
 
-// Function to get category-specific icon
-const getCategoryIcon = (categoryName: string) => {
-  const name = categoryName.toLowerCase();
+// Function to get category-specific icon - now uses icon from category if available
+const getCategoryIcon = (category: Category) => {
+  console.log(
+    "[FILTER] getCategoryIcon called with:",
+    category.name,
+    "Icon:",
+    category.icon
+  );
+
+  // Use category icon if available
+  if (category.icon) {
+    console.log("[FILTER] Using API icon:", category.icon);
+    return category.icon;
+  }
+
+  // Fallback to name-based icons for backwards compatibility
+  console.log("[FILTER] Using fallback icon");
+  const name = category.name.toLowerCase();
 
   if (
     name.includes("ნადირობა") ||
@@ -801,7 +816,7 @@ export function ProductFilters({
                         }`}
                       >
                         <Image
-                          src={getCategoryIcon(category.name)}
+                          src={getCategoryIcon(category)}
                           alt={category.name}
                           width={24}
                           height={24}
