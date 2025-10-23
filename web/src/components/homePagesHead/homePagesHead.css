@@ -142,7 +142,7 @@
   justify-content: center;
   text-align: left;
   animation: slideInFromLeft 1.5s ease-out;
-  gap: 10%;
+  gap: 2%;
   align-items: center;
 }
 
@@ -470,5 +470,24 @@
     min-width: 130px;
     padding: 10px 20px;
     font-size: 14px;
+  }
+}
+
+/* Desktop and larger: move banner content to bottom, keep mobile as-is */
+@media (min-width: 769px) {
+  .banner-content {
+    top: auto; /* remove vertical centering */
+    bottom: 10%; /* give a bit more space from bottom */
+    transform: none; /* reset translateY */
+    justify-content: flex-end; /* ensure content hugs bottom inside its box */
+    align-items: flex-start; /* keep left alignment */
+  }
+  .action-buttons {
+    top: auto; /* move from middle to bottom */
+    bottom: 10%; /* align vertically with banner content */
+    right: 5%; /* keep to the right side */
+    transform: none; /* reset translate */
+    flex-direction: column; /* keep buttons stacked vertically */
+    gap: 15px; /* consistent spacing */
   }
 }
