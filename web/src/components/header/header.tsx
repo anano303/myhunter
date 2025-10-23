@@ -31,7 +31,7 @@ export default function Header() {
           <Link href="/">
             <Image
               src={logo}
-              width={125}
+              width={100}
               height={80}
               alt="Myhunter logo"
               className="header-logo"
