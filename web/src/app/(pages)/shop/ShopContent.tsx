@@ -15,6 +15,8 @@ const ShopContent = () => {
   const { t } = useLanguage();
 
   const initializedRef = useRef(false);
+  const [paramsReady, setParamsReady] = useState(false);
+  const fetchIdRef = useRef(0);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +43,8 @@ const ShopContent = () => {
   // Parse URL parameters on first load
   useEffect(() => {
     if (initializedRef.current) return;
-    initializedRef.current = true;
+  // Parse URL params once on first load
+  initializedRef.current = true;
 
     const pageParam = searchParams
       ? parseInt(searchParams.get("page") || "1")
@@ -59,7 +62,7 @@ const ShopContent = () => {
     const colorParam = searchParams ? searchParams.get("color") || "" : "";
     const brandParam = searchParams ? searchParams.get("brand") || "" : "";
     const discountParam = searchParams
-      ? searchParams.get("discountOnly") === "true"
+      ? searchParams.get("discounted") === "true"
       : false;
     const minPriceParam = searchParams
       ? parseInt(searchParams.get("minPrice") || "0")
@@ -83,7 +86,10 @@ const ShopContent = () => {
     setSelectedBrand(brandParam);
     setShowDiscountedOnly(discountParam);
     setPriceRange([minPriceParam, maxPriceParam]);
-    setSorting({ field: sortByParam, direction: sortDirectionParam });
+  setSorting({ field: sortByParam, direction: sortDirectionParam });
+
+  // Mark params as applied so fetching can start with correct filters
+  setParamsReady(true);
 
     console.log("Initial setup with URL params:", {
       page: pageParam,
@@ -94,7 +100,7 @@ const ShopContent = () => {
 
   // Fetch products based on filters
   const fetchProducts = useCallback(async () => {
-    if (!initializedRef.current) return;
+  if (!initializedRef.current || !paramsReady) return;
 
     setIsLoading(true);
 
@@ -117,10 +123,14 @@ const ShopContent = () => {
       if (priceRange[1] < 1000) params.maxPrice = priceRange[1].toString();
       if (showDiscountedOnly) params.discounted = "true";
 
+      // Track request order to avoid race conditions
+      const fetchId = ++fetchIdRef.current;
       const response = await getProducts(currentPage, 20, params);
 
-      setProducts(response.items || []);
-      setTotalPages(response.pages || 1);
+      if (fetchId === fetchIdRef.current) {
+        setProducts(response.items || []);
+        setTotalPages(response.pages || 1);
+      }
     } catch (error) {
       console.error(`Failed to fetch products:`, error);
       setProducts([]);
@@ -140,6 +150,7 @@ const ShopContent = () => {
     priceRange,
     sorting,
     showDiscountedOnly,
+    paramsReady,
   ]);
 
   // Fetch products when filters change
@@ -190,7 +201,7 @@ const ShopContent = () => {
   // Update URL when filters change
   useEffect(() => {
     // Skip the first render to avoid double navigation
-    if (!initializedRef.current) return;
+    if (!initializedRef.current || !paramsReady) return;
     updateUrl();
   }, [
     selectedCategoryId,
@@ -204,6 +215,7 @@ const ShopContent = () => {
     currentPage,
     showDiscountedOnly,
     updateUrl,
+    paramsReady,
   ]);
 
   // Handle page change

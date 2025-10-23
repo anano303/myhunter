@@ -108,7 +108,9 @@ export class ProductsService {
     }
 
     if (brand) {
-      filter.brand = brand;
+      // Use case-insensitive exact match for brand and trim whitespace
+      const escaped = brand.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.brand = { $regex: `^${escaped}$`, $options: 'i' };
     }
 
     // Handle category filtering with the new structure
