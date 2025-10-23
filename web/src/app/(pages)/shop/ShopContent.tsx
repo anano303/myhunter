@@ -40,12 +40,8 @@ const ShopContent = () => {
     direction: "desc",
   });
 
-  // Parse URL parameters on first load
+  // Parse URL parameters on load and when searchParams change
   useEffect(() => {
-    if (initializedRef.current) return;
-  // Parse URL params once on first load
-  initializedRef.current = true;
-
     const pageParam = searchParams
       ? parseInt(searchParams.get("page") || "1")
       : 1;
@@ -86,21 +82,25 @@ const ShopContent = () => {
     setSelectedBrand(brandParam);
     setShowDiscountedOnly(discountParam);
     setPriceRange([minPriceParam, maxPriceParam]);
-  setSorting({ field: sortByParam, direction: sortDirectionParam });
+    setSorting({ field: sortByParam, direction: sortDirectionParam });
 
-  // Mark params as applied so fetching can start with correct filters
-  setParamsReady(true);
+    // Mark as initialized and ready
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      setParamsReady(true);
+    }
 
-    console.log("Initial setup with URL params:", {
+    console.log("URL params updated:", {
       page: pageParam,
       mainCategory: mainCategoryParam,
       subCategory: subCategoryParam,
+      discounted: discountParam,
     });
   }, [searchParams]);
 
   // Fetch products based on filters
   const fetchProducts = useCallback(async () => {
-  if (!initializedRef.current || !paramsReady) return;
+    if (!initializedRef.current || !paramsReady) return;
 
     setIsLoading(true);
 

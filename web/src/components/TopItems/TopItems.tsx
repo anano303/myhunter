@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-// import Link from "next/link";
+import Link from "next/link";
 import "./TopItems.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
@@ -15,13 +15,15 @@ const TopItems: React.FC = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { data: topProducts, isLoading } = useQuery({
-    queryKey: ["topProducts"],
+  const { data: discountedProducts, isLoading } = useQuery({
+    queryKey: ["discountedProducts"],
     queryFn: async () => {
       const searchParams = new URLSearchParams({
         page: "1",
-        limit: "20",
-        sort: "-rating",
+        limit: "100",
+        discounted: "true",
+        sortBy: "discountPercentage",
+        sortDirection: "desc",
       });
       const response = await fetchWithAuth(
         `/products?${searchParams.toString()}`
@@ -29,8 +31,9 @@ const TopItems: React.FC = () => {
       const data = await response.json();
       // Handle both response formats (items array or products array)
       const products = data.items || data.products || [];
-      return products.slice(0, 6);
+      return products.slice(0, 6); // show only 6 discounted products in the strip
     },
+    refetchOnWindowFocus: false,
   });
 
   // Handle scroll event to show/hide scrollbar
@@ -68,8 +71,6 @@ const TopItems: React.FC = () => {
 
   const { t } = useLanguage();
 
-
-
   if (isLoading) {
     return (
       <div className="top-items-container loading">
@@ -82,7 +83,7 @@ const TopItems: React.FC = () => {
     <div className="top-items-container">
       <div className="top-items-title-container">
         <h2 className="top-items-title">
-          {t("navigation.popular")}
+          {t("navigation.discounted") || "ფასდაკლებული პროდუქტები"}
         </h2>
       </div>
 
@@ -90,7 +91,7 @@ const TopItems: React.FC = () => {
         ref={gridRef}
         className={`top-items-grid ${isScrolling ? "scrolling" : ""}`}
       >
-        {topProducts?.map((product: Product, index: number) => (
+        {discountedProducts?.map((product: Product, index: number) => (
           <div
             key={product._id}
             className={`product-card-wrapper ${
@@ -101,6 +102,19 @@ const TopItems: React.FC = () => {
             <ProductCard product={product} />
           </div>
         ))}
+
+        {/* View All button as last item in the scroll */}
+        {discountedProducts && discountedProducts.length > 0 && (
+          <div className="view-all-scroll-item">
+            <Link
+              href="/shop?discounted=true"
+              className="view-all-scroll-button"
+            >
+              <span className="view-all-text">{t("shop.seeAll")}</span>
+              <span className="arrow-icon">→</span>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

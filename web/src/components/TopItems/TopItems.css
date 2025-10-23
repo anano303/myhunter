@@ -53,15 +53,14 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
-  gap: min(70px);
+  gap: 20px;
   padding: 15px 20px 5px 20px;
   margin-left: 0;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   align-items: stretch;
   min-height: 400px;
-  padding: 15px 20px 5px 20px;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   /* Hide scrollbar for all browsers and states */
   scrollbar-width: none; /* Firefox */
@@ -99,27 +98,60 @@
   transform: translateY(-5px);
 }
 
-.view-all-products {
-  margin-top: 30px;
-  text-align: center;
+/* View all button inside scroll as last item */
+.view-all-scroll-item {
+  flex: 0 0 auto;
+  width: 300px;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.view-all-button {
-  display: inline-block;
-  background: linear-gradient(135deg, #e91e63, #ad1457);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 30px;
+.view-all-scroll-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  height: 100%;
+  min-height: 350px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.view-all-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.4);
+.view-all-scroll-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.02);
+}
+
+.view-all-text {
+  font-family: FiraGo, sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.arrow-icon {
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.3s ease;
+}
+
+.view-all-scroll-button:hover .arrow-icon {
+  transform: translateX(10px);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Loading state */
