@@ -131,7 +131,7 @@
 .banner-content {
   position: absolute;
   top: 30%;
-  left: 0%;
+  left: 1%;
   transform: translateY(-50%);
   color: white;
   z-index: 2;
