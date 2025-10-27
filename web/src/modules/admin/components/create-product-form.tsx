@@ -17,7 +17,8 @@ import { Category, SubCategory } from "@/types";
 import { useStocks } from "@/hooks/useStocks";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 // Extended ProductFormData to include all needed properties
 interface ProductFormData extends BaseProductFormData {
@@ -112,6 +113,16 @@ export function CreateProductForm({
 
   // Add state for hashtags input text
   const [hashtagsInput, setHashtagsInput] = useState<string>("");
+
+  // State for effective initial data (used for stocks restoration)
+  const [effectiveInitialData, setEffectiveInitialData] = useState<
+    ProductFormData | undefined
+  >(initialData);
+
+  // Update effectiveInitialData when initialData changes (for editing existing products)
+  useEffect(() => {
+    setEffectiveInitialData(initialData);
+  }, [initialData]);
 
   // Form data auto-save key for localStorage
   const AUTO_SAVE_KEY = `product-form-data-${
@@ -208,6 +219,11 @@ export function CreateProductForm({
     return ageGroupName;
   };
 
+  const { stocks, totalCount, setStockCount } = useStocks({
+    initialData: effectiveInitialData,
+    attributes: [selectedAgeGroups, selectedSizes, selectedColors],
+  });
+
   // Update available attributes when subcategory changes
   useEffect(() => {
     if (subcategories && selectedSubcategory) {
@@ -266,6 +282,7 @@ export function CreateProductForm({
         discountStartDate,
         discountEndDate,
         hashtagsInput,
+        stocks, // Save current stocks data for restoration
         timestamp: Date.now(),
         version: "2.0", // Version to handle future migration
         sessionId: sessionStorage.getItem("current-session") || "default", // Track session
@@ -333,6 +350,7 @@ export function CreateProductForm({
     discountStartDate,
     discountEndDate,
     hashtagsInput,
+    stocks,
     AUTO_SAVE_KEY,
   ]);
 
@@ -386,16 +404,27 @@ export function CreateProductForm({
             if (parsedData.hashtagsInput)
               setHashtagsInput(parsedData.hashtagsInput);
 
+            // Restore stocks data by setting effectiveInitialData with variants
+            if (parsedData.stocks && parsedData.stocks.length > 0) {
+              setEffectiveInitialData({
+                ...parsedData.formData,
+                variants: parsedData.stocks,
+              });
+            }
+
             // Show notification that data was restored
             const imageCount = parsedData.formData.images?.length || 0;
+            const stockCount = parsedData.stocks?.length || 0;
             const imageInfo =
               imageCount > 0
                 ? ` (${imageCount} სურათი ახლიდან უნდა აირჩეს)`
                 : "";
+            const stockInfo =
+              stockCount > 0 ? ` (${stockCount} მარაგი აღდგა)` : "";
 
             const { dismiss } = toast({
               title: "📝 მონაცემები აღდგა",
-              description: `თქვენი ძველი ფორმის მონაცემები წარმატებით აღდგა${imageInfo}`,
+              description: `თქვენი ძველი ფორმის მონაცემები წარმატებით აღდგა${imageInfo}${stockInfo}`,
               action: (
                 <button
                   onClick={() => dismiss()}
@@ -1280,11 +1309,6 @@ export function CreateProductForm({
     };
   }, []);
 
-  const { stocks, totalCount, setStockCount } = useStocks({
-    initialData,
-    attributes: [selectedAgeGroups, selectedSizes, selectedColors],
-  });
-
   return (
     <div className="create-product-form">
       {success && (
@@ -1854,7 +1878,11 @@ export function CreateProductForm({
                       src={imageUrl}
                       alt="Product preview"
                       className="preview-image"
-                      style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
                     />
                   ) : (
                     <Image
@@ -1900,9 +1928,9 @@ export function CreateProductForm({
               <div className="image-preview">
                 {isCloudinaryImage(
                   user?.storeLogo ||
-                  (typeof formData.brandLogo === "string"
-                    ? formData.brandLogo
-                    : "")
+                    (typeof formData.brandLogo === "string"
+                      ? formData.brandLogo
+                      : "")
                 ) ? (
                   <img
                     alt="Brand logo"
@@ -1913,7 +1941,11 @@ export function CreateProductForm({
                         : "")
                     }
                     className="preview-image"
-                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
                   />
                 ) : (
                   <Image
