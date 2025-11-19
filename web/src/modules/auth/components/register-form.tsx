@@ -36,7 +36,7 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterSchema) => {
     setRegistrationError(null);
 
-    // Extract only the data needed for backend (exclude acceptPrivacyPolicy)
+    // Extract only the data needed for backend (exclude policy acceptances)
     const registerData = {
       name: data.name,
       email: data.email,
@@ -170,6 +170,11 @@ export function RegisterForm() {
 
         <div className="register-field privacy-field">
           <label className="privacy-checkbox-label">
+            <input
+              type="checkbox"
+              {...register("acceptPrivacyPolicy")}
+              className="privacy-checkbox"
+            />
             <span className="privacy-text">
               {t("auth.agreeToPrivacyPolicy")}
               <Link
@@ -180,14 +185,57 @@ export function RegisterForm() {
                 {t("auth.privacyPolicy")}
               </Link>
             </span>
-            <input
-              type="checkbox"
-              {...register("acceptPrivacyPolicy")}
-              className="privacy-checkbox"
-            />
           </label>
           {errors.acceptPrivacyPolicy && (
             <p className="error-text">{errors.acceptPrivacyPolicy.message}</p>
+          )}
+        </div>
+
+        <div className="register-field privacy-field">
+          <label className="privacy-checkbox-label">
+            <input
+              type="checkbox"
+              {...register("acceptTermsAndConditions")}
+              className="privacy-checkbox"
+            />
+            <span className="privacy-text">
+              {t("auth.agreeToTermsAndConditions")}
+              <Link
+                href="/terms-and-conditions"
+                target="_blank"
+                className="privacy-link"
+              >
+                {t("auth.termsAndConditions")}
+              </Link>
+            </span>
+          </label>
+          {errors.acceptTermsAndConditions && (
+            <p className="error-text">
+              {errors.acceptTermsAndConditions.message}
+            </p>
+          )}
+        </div>
+
+        <div className="register-field privacy-field">
+          <label className="privacy-checkbox-label">
+            <input
+              type="checkbox"
+              {...register("acceptReturnPolicy")}
+              className="privacy-checkbox"
+            />
+            <span className="privacy-text">
+              {t("auth.agreeToReturnPolicy")}
+              <Link
+                href="/return-policy"
+                target="_blank"
+                className="privacy-link"
+              >
+                {t("auth.returnPolicy")}
+              </Link>
+            </span>
+          </label>
+          {errors.acceptReturnPolicy && (
+            <p className="error-text">{errors.acceptReturnPolicy.message}</p>
           )}
         </div>
 

@@ -361,9 +361,13 @@ export const TRANSLATIONS: Translations = {
       passwordRequired: "პაროლის მითითება აუცილებელია",
       passwordMinLength: "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს",
       agreeToPrivacyPolicy: "ვეთანხმები ",
-      privacyPolicy: "კონფიდენციალურობის პოლიტიკას",
+      privacyPolicy: "კონფიდენციალურობას",
       privacyPolicyRequired:
         "კონფიდენციალურობის პოლიტიკაზე თანხმობა აუცილებელია",
+      agreeToTermsAndConditions: "ვეთანხმები ",
+      termsAndConditions: "წესებს",
+      agreeToReturnPolicy: "ვეთანხმები ",
+      returnPolicy: "დაბრუნების წესებს",
       // Forgot/Reset password
       success: "წარმატება",
       error: "შეცდომა",
@@ -1013,6 +1017,10 @@ export const TRANSLATIONS: Translations = {
       agreeToPrivacyPolicy: "I agree to the ",
       privacyPolicy: "Privacy Policy",
       privacyPolicyRequired: "You must accept the privacy policy to register",
+      agreeToTermsAndConditions: "I agree to the ",
+      termsAndConditions: "Terms and Conditions",
+      agreeToReturnPolicy: "I agree to the ",
+      returnPolicy: "Return Policy",
       // Forgot/Reset password
       success: "Success",
       error: "Error",

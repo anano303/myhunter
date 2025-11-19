@@ -25,8 +25,23 @@ export default function Footer() {
               <Link href="/about" className="footer-link">
                 {t("navigation.about")}
               </Link>
-              <Link href="/privacy-policy" className="footer-link">
-                კონფიდენციალურობის პოლიტიკა
+              <Link
+                href="/privacy-policy"
+                className="footer-link footer-policy-link"
+              >
+                კონფიდენციალურობა
+              </Link>
+              <Link
+                href="/terms-and-conditions"
+                className="footer-link footer-policy-link"
+              >
+                წესები და პირობები
+              </Link>
+              <Link
+                href="/return-policy"
+                className="footer-link footer-policy-link"
+              >
+                დაბრუნების წესები
               </Link>
             </div>
           </div>

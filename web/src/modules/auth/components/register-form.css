@@ -545,7 +545,7 @@ input:focus {
   box-sizing: border-box;
 }
 
-.register-field input {
+.register-field input:not([type="checkbox"]) {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid rgba(245, 233, 209, 0.3); /* Lighter border */
@@ -561,7 +561,7 @@ input:focus {
   color: #f5e9d1; /* Lighter text */
 }
 
-.register-field input::placeholder {
+.register-field input:not([type="checkbox"])::placeholder {
   color: #d9c9a3; /* Lighter placeholder */
   font-family: "FiraGo", sans-serif;
   font-weight: 400;
@@ -779,26 +779,55 @@ input:-webkit-autofill:active {
 
 /* Privacy Policy Checkbox Styling */
 .privacy-field {
-  margin-top: 1rem;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .privacy-checkbox-label {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.5rem;
   cursor: pointer;
   font-size: 14px;
   color: #d9c9a3;
   font-family: "FiraGo", sans-serif;
-  text-align: center;
+  text-align: left;
+  width: auto;
+  max-width: 100%;
+  padding: 0.25rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  flex-direction: row !important;
+}
+
+.privacy-checkbox-label:hover {
+  background-color: rgba(138, 125, 82, 0.1);
+}
+
+.privacy-checkbox {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
+  accent-color: #8a7d52;
+  cursor: pointer;
+  outline: none !important;
+  border: 2px solid #8a7d52 !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  order: 1 !important;
 }
 
 .privacy-text {
-  flex: 1;
   line-height: 1.4;
   text-align: left;
+  display: inline;
+  white-space: nowrap;
+  overflow: visible;
+  order: 2 !important;
 }
 
 .privacy-link {
@@ -806,9 +835,9 @@ input:-webkit-autofill:active {
   text-decoration: underline;
   font-weight: 500;
   transition: color 0.3s ease;
-  display: block;
-  margin-top: 0;
+  display: inline;
   margin-left: 0;
+  white-space: nowrap;
 }
 
 .privacy-link:hover {
@@ -817,37 +846,115 @@ input:-webkit-autofill:active {
 }
 
 .privacy-checkbox {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
   accent-color: #8a7d52;
   cursor: pointer;
-  margin-left: 0.5rem;
   outline: none !important;
-  border: none !important;
+  border: 2px solid #8a7d52 !important;
   box-shadow: none !important;
-  align-self: center;
-  margin-top: 2px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.privacy-link:hover {
+  color: #f5e9d1;
+  text-decoration: none;
+}
+
+.privacy-checkbox {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  accent-color: #8a7d52;
+  cursor: pointer;
+  outline: none !important;
+  border: 2px solid #8a7d52 !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.privacy-checkbox:checked {
+  background-color: #8a7d52;
+  border-color: #8a7d52 !important;
+}
+
+.privacy-checkbox:hover {
+  border-color: #b89968 !important;
+  transform: scale(1.1);
 }
 
 .privacy-checkbox:focus {
   outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
+  box-shadow: 0 0 0 3px rgba(138, 125, 82, 0.3) !important;
+  border-color: #8a7d52 !important;
 }
 
 .privacy-checkbox:active {
   outline: none !important;
   box-shadow: none !important;
-  border: none !important;
+  border-color: #8a7d52 !important;
+  transform: scale(0.95);
 }
 
 .privacy-checkbox:focus-visible {
   outline: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 3px rgba(138, 125, 82, 0.3) !important;
 }
 
 /* Error styling for privacy field */
 .privacy-field .error-text {
   margin-top: 0.5rem;
   font-size: 12px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .privacy-checkbox-label {
+    font-size: 13px;
+    max-width: 100%;
+    gap: 0.5rem;
+    padding: 0.4rem;
+  }
+
+  .privacy-text {
+    white-space: normal;
+  }
+
+  .privacy-checkbox {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .privacy-checkbox-label {
+    font-size: 12px;
+    gap: 0.5rem;
+    padding: 0.3rem;
+  }
+
+  .privacy-text {
+    white-space: normal;
+  }
+
+  .privacy-checkbox {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+  }
+
+  .privacy-field .error-text {
+    font-size: 11px;
+  }
 }

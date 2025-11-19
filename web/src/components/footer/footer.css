@@ -43,6 +43,10 @@
   color: #ccc;
 }
 
+.footer-policy-link {
+  font-size: 13px !important;
+}
+
 .footer-logo {
   display: flex;
   justify-content: center;
@@ -113,6 +117,11 @@
     flex-direction: row;
     justify-content: center;
     gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .footer-policy-link {
+    font-size: 12px !important;
   }
 
   .footer-logo {
@@ -151,6 +160,10 @@
     font-size: 16px;
   }
 
+  .footer-policy-link {
+    font-size: 14px !important;
+  }
+
   .footer-logo-image {
     width: 260px;
   }
@@ -165,7 +178,7 @@
   .footer-logo-image {
     width: 80px;
   }
-   .footer-logo-image {
+  .footer-logo-image {
     width: 200px;
   }
 }
