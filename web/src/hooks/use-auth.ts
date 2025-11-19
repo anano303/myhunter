@@ -66,11 +66,14 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       if (data.success && data.user) {
-        // Make sure we're storing the profile image URL as well
+        // Store profile image in localStorage
         if (data.user.profileImage) {
           localStorage.setItem("userProfileImage", data.user.profileImage);
         }
+        // Update the user query with the new user data
         queryClient.setQueryData(["user"], data.user);
+        // Invalidate and refetch to ensure we have the latest data
+        queryClient.invalidateQueries({ queryKey: ["user"] });
       }
     },
     onError: (error) => {

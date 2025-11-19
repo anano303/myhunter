@@ -68,37 +68,16 @@ const CategoryNavigation = () => {
   const { data: categories } = useCategories(false);
   const { language } = useLanguage();
 
-  // Default categories (fallback if API fails or returns empty)
-  const defaultCategories = [
-    {
-      id: 1,
-      name: "ცეცხლსასროლი იარაღი",
-      nameEn: "Firearms",
-      href: "/shop/firearms",
-    },
-    { id: 2, name: "თევზაობა", nameEn: "Fishing", href: "/shop/fishing" },
-    { id: 3, name: "კემპინგი", nameEn: "Camping", href: "/shop/camping" },
-    {
-      id: 4,
-      name: "აქსესუარები",
-      nameEn: "Accessories",
-      href: "/shop/accessories",
-    },
-  ];
-
-  // Use API categories if available, otherwise use default
-  const categoriesToShow =
-    categories && categories.length > 0 ? categories : defaultCategories;
+  // If no categories from API, don't show anything
+  if (!categories || categories.length === 0) {
+    return null;
+  }
 
   return (
     <div className="category-navigation">
       <div className="category-scroll-container">
-        {categoriesToShow.map((category) => {
-          const isApiCategory = categories && categories.length > 0;
-          const href = isApiCategory
-            ? `/shop?mainCategory=${category.id}`
-            : defaultCategories.find((def) => def.id === category.id)?.href ||
-              "/shop/categories";
+        {categories.map((category) => {
+          const href = `/shop?mainCategory=${category.id}`;
 
           return (
             <Link key={category.id} href={href} className="main-category-item">

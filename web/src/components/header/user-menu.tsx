@@ -39,10 +39,7 @@ export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
     } else {
       setProfileImage("/avatar.jpg");
     }
-
-    // დავამატოთ ლოგი დებაგისთვის
-    console.log("User profile updated:", user);
-  }, [user]);
+  }, [user, user?.profileImage]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
