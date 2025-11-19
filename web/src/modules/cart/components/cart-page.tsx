@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { useUser } from "@/modules/auth/hooks/use-user";
+import { useEffect } from "react";
 import "./cart-page.css";
 import { Color } from "@/types";
 
@@ -15,6 +17,7 @@ export function CartPage() {
   const { items, loading } = useCart();
   const router = useRouter();
   const { t, language } = useLanguage(); // Added language here
+  const { user } = useUser();
 
   // Fetch all colors for proper nameEn support
   const { data: availableColors = [] } = useQuery<Color[]>({
@@ -56,6 +59,15 @@ export function CartPage() {
   const shipping = subtotal > 100 ? 0 : 0;
   const tax = Number((0.02 * subtotal).toFixed(2));
   const total = subtotal + shipping + tax;
+
+  const handleCheckout = () => {
+    if (!user) {
+      // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინზე
+      router.push("/login?redirect=/checkout/shipping");
+      return;
+    }
+    router.push("/checkout/shipping");
+  };
 
   return (
     <div className="cart-page">
@@ -106,7 +118,7 @@ export function CartPage() {
               </div>
               <button
                 className="checkout-button"
-                onClick={() => router.push("/checkout/shipping")}
+                onClick={handleCheckout}
               >
                 {t("cart.checkout")}
               </button>

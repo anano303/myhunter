@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useCheckout } from "../context/checkout-context";
 import { getCountries } from "@/lib/countries";
+import { useUser } from "@/modules/auth/hooks/use-user";
+import { useEffect } from "react";
 
 import "./shipping-form.css";
 
@@ -21,6 +23,14 @@ export function ShippingForm() {
   const { setShippingAddress } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useUser();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push("/login?redirect=/checkout/shipping");
+    }
+  }, [user, router]);
 
   const {
     register,
@@ -30,6 +40,11 @@ export function ShippingForm() {
   } = useForm<ShippingFormData>();
 
   const onSubmit = async (data: ShippingFormData) => {
+    if (!user) {
+      router.push("/login?redirect=/checkout/shipping");
+      return;
+    }
+
     try {
       const response = await apiClient.post("/cart/shipping", data);
       const shippingAddress = response.data;
@@ -37,6 +52,18 @@ export function ShippingForm() {
       router.push("/checkout/payment");
     } catch (error) {
       console.log(error);
+      
+      // Check if it's a 401 authentication error
+      if ((error as any)?.response?.status === 401) {
+        toast({
+          title: "ავტორიზაცია საჭიროა",
+          description: "გთხოვთ ჯერ შეხვიდეთ სისტემაში",
+          variant: "destructive",
+        });
+        router.push("/login?redirect=/checkout/shipping");
+        return;
+      }
+      
       toast({
         title: "Error saving shipping details",
         description: "Please try again.",
@@ -44,6 +71,11 @@ export function ShippingForm() {
       });
     }
   };
+
+  // Don't render form if not authenticated
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="shipping-form-card">

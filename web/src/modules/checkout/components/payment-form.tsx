@@ -7,6 +7,8 @@ import { useCheckout } from "../context/checkout-context";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/modules/auth/hooks/use-user";
+import { useEffect } from "react";
 // import { FaPaypal } from "react-icons/fa";
 // import { CreditCard } from "lucide-react";
 import "./payment-form.css";
@@ -21,6 +23,14 @@ export function PaymentForm() {
   const { setPaymentMethod } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useUser();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push("/login?redirect=/checkout/payment");
+    }
+  }, [user, router]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,6 +40,11 @@ export function PaymentForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!user) {
+      router.push("/login?redirect=/checkout/payment");
+      return;
+    }
+
     try {
       const response = await apiClient.post("/cart/payment", {
         paymentMethod: values.paymentMethod,
@@ -40,12 +55,29 @@ export function PaymentForm() {
       router.push("/checkout/review");
     } catch (error) {
       console.log(error);
+      
+      // Check if it's a 401 authentication error
+      if ((error as any)?.response?.status === 401) {
+        toast({
+          title: "ავტორიზაცია საჭიროა",
+          description: "გთხოვთ ჯერ შეხვიდეთ სისტემაში",
+          variant: "destructive",
+        });
+        router.push("/login?redirect=/checkout/payment");
+        return;
+      }
+      
       toast({
         title: "Error saving payment method",
         description: "Please try again.",
         variant: "destructive",
       });
     }
+  }
+
+  // Don't render form if not authenticated
+  if (!user) {
+    return null;
   }
 
   return (

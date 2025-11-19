@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { ShoppingCart, Plus, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ProductCard.css";
@@ -57,35 +57,17 @@ export function AddToCartButton({
 
   return (
     <div className="cart-actions">
-      {/* <div className="quantity-container">
-        <button
-          className="quantity-button"
-          onClick={decreaseQuantity}
-          disabled={quantity <= 1}
-        >
-          -
-        </button>
-        <span className="quantity-input">{quantity}</span>
-        <button
-          className="quantity-button"
-          onClick={increaseQuantity}
-          disabled={quantity >= countInStock}
-        >
-          +
-        </button>
-      </div> */}
-
       <button
         className={`addButtonCart ${className}`}
         disabled={isOutOfStock || loading}
         onClick={handleAddToCart}
+        title={isOutOfStock ? t("cart.outOfStock") : t("cart.addToCart")}
       >
-        {/* <span>🛒</span> */}
-        {isOutOfStock
-          ? t("cart.outOfStock")
-          : loading
-          ? t("cart.adding")
-          : t("cart.addToCart")}
+        {loading ? (
+          <div className="cart-loading-spinner" />
+        ) : (
+          <ShoppingCart size={20} strokeWidth={2.5} />
+        )}
       </button>
     </div>
   );

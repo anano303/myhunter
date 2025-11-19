@@ -7,6 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
 import { TAX_RATE } from "@/config/constants";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useUser } from "@/modules/auth/hooks/use-user";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import "./order-review.css";
@@ -22,6 +24,14 @@ export function OrderReview() {
   const router = useRouter();
   const { toast } = useToast();
   const { language } = useLanguage();
+  const { user } = useUser();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push("/login?redirect=/checkout/review");
+    }
+  }, [user, router]);
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -32,6 +42,11 @@ export function OrderReview() {
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   const handlePlaceOrder = async () => {
+    if (!user) {
+      router.push("/login?redirect=/checkout/review");
+      return;
+    }
+
     try {
       const orderItems = items.map((item) => ({
         name: item.name,
@@ -59,6 +74,18 @@ export function OrderReview() {
       router.push(`/orders/${response.data._id}`);
     } catch (error) {
       console.log(error);
+      
+      // Check if it's a 401 authentication error
+      if ((error as any)?.response?.status === 401) {
+        toast({
+          title: "ავტორიზაცია საჭიროა",
+          description: "გთხოვთ ჯერ შეხვიდეთ სისტემაში",
+          variant: "destructive",
+        });
+        router.push("/login?redirect=/checkout/review");
+        return;
+      }
+      
       toast({
         title: "Error placing order",
         description: "Please try again.",
@@ -66,6 +93,11 @@ export function OrderReview() {
       });
     }
   };
+
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="order-review-grid">

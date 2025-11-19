@@ -10,7 +10,8 @@ import { CartItem } from "@/types/cart";
 import "./FloatingCart.css";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string | undefined) =>
+  src && (src.includes("cloudinary") || src.includes("res.cloudinary.com"));
 
 export function FloatingCart() {
   const [isOpen, setIsOpen] = useState(false);
@@ -206,27 +207,52 @@ export function FloatingCart() {
                   className="cart-item-mini"
                 >
                   <div className="item-image">
-                    {isCloudinaryImage(item.image) ? (
-                      <img
-                        src={item.image}
-                        alt={getLocalizedName(item)}
-                        className="item-img"
-                        style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                      />
+                    {item.image ? (
+                      isCloudinaryImage(item.image) ? (
+                        <img
+                          src={item.image}
+                          alt={getLocalizedName(item)}
+                          className="item-img"
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <Image
+                          src={item.image}
+                          alt={getLocalizedName(item)}
+                          width={50}
+                          height={50}
+                          className="item-img"
+                        />
+                      )
                     ) : (
-                      <Image
-                        src={item.image}
-                        alt={getLocalizedName(item)}
-                        width={50}
-                        height={50}
-                        className="item-img"
-                      />
+                      <div
+                        className="item-img-placeholder"
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          backgroundColor: "#f3f4f6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        <span style={{ color: "#9ca3af", fontSize: "12px" }}>
+                          No Image
+                        </span>
+                      </div>
                     )}
                   </div>
 
                   <div className="item-details">
                     <div className="item-name">{getLocalizedName(item)}</div>
-                    <div className="item-price">{item.price.toFixed(2)} ₾</div>
+                    <div className="item-price">
+                      {item.price ? `${item.price.toFixed(2)} ₾` : "N/A"}
+                    </div>
 
                     {/* Quantity Controls */}
                     <div className="quantity-controls">

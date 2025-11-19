@@ -51,18 +51,121 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const totalItems = items.reduce((total, item) => total + item.qty, 0);
 
-  const addItem = useCallback(
-    async (productId: string, qty: number) => {
-      // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
-      if (!user) {
-        console.log("User not authenticated, redirecting to login");
-        window.location.href =
-          "/login?redirect=" + encodeURIComponent(window.location.pathname);
-        // Promise რომ არ გაგრძელდეს
-        throw new Error("User not authenticated");
+  // Save cart to localStorage (only minimal info)
+  const saveToLocalStorage = (cartItems: Array<{productId: string, qty: number, size?: string, color?: string, ageGroup?: string}>) => {
+    try {
+      localStorage.setItem("guestCart", JSON.stringify(cartItems));
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error);
+    }
+  };
+
+  // Load cart from localStorage (minimal info)
+  const loadFromLocalStorage = (): Array<{productId: string, qty: number, size?: string, color?: string, ageGroup?: string}> => {
+    try {
+      const stored = localStorage.getItem("guestCart");
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error("Error loading cart from localStorage:", error);
+      return [];
+    }
+  };
+
+  // Fetch full product details for guest cart items
+  const enrichGuestCartItems = async (
+    guestItems: Array<{ productId: string; qty: number; size?: string; color?: string; ageGroup?: string }>
+  ): Promise<CartItem[]> => {
+    try {
+      const enrichedItems: CartItem[] = [];
+
+      for (const item of guestItems) {
+        try {
+          const { data } = await apiClient.get(`/products/${item.productId}`);
+          enrichedItems.push({
+            productId: item.productId,
+            qty: item.qty,
+            price: data.price || 0,
+            name: data.name || "",
+            nameEn: data.nameEn || "",
+            image: data.images?.[0] || "",
+            size: item.size,
+            color: item.color,
+            ageGroup: item.ageGroup,
+          } as CartItem);
+        } catch (error) {
+          console.error(
+            `Error fetching product ${item.productId}:`,
+            error
+          );
+          // Add minimal item if fetch fails
+          enrichedItems.push({
+            productId: item.productId,
+            qty: item.qty,
+            price: 0,
+            name: "Unknown Product",
+            nameEn: "Unknown Product",
+            image: "",
+            size: item.size,
+            color: item.color,
+            ageGroup: item.ageGroup,
+          } as CartItem);
+        }
       }
 
+      return enrichedItems;
+    } catch (error) {
+      console.error("Error enriching guest cart items:", error);
+      return [];
+    }
+  };
+
+  const addItem = useCallback(
+    async (productId: string, qty: number) => {
       setLoading(true);
+
+      // თუ მომხმარებელი არაა ავტორიზებული, localStorage-ში ვინახავთ
+      if (!user) {
+        try {
+          // Save minimal info to localStorage
+          const currentMinimalItems = loadFromLocalStorage();
+          const existingItem = currentMinimalItems.find(
+            (item) => item.productId === productId
+          );
+
+          let updatedMinimalItems;
+          if (existingItem) {
+            updatedMinimalItems = currentMinimalItems.map((item) =>
+              item.productId === productId
+                ? { ...item, qty: item.qty + qty }
+                : item
+            );
+          } else {
+            updatedMinimalItems = [...currentMinimalItems, { productId, qty } as CartItem];
+          }
+
+          saveToLocalStorage(updatedMinimalItems);
+          
+          // Enrich and update state with full product details
+          const enrichedItems = await enrichGuestCartItems(updatedMinimalItems);
+          setItems(enrichedItems);
+
+          toast({
+            title: "პროდუქტი დაემატა",
+            description:
+              "პროდუქტი დაემატა კალათაში. დარეგისტრირდით რომ შეინახოთ.",
+          });
+        } catch (error) {
+          toast({
+            title: "შეცდომა",
+            description: "პროდუქტის დამატება ვერ მოხერხდა",
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         const { data } = await apiClient.post("/cart/items", {
           productId,
@@ -70,13 +173,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         });
         setItems(data.items);
 
-        // მხოლოდ წარმატებული ოპერაციის შემდეგ ვაჩვენოთ toast
         toast({
           title: "პროდუქტი დაემატა",
           description: "პროდუქტი წარმატებით დაემატა კალათაში",
         });
       } catch (error) {
-        // თუ 401 შეცდომაა (არაავტორიზებული), გადავიყვანოთ ლოგინზე
         if (
           (error as { response?: { status?: number } })?.response?.status ===
           401
@@ -109,13 +210,63 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       ageGroup = "",
       price?: number
     ) => {
-      // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
+      // არაავტორიზებული მომხმარებლებისთვის localStorage-ში შენახვა
       if (!user) {
-        console.log("User not authenticated, redirecting to login");
-        window.location.href =
-          "/login?redirect=" + encodeURIComponent(window.location.pathname);
-        // Promise რომ არ გაგრძელდეს
-        throw new Error("User not authenticated");
+        setLoading(true);
+        try {
+          // Normalize empty strings to undefined
+          const normalizedSize = size || undefined;
+          const normalizedColor = color || undefined;
+          const normalizedAgeGroup = ageGroup || undefined;
+          
+          // Save minimal info to localStorage
+          const currentMinimalItems = loadFromLocalStorage();
+          // Find exact match including size, color, ageGroup
+          const existingItem = currentMinimalItems.find(
+            (item) => 
+              item.productId === productId &&
+              (item.size || undefined) === normalizedSize &&
+              (item.color || undefined) === normalizedColor &&
+              (item.ageGroup || undefined) === normalizedAgeGroup
+          );
+
+          let updatedMinimalItems;
+          if (existingItem) {
+            updatedMinimalItems = currentMinimalItems.map((item) =>
+              item.productId === productId &&
+              (item.size || undefined) === normalizedSize &&
+              (item.color || undefined) === normalizedColor &&
+              (item.ageGroup || undefined) === normalizedAgeGroup
+                ? { ...item, qty: item.qty + quantity }
+                : item
+            );
+          } else {
+            updatedMinimalItems = [
+              ...currentMinimalItems,
+              { productId, qty: quantity, size: normalizedSize, color: normalizedColor, ageGroup: normalizedAgeGroup },
+            ];
+          }
+
+          saveToLocalStorage(updatedMinimalItems);
+          
+          // Enrich and update state with full product details
+          const enrichedItems = await enrichGuestCartItems(updatedMinimalItems);
+          setItems(enrichedItems);
+
+          toast({
+            title: "პროდუქტი დაემატა კალათაში",
+            description: "დარეგისტრირდით რომ შეინახოთ კალათა.",
+          });
+        } catch (error) {
+          toast({
+            title: "შეცდომა",
+            description: "პროდუქტის დამატება ვერ მოხერხდა",
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+        return;
       }
 
       setLoading(true);
@@ -182,11 +333,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       color?: string,
       ageGroup?: string
     ) => {
-      // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
+      // არაავტორიზებული მომხმარებლებისთვის localStorage-ში განახლება
       if (!user) {
-        console.log("User not authenticated, redirecting to login");
-        window.location.href =
-          "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        // Normalize empty strings to undefined for comparison
+        const normalizedSize = size || undefined;
+        const normalizedColor = color || undefined;
+        const normalizedAgeGroup = ageGroup || undefined;
+        
+        // Update state with full item info (match by all attributes)
+        const updatedStateItems = items.map((item) =>
+          item.productId === productId &&
+          (item.size || undefined) === normalizedSize &&
+          (item.color || undefined) === normalizedColor &&
+          (item.ageGroup || undefined) === normalizedAgeGroup
+            ? { ...item, qty }
+            : item
+        );
+        setItems(updatedStateItems);
+        
+        // Save minimal info to localStorage
+        const minimalItems = updatedStateItems.map(item => ({
+          productId: item.productId,
+          qty: item.qty,
+          size: item.size || undefined,
+          color: item.color || undefined,
+          ageGroup: item.ageGroup || undefined,
+        }));
+        saveToLocalStorage(minimalItems);
         return;
       }
 
@@ -221,7 +394,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast, items]
   );
 
   const removeItem = useCallback(
@@ -231,11 +404,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       color?: string,
       ageGroup?: string
     ) => {
-      // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
+      // არაავტორიზებული მომხმარებლებისთვის localStorage-დან წაშლა
       if (!user) {
-        console.log("User not authenticated, redirecting to login");
-        window.location.href =
-          "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        // Normalize empty strings to undefined for comparison
+        const normalizedSize = size || undefined;
+        const normalizedColor = color || undefined;
+        const normalizedAgeGroup = ageGroup || undefined;
+        
+        // Update state (remove from enriched items - match by all attributes)
+        const updatedStateItems = items.filter(
+          (item) => !(
+            item.productId === productId &&
+            (item.size || undefined) === normalizedSize &&
+            (item.color || undefined) === normalizedColor &&
+            (item.ageGroup || undefined) === normalizedAgeGroup
+          )
+        );
+        setItems(updatedStateItems);
+        
+        // Save minimal info to localStorage
+        const minimalItems = updatedStateItems.map(item => ({
+          productId: item.productId,
+          qty: item.qty,
+          size: item.size || undefined,
+          color: item.color || undefined,
+          ageGroup: item.ageGroup || undefined,
+        }));
+        saveToLocalStorage(minimalItems);
+        
+        toast({
+          title: "პროდუქტი წაიშალა",
+          description: "პროდუქტი წაიშალა კალათიდან",
+        });
         return;
       }
 
@@ -267,15 +467,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast, items]
   );
 
   const clearCart = useCallback(async () => {
-    // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინ გვერდზე
+    // არაავტორიზებული მომხმარებლებისთვის localStorage-ს გასუფთავება
     if (!user) {
-      console.log("User not authenticated, redirecting to login");
-      window.location.href =
-        "/login?redirect=" + encodeURIComponent(window.location.pathname);
+      localStorage.removeItem("guestCart");
+      setItems([]);
+      toast({
+        title: "კალათა გასუფთავებულია",
+        description: "ყველა პროდუქტი წაიშალა კალათიდან",
+      });
       return;
     }
 
@@ -314,16 +517,49 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       try {
         if (user) {
-          // მხოლოდ ავტორიზებული მომხმარებლებისთვის ვტვირთავთ კალათას
+          // როცა მომხმარებელი ლოგინდება, localStorage-დან ბექენდში გადავიტანოთ
+          const guestItems = loadFromLocalStorage();
+
+          // ჯერ ბექენდიდან ვტვირთავთ არსებულ კალათას
           const { data } = await apiClient.get("/cart");
-          setItems(data.items || []);
+          let serverItems = data.items || [];
+
+          // თუ localStorage-ში იყო რაღაც, ბექენდში დავამატოთ
+          if (guestItems.length > 0) {
+            for (const item of guestItems) {
+              try {
+                await apiClient.post("/cart/items", {
+                  productId: item.productId,
+                  qty: item.qty,
+                });
+              } catch (error) {
+                console.error("Error syncing guest cart item:", error);
+              }
+            }
+
+            // განახლებული კალათა ვტვირთავთ
+            const { data: updatedData } = await apiClient.get("/cart");
+            serverItems = updatedData.items || [];
+
+            // localStorage-ს ვასუფთავებთ
+            localStorage.removeItem("guestCart");
+
+            toast({
+              title: "კალათა სინქრონიზებულია",
+              description: "თქვენი პროდუქტები დაემატა კალათაში",
+            });
+          }
+
+          setItems(serverItems);
         } else {
-          // არაავტორიზებული მომხმარებლებისთვის კალათა ცარიელი უნდა იყოს
-          setItems([]);
+          // არაავტორიზებული მომხმარებლებისთვის localStorage-დან ვტვირთავთ
+          const guestItems = loadFromLocalStorage();
+          // Enrich guest cart items with full product details
+          const enrichedItems = await enrichGuestCartItems(guestItems);
+          setItems(enrichedItems);
         }
       } catch (error) {
         console.error("Error loading cart:", error);
-        // თუ 401 შეცდომაა, კალათა გავასუფთავოთ
         if (
           (error as { response?: { status?: number } })?.response?.status ===
           401

@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { ShoppingCart, Eye } from "lucide-react";
 import "./ProductCard.css";
 import { Product } from "@/types";
-// import { AddToCartButton } from "./AddToCartButton";
+import { AddToCartButton } from "./AddToCartButton";
 import noPhoto from "../../../assets/nophoto.webp";
-// import Star from "../../../assets/Images/star.png";
-// import Star2 from "../../../assets/Images/startHandMade.png";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { devLog } from "@/utils/logger";
 
@@ -171,17 +170,21 @@ export function ProductCard({
           </div>
         </div>
       </Link>
-      {/* <AddToCartButton
-        productId={product._id}
-        countInStock={product.countInStock}
-        className="addButtonCart"
-      /> */}{" "}
-      <Link href={`/products/${product._id}`}>
-        <button className="buyBtn">
-          {" "}
-          {language === "en" ? "Buy" : "იყიდე"}{" "}
-        </button>
-      </Link>
+
+      {/* Action buttons container */}
+      <div className="product-card-actions">
+        <AddToCartButton
+          productId={product._id}
+          countInStock={product.countInStock}
+          className="cart-icon-button"
+        />
+        <Link href={`/products/${product._id}`} className="buy-link">
+          <button className="buyBtn">
+            <Eye size={18} strokeWidth={2.5} />
+            <span>{language === "en" ? "buy" : "ყიდვა"}</span>
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
