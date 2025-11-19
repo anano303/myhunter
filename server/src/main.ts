@@ -34,6 +34,7 @@ async function bootstrap() {
         'https://www.myhunter-web.vercel.app',
         'https://myhunter-git-main-aberoshvilis-projects.vercel.app',
         'https://myhunter-aberoshvilis-projects.vercel.app',
+        'https://myhunter-pj436.ondigitalocean.app',
         'http://localhost:3000',
         'https://localhost:3000',
         'http://localhost:4000',
@@ -50,7 +51,8 @@ async function bootstrap() {
         !origin ||
         allowedOrigins.indexOf(origin) !== -1 ||
         origin.match(/localhost/) ||
-        origin.includes('.vercel.app') // Allow all Vercel domains
+        origin.includes('.vercel.app') ||
+        origin.includes('.ondigitalocean.app') // Allow all DigitalOcean App Platform domains
       ) {
         callback(null, true);
       } else {

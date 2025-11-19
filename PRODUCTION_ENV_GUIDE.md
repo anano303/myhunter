@@ -34,6 +34,7 @@ scp server\.env.production root@YOUR_DROPLET_IP:/var/www/myhunter/server/.env
 ## ⚠️ მნიშვნელოვანი: შეცვალე URL-ები!
 
 ### Server (.env.production):
+
 ```env
 # შეცვალე ეს:
 CLIENT_URL=https://www.myhunter.ge
@@ -49,6 +50,7 @@ SERVER_BASE_URL=http://YOUR_DROPLET_IP:4000
 ```
 
 ### Web (.env.production):
+
 ```env
 # შეცვალე ეს:
 NEXT_PUBLIC_API_URL=https://api.myhunter.ge/v1
@@ -64,6 +66,7 @@ NEXT_PUBLIC_API_URL=http://YOUR_DROPLET_IP:4000/v1
 **არასოდეს** commit-ი არ გააკეთო `.env.production` ფაილის GitHub-ზე!
 
 დარწმუნდი რომ `.gitignore`-ში არის:
+
 ```
 .env.production
 .env.local
@@ -75,6 +78,7 @@ NEXT_PUBLIC_API_URL=http://YOUR_DROPLET_IP:4000/v1
 ## 🚀 Deployment-ის ნაბიჯები
 
 ### 1. Droplet-ზე .env ფაილის ატვირთვა:
+
 ```bash
 cd /var/www/myhunter/server
 nano .env
@@ -82,6 +86,7 @@ nano .env
 ```
 
 ### 2. Docker Containers-ის გაშვება:
+
 ```bash
 cd /var/www/myhunter/server
 docker compose down
@@ -89,6 +94,7 @@ docker compose up -d --build
 ```
 
 ### 3. Logs-ის შემოწმება:
+
 ```bash
 docker compose logs -f app
 ```
@@ -105,7 +111,7 @@ docker compose logs -f app
 ✅ BOG Payment Gateway  
 ✅ Facebook Integration  
 ✅ PayPal  
-✅ OpenAI API  
+✅ OpenAI API
 
 ---
 
@@ -114,17 +120,19 @@ docker compose logs -f app
 თუ გაქვს domain (მაგ: myhunter.ge):
 
 ### DNS Records:
+
 ```
 Type: A
 Host: @
 Value: YOUR_DROPLET_IP
 
-Type: A  
+Type: A
 Host: api
 Value: YOUR_DROPLET_IP
 ```
 
 შედეგი:
+
 - `myhunter.ge` → Frontend
 - `api.myhunter.ge` → Backend API
 
