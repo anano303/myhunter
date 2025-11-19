@@ -13,7 +13,6 @@
   left: 0;
   right: 0;
   z-index: 20;
- 
 }
 
 .category-scroll-container {
@@ -21,7 +20,7 @@
   align-items: center;
   gap: 30px; /* ნაკლები ახლოს ერთმანეთთან */
   overflow-x: auto;
-  background:  rgb(70 76 65 / 57%);
+  background: rgb(70 76 65 / 57%);
   backdrop-filter: blur(10px);
   border-radius: 8px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -33,6 +32,10 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   padding: 5px 15px;
+
+  /* Better touch handling for mobile */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
 }
 .category-scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
@@ -53,6 +56,12 @@
   min-width: 180px; /* მეტი ადგილი ჰორიზონტალური layout-ისთვის */
   flex-shrink: 0;
   position: relative;
+  cursor: pointer;
+
+  /* Better touch target for mobile */
+  -webkit-tap-highlight-color: rgba(91, 108, 24, 0.3);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .main-category-item:hover {
@@ -131,18 +140,14 @@
 /* Responsive */
 @media (max-width: 768px) {
   .category-navigation {
- 
-    
     bottom: -50px;
   }
 
   .category-scroll-container {
     gap: 15px;
-
   }
 
   .main-category-item {
-    
     min-width: calc(50vw - 50px); /* 2 კატეგორია ეტეოდეს */
     gap: 12px;
   }
@@ -165,18 +170,14 @@
 
 @media (max-width: 480px) {
   .category-navigation {
-   
-    
     bottom: -30px;
   }
 
   .category-scroll-container {
     gap: 12px;
-   
   }
 
   .main-category-item {
-  
     min-width: calc(50vw - 35px); /* 2 კატეგორია ეტეოდეს პატარა ეკრანზეც */
     gap: 10px;
   }

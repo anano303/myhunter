@@ -239,7 +239,7 @@
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(139, 119, 101, 0.7) rgba(70, 76, 65, 0.3);
 }
@@ -253,7 +253,7 @@
 
   .subcategories-grid {
     gap: 0.25rem;
-    padding: 0.25rem 0;
+    padding: 0.75rem 0;
   }
 }
 
@@ -723,10 +723,6 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 
-  .subcategories-grid {
-    gap: 0.5rem;
-  }
-
   .subcategory-option {
     min-width: 100px;
     padding: 0.5rem 0.75rem;
@@ -766,7 +762,7 @@
 
   .subcategories-grid {
     gap: 0.5rem;
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.75rem;
   }
 
   .subcategory-option {
