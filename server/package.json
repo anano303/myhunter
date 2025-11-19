@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "rm -rf dist || rmdir /s /q dist || echo 'dist cleaned'",
+    "postinstall": "npm install rimraf",
+    "prebuild": "rimraf dist",
     "seed": "ts-node -r tsconfig-paths/register src/cli.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
