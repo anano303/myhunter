@@ -79,12 +79,16 @@ async function bootstrap() {
 
   // Add a simple health check at root BEFORE versioning
   app.use('/', (req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Headers:`, req.headers);
+    
     if (req.method === 'GET' && req.url === '/') {
+      console.log('✅ Root health check accessed');
       return res.json({
         status: 'ok',
         message: 'MyHunter API is running',
         timestamp: new Date().toISOString(),
         version: '1.0.0',
+        port: process.env.PORT || 4000,
         endpoints: {
           api: '/v1',
           docs: '/docs',
