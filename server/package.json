@@ -5,9 +5,12 @@
   "author": "Myhunter",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "18.x",
+    "npm": "10.x"
+  },
   "scripts": {
-    "postinstall": "npm install rimraf",
-    "prebuild": "rimraf dist",
+    "prebuild": "rm -rf dist || echo 'dist folder cleaned'",
     "seed": "ts-node -r tsconfig-paths/register src/cli.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
