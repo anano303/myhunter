@@ -8,10 +8,11 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import { Category, SubCategory, Color, AgeGroupItem } from "@/types";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import Image from "next/image";
+import { devLog } from "@/utils/logger";
 
 // Function to get category-specific icon - now uses icon from category if available
 const getCategoryIcon = (category: Category) => {
-  console.log(
+  devLog(
     "[FILTER] getCategoryIcon called with:",
     category.name,
     "Icon:",
@@ -20,12 +21,12 @@ const getCategoryIcon = (category: Category) => {
 
   // Use category icon if available
   if (category.icon) {
-    console.log("[FILTER] Using API icon:", category.icon);
+    devLog("[FILTER] Using API icon:", category.icon);
     return category.icon;
   }
 
   // Fallback to name-based icons for backwards compatibility
-  console.log("[FILTER] Using fallback icon");
+  devLog("[FILTER] Using fallback icon");
   const name = category.name.toLowerCase();
 
   if (

@@ -5,21 +5,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCategories } from "@/app/(pages)/admin/categories/hook/use-categories";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { devLog } from "@/utils/logger";
 import "./CategoryNavigation.css";
 
 // Function to get category-specific icon - now uses icon from category if available
 const getCategoryIcon = (category: any) => {
-  console.log("getCategoryIcon called with:", category);
-  console.log("Has icon?", category.icon);
+  devLog("getCategoryIcon called with:", category);
+  devLog("Has icon?", category.icon);
 
   // Use category icon if available (from API)
   if (category.icon) {
-    console.log("Using API icon:", category.icon);
+    devLog("Using API icon:", category.icon);
     return category.icon;
   }
 
   // Fallback to name-based icons for backwards compatibility
-  console.log("Using fallback icon for:", category.name);
+  devLog("Using fallback icon for:", category.name);
   const name = category.name?.toLowerCase() || "";
 
   if (

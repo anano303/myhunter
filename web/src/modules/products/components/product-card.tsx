@@ -9,6 +9,7 @@ import noPhoto from "../../../assets/nophoto.webp";
 // import Star from "../../../assets/Images/star.png";
 // import Star2 from "../../../assets/Images/startHandMade.png";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { devLog } from "@/utils/logger";
 
 interface ProductCardProps {
   product: Product;
@@ -31,14 +32,14 @@ export function ProductCard({
 
   // Check if product has active discount
   const hasActiveDiscount = () => {
-    console.log("Product discount data:", {
+    devLog("Product discount data:", {
       discountPercentage: product.discountPercentage,
       discountStartDate: product.discountStartDate,
       discountEndDate: product.discountEndDate,
     });
 
     if (!product.discountPercentage || product.discountPercentage <= 0) {
-      console.log("No discount percentage or <= 0");
+      devLog("No discount percentage or <= 0");
       return false;
     }
 
@@ -47,7 +48,7 @@ export function ProductCard({
 
     // If no start/end dates specified, discount is always active
     if (!product.discountStartDate && !product.discountEndDate) {
-      console.log("No dates specified, discount is active");
+      devLog("No dates specified, discount is active");
       return true;
     }
 
@@ -65,7 +66,7 @@ export function ProductCard({
     const isAfterStart = !startDate || today >= startDate;
     const isBeforeEnd = !endDate || today <= endDate;
 
-    console.log("Date check:", {
+    devLog("Date check:", {
       today,
       startDate,
       endDate,
@@ -87,7 +88,7 @@ export function ProductCard({
   const isDiscounted = hasActiveDiscount();
   const discountedPrice = calculateDiscountedPrice();
 
-  console.log("Final values:", {
+  devLog("Final values:", {
     isDiscounted,
     discountedPrice,
     originalPrice: product.price,
