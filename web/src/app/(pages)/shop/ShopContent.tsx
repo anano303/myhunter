@@ -84,11 +84,9 @@ const ShopContent = () => {
     setPriceRange([minPriceParam, maxPriceParam]);
     setSorting({ field: sortByParam, direction: sortDirectionParam });
 
-    // Mark as initialized and ready
-    if (!initializedRef.current) {
-      initializedRef.current = true;
-      setParamsReady(true);
-    }
+    // Mark as ready immediately
+    setParamsReady(true);
+    initializedRef.current = true;
 
     console.log("URL params updated:", {
       page: pageParam,
