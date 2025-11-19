@@ -25,6 +25,9 @@ export default function Footer() {
               <Link href="/about" className="footer-link">
                 {t("navigation.about")}
               </Link>
+              <Link href="/privacy-policy" className="footer-link">
+                კონფიდენციალურობის პოლიტიკა
+              </Link>
             </div>
           </div>
           <div className="footer-logo">

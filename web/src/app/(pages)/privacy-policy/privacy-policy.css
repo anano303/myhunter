@@ -1,97 +1,272 @@
 .privacy-policy-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  font-family: "ALK Life", "Georgia", serif;
-  line-height: 1.6;
-  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, #2d3a1e 0%, #3a4827 50%, #2d3a1e 100%);
+  min-height: 100vh;
 }
 
 .privacy-policy-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f0f0f0;
+  width: 100%;
+  max-width: 900px;
+  background: rgba(58, 72, 39, 0.95);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 233, 209, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* Decorative top border */
+.privacy-policy-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(to bottom, #8a7d52, #6b5c35);
+}
+
+/* Decorative circles */
+.privacy-policy-content::after {
+  content: "";
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 201, 163, 0.1) 0%,
+    transparent 70%
+  );
+  z-index: 0;
 }
 
 .privacy-policy-title {
-  font-family: "ALK Katerina", sans-serif;
-  font-size: 2.5rem;
-  color: #e50000;
+  font-family: "FiraGo", sans-serif;
+  font-size: 2.8rem;
+  color: #f5e9d1;
   text-align: center;
-  margin-bottom: 2rem;
-  font-weight: 400;
-  letter-spacing: 0.5px;
+  margin-bottom: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .privacy-section {
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 1.5rem;
+  background: rgba(48, 60, 32, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(245, 233, 209, 0.2);
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.privacy-section:hover {
+  background: rgba(48, 60, 32, 0.8);
+  border-color: rgba(245, 233, 209, 0.4);
+  transform: translateY(-2px);
 }
 
 .privacy-section:last-of-type {
+  margin-bottom: 2rem;
   border-bottom: none;
-  margin-bottom: 1rem;
 }
 
 .privacy-section h2 {
-  font-family: "ALK Katerina", sans-serif;
-  font-size: 1.5rem;
-  color: #e50000;
-  margin-bottom: 1rem;
-  font-weight: 400;
+  font-family: "FiraGo", sans-serif;
+  font-size: 1.6rem;
+  color: #e6d5b0;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.privacy-section h2::before {
+  content: "→";
+  color: #8a7d52;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .privacy-section p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  color: #d9c9a3;
+  font-size: 1rem;
+  line-height: 1.8;
   text-align: justify;
 }
 
 .privacy-section ul {
   padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  list-style: none;
 }
 
 .privacy-section li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #d9c9a3;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.7;
 }
 
-.contact-info {
-  background: #ffeef2;
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #e50000;
-  margin-top: 1rem;
+.privacy-section li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #8a7d52;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
-.contact-info p {
-  margin: 0.5rem 0;
-  font-weight: 500;
+.privacy-section li::marker {
+  content: none;
+}
+
+/* Privacy Policy Contact Info - unique naming to avoid conflicts with footer */
+.pp-contact-info {
+  background: rgba(48, 60, 32, 0.6);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(245, 233, 209, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.pp-contact-info::before {
+  display: none;
+}
+
+.pp-contact-info h3 {
+  font-family: "FiraGo", sans-serif;
+  color: #e6d5b0;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.pp-contact-info p {
+  margin: 1rem 0;
+  font-weight: 600;
+  color: #d9c9a3;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.pp-contact-info p::before {
+  content: "📧";
+  font-size: 1.5rem;
+}
+
+.pp-contact-info p:nth-child(2)::before {
+  content: "📞";
+}
+
+.pp-contact-info p:nth-child(3)::before {
+  content: "📍";
+}
+
+.pp-contact-info a {
+  color: #8a7d52;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.pp-contact-info a::after {
+  display: none;
+}
+
+.pp-contact-info a:hover {
+  color: #e6d5b0;
+  transform: translateX(4px);
 }
 
 .effective-date {
   text-align: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(107, 92, 53, 0.4);
+  border-radius: 12px;
+  margin-top: 3rem;
+  border: 1px solid rgba(245, 233, 209, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .effective-date p {
   margin: 0;
-  color: #666;
+  color: #d9c9a3;
+  font-size: 1rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.effective-date strong {
+  color: #e6d5b0;
+  font-weight: 700;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .privacy-policy-container {
-    padding: 1rem 0.5rem;
+    padding: 2rem 1rem;
   }
 
   .privacy-policy-content {
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .privacy-policy-title {
+    font-size: 2.5rem;
+  }
+
+  .privacy-section {
     padding: 1.5rem;
+  }
+
+  .privacy-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .privacy-section p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .privacy-policy-container {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .privacy-policy-content {
+    padding: 2rem 1.25rem;
+    border-radius: 16px;
   }
 
   .privacy-policy-title {
@@ -99,20 +274,30 @@
   }
 
   .privacy-section h2 {
-    font-size: 1.3rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .privacy-policy-title {
-    font-size: 1.8rem;
-  }
-
-  .privacy-section h2 {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .privacy-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+  }
+
+  .contact-info {
+    padding: 1.5rem;
+  }
+
+  .pp-contact-info {
+    padding: 1.5rem;
+  }
+
+  .pp-contact-info p {
+    font-size: 0.95rem;
+  }
+
+  .effective-date {
+    padding: 1.5rem;
   }
 }

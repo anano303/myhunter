@@ -114,12 +114,14 @@ export default function PrivacyPolicy() {
               ? "If you have any questions about this Privacy Policy, please contact us at:"
               : "თუ გაქვთ რაიმე კითხვა ამ კონფიდენციალურობის პოლიტიკასთან დაკავშირებით, გთხოვთ დაგვიკავშირდეთ:"}
           </p>
-          <div className="contact-info">
-            <p>Email: info@myhunter.ge</p>
+          <div className="pp-contact-info">
             <p>
-              {language === "en"
-                ? "Phone: +995 555 123 456"
-                : "ტელეფონი: +995 555 123 456"}
+              {language === "en" ? "Email: " : "ელ-ფოსტა: "}
+              ssbbmarket@gmail.com
+            </p>
+            <p>
+              {language === "en" ? "Phone: " : "ტელეფონი: "}
+              +995 577 027 700
             </p>
             <p>
               {language === "en"
