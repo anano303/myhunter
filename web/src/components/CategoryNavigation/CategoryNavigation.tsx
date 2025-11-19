@@ -121,6 +121,9 @@ const CategoryNavigation = () => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+      >
         {categories.map((category) => {
           const href = `/shop?mainCategory=${category.id}`;
 
