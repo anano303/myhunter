@@ -77,6 +77,24 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
+  // Add a simple health check at root BEFORE versioning
+  app.use('/', (req, res, next) => {
+    if (req.method === 'GET' && req.url === '/') {
+      return res.json({
+        status: 'ok',
+        message: 'MyHunter API is running',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        endpoints: {
+          api: '/v1',
+          docs: '/docs',
+          health: '/',
+        },
+      });
+    }
+    next();
+  });
+
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
@@ -112,14 +130,15 @@ async function bootstrap() {
   }
 
   const config = new DocumentBuilder()
-    .setTitle('myhunter  API')
-    .setDescription('myhunter E-commerce REST API')
+    .setTitle('MyHunter API')
+    .setDescription('MyHunter E-commerce REST API')
     .setVersion('1.0')
     .addBearerAuth()
+    .addServer('/v1', 'API v1') // Add base path for API routes
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document); // დარწმუნდით, რომ როუტი არის '/docs'
+  SwaggerModule.setup('docs', app, document); // Swagger at /docs (no version prefix)
 
   app.enableShutdownHooks();
 
