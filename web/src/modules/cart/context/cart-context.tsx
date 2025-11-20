@@ -138,16 +138,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = useCallback(
     async (productId: string, qty: number) => {
+      console.log('addItem called', { productId, qty, hasUser: !!user });
       setLoading(true);
 
       // თუ მომხმარებელი არაა ავტორიზებული, localStorage-ში ვინახავთ
       if (!user) {
+        console.log('Guest user - checking stock for addItem');
         try {
+          // Fetch product to check stock
+          const { data: product } = await apiClient.get(`/products/${productId}`);
+          console.log('Product fetched', { countInStock: product.countInStock });
+          
           // Save minimal info to localStorage
           const currentMinimalItems = loadFromLocalStorage();
           const existingItem = currentMinimalItems.find(
             (item) => item.productId === productId
           );
+
+          const currentQty = existingItem ? existingItem.qty : 0;
+          const newTotalQty = currentQty + qty;
+          console.log('Stock check for addItem', { currentQty, addingQty: qty, newTotalQty, availableStock: product.countInStock });
+
+          // Check stock availability
+          if (newTotalQty > product.countInStock) {
+            console.log('Stock exceeded in addItem');
+            toast({
+              title: "არასაკმარისი მარაგი",
+              description: `მარაგში არის მხოლოდ ${product.countInStock} ცალი`,
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
 
           let updatedMinimalItems;
           if (existingItem) {
@@ -230,10 +252,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       ageGroup = "",
       price?: number
     ) => {
+      console.log('addToCart called', { productId, quantity, size, color, ageGroup, hasUser: !!user });
+      
       // არაავტორიზებული მომხმარებლებისთვის localStorage-ში შენახვა
       if (!user) {
+        console.log('Guest user - checking stock for addToCart');
         setLoading(true);
         try {
+          // Fetch product to check stock
+          const { data: product } = await apiClient.get(`/products/${productId}`);
+          console.log('Product fetched for addToCart', { countInStock: product.countInStock, variants: product.variants?.length });
+          
           // Normalize empty strings to undefined
           const normalizedSize = size || undefined;
           const normalizedColor = color || undefined;
@@ -249,6 +278,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               (item.color || undefined) === normalizedColor &&
               (item.ageGroup || undefined) === normalizedAgeGroup
           );
+
+          const currentQty = existingItem ? existingItem.qty : 0;
+          const newTotalQty = currentQty + quantity;
+          console.log('Current cart state', { currentQty, addingQty: quantity, newTotalQty });
+
+          // Check stock - with variant support
+          let availableStock = product.countInStock;
+          
+          if (product.variants && product.variants.length > 0) {
+            // Find matching variant
+            const variant = product.variants.find((v: any) => {
+              const sizeMatch = !normalizedSize ? !v.size : v.size === normalizedSize;
+              const colorMatch = !normalizedColor ? !v.color : v.color === normalizedColor;
+              const ageGroupMatch = !normalizedAgeGroup ? !v.ageGroup : v.ageGroup === normalizedAgeGroup;
+              return sizeMatch && colorMatch && ageGroupMatch;
+            });
+            
+            if (variant) {
+              availableStock = variant.stock;
+            }
+          }
+
+          // Check if new total exceeds available stock
+          if (newTotalQty > availableStock) {
+            toast({
+              title: "არასაკმარისი მარაგი",
+              description: `მარაგში არის მხოლოდ ${availableStock} ცალი`,
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
 
           let updatedMinimalItems;
           if (existingItem) {
@@ -359,35 +420,90 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       color?: string,
       ageGroup?: string
     ) => {
+      console.log('updateQuantity called', { productId, qty, size, color, ageGroup, hasUser: !!user });
+      
       // არაავტორიზებული მომხმარებლებისთვის localStorage-ში განახლება
       if (!user) {
-        // Normalize empty strings to undefined for comparison
-        const normalizedSize = size || undefined;
-        const normalizedColor = color || undefined;
-        const normalizedAgeGroup = ageGroup || undefined;
+        console.log('Guest user - checking stock via API');
+        setLoading(true);
+        try {
+          // Fetch product to check stock
+          const { data: product } = await apiClient.get(`/products/${productId}`);
+          console.log('Product fetched for stock check', { countInStock: product.countInStock, variants: product.variants?.length });
+          
+          // Normalize empty strings to undefined for comparison
+          const normalizedSize = size || undefined;
+          const normalizedColor = color || undefined;
+          const normalizedAgeGroup = ageGroup || undefined;
 
-        // Update state with full item info (match by all attributes)
-        const updatedStateItems = items.map((item) =>
-          item.productId === productId &&
-          (item.size || undefined) === normalizedSize &&
-          (item.color || undefined) === normalizedColor &&
-          (item.ageGroup || undefined) === normalizedAgeGroup
-            ? { ...item, qty }
-            : item
-        );
-        setItems(updatedStateItems);
+          // Check stock - with variant support
+          let availableStock = product.countInStock;
+          
+          if (product.variants && product.variants.length > 0) {
+            // Find matching variant
+            const variant = product.variants.find((v: any) => {
+              const sizeMatch = !normalizedSize ? !v.size : v.size === normalizedSize;
+              const colorMatch = !normalizedColor ? !v.color : v.color === normalizedColor;
+              const ageGroupMatch = !normalizedAgeGroup ? !v.ageGroup : v.ageGroup === normalizedAgeGroup;
+              return sizeMatch && colorMatch && ageGroupMatch;
+            });
+            
+            if (variant) {
+              availableStock = variant.stock;
+              console.log('Found matching variant', { variant, stock: variant.stock });
+            }
+          }
 
-        // Save minimal info to localStorage
-        const minimalItems = updatedStateItems.map((item) => ({
-          productId: item.productId,
-          qty: item.qty,
-          size: item.size || undefined,
-          color: item.color || undefined,
-          ageGroup: item.ageGroup || undefined,
-        }));
-        saveToLocalStorage(minimalItems);
+          console.log('Stock check', { requestedQty: qty, availableStock });
+
+          // Check if new quantity exceeds available stock
+          if (qty > availableStock) {
+            console.log('Stock exceeded - showing error');
+            toast({
+              title: "არასაკმარისი მარაგი",
+              description: `მარაგში არის მხოლოდ ${availableStock} ცალი`,
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+
+          console.log('Stock OK - updating quantity');
+          // Update state with full item info (match by all attributes)
+          const updatedStateItems = items.map((item) =>
+            item.productId === productId &&
+            (item.size || undefined) === normalizedSize &&
+            (item.color || undefined) === normalizedColor &&
+            (item.ageGroup || undefined) === normalizedAgeGroup
+              ? { ...item, qty }
+              : item
+          );
+          setItems(updatedStateItems);
+
+          // Save minimal info to localStorage
+          const minimalItems = updatedStateItems.map((item) => ({
+            productId: item.productId,
+            qty: item.qty,
+            size: item.size || undefined,
+            color: item.color || undefined,
+            ageGroup: item.ageGroup || undefined,
+          }));
+          saveToLocalStorage(minimalItems);
+          console.log('Guest cart updated successfully');
+        } catch (error) {
+          console.error('Error updating guest cart:', error);
+          toast({
+            title: "შეცდომა",
+            description: "რაოდენობის განახლება ვერ მოხერხდა",
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
         return;
       }
+
+      console.log('Authorized user - updating via API');
 
       setLoading(true);
       try {
