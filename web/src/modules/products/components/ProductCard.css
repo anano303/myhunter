@@ -310,6 +310,11 @@
     height: 30px !important;
   }
 
+  .cart-icon-button svg {
+    width: 15px;
+    height: 15px;
+  }
+
   .cart-icon {
     font-size: 18px;
   }
