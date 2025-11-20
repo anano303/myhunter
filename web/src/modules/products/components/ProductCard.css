@@ -305,9 +305,9 @@
   }
 
   .cart-icon-button {
-    min-width: 40px !important;
-    max-width: 40px !important;
-    height: 40px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    height: 30px !important;
   }
 
   .cart-icon {
