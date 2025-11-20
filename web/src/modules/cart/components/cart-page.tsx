@@ -116,10 +116,7 @@ export function CartPage() {
                 <span>{t("cart.totalCost")}</span>
                 <span>{formatPrice(total)}</span>
               </div>
-              <button
-                className="checkout-button"
-                onClick={handleCheckout}
-              >
+              <button className="checkout-button" onClick={handleCheckout}>
                 {t("cart.checkout")}
               </button>
             </div>

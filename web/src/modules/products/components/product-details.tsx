@@ -247,9 +247,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<"description" | "video">(
-    "description"
-  ); // Active tab state
+  const [activeTab, setActiveTab] = useState<
+    "description" | "video" | "delivery"
+  >("description"); // Active tab state
+
+  // Debug: Check what fields the product has
+  console.log("Product data:", {
+    hasVideoDescription: !!product.videoDescription,
+    hasDeliveryTerms: !!product.deliveryTerms,
+    hasDeliveryTermsEn: !!product.deliveryTermsEn,
+    videoDescription: product.videoDescription?.substring(0, 50),
+  });
+
   const { data: availableColors = [] } = useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
@@ -603,7 +612,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
             </div>
           )}
-          {/* New Tabs UI with Description and Video */}
+          {/* New Tabs UI with Description, Delivery Terms, and Video */}
           <div className="tabs">
             {/* Tab controls */}
             <div className="tabs-list">
@@ -615,6 +624,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               >
                 {t("product.details") || "აღწერა"}
               </button>
+
+              {(product.deliveryTerms || product.deliveryTermsEn) && (
+                <button
+                  className={`tabs-trigger ${
+                    activeTab === "delivery" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveTab("delivery")}
+                >
+                  {language === "en" ? "Delivery Terms" : "მიწოდების პირობები"}
+                </button>
+              )}
 
               {product.videoDescription && (
                 <button
@@ -636,6 +656,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             >
               <p className="product-description">{displayDescription}</p>
             </div>
+
+            {/* Delivery Terms Tab */}
+            {(product.deliveryTerms || product.deliveryTermsEn) && (
+              <div
+                className={`tab-content ${
+                  activeTab === "delivery" ? "active" : ""
+                }`}
+              >
+                <p className="product-description">
+                  {language === "en" && product.deliveryTermsEn
+                    ? product.deliveryTermsEn
+                    : product.deliveryTerms}
+                </p>
+              </div>
+            )}
 
             {product.videoDescription && (
               <div

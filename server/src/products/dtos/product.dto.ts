@@ -94,6 +94,14 @@ export class ProductDto {
 
   @IsString()
   @IsOptional()
+  deliveryTerms?: string;
+
+  @IsString()
+  @IsOptional()
+  deliveryTermsEn?: string;
+
+  @IsString()
+  @IsOptional()
   videoDescription?: string; // YouTube embed code or URL
 
   @IsArray()

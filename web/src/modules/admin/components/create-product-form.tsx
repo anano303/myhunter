@@ -25,6 +25,8 @@ interface ProductFormData extends BaseProductFormData {
   _id?: string;
   nameEn?: string;
   descriptionEn?: string;
+  deliveryTerms?: string;
+  deliveryTermsEn?: string;
   mainCategory?: string | { name: string; id?: string; _id?: string };
   subCategory?: string | { name: string; id?: string; _id?: string };
   ageGroups?: string[];
@@ -74,6 +76,8 @@ export function CreateProductForm({
       price: 0,
       description: "",
       descriptionEn: "",
+      deliveryTerms: "",
+      deliveryTermsEn: "",
       images: [],
       brand: "MyHunter", // Set default brand here
       category: "",
@@ -478,6 +482,8 @@ export function CreateProductForm({
         images: initialData.images || [],
         description: initialData.description || "",
         descriptionEn: initialData.descriptionEn || "",
+        deliveryTerms: initialData.deliveryTerms || "",
+        deliveryTermsEn: initialData.deliveryTermsEn || "",
         price: initialData.price || 0,
         countInStock: initialData.countInStock || 0,
         ageGroups: initialData.ageGroups || [],
@@ -623,6 +629,8 @@ export function CreateProductForm({
       price: 0,
       description: "",
       descriptionEn: "",
+      deliveryTerms: "",
+      deliveryTermsEn: "",
       images: [],
       brand: "MyHunter", // Set default brand here too
       category: "",
@@ -1021,6 +1029,8 @@ export function CreateProductForm({
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("description", formData.description);
       formDataToSend.append("descriptionEn", formData.descriptionEn || "");
+      formDataToSend.append("deliveryTerms", formData.deliveryTerms || "");
+      formDataToSend.append("deliveryTermsEn", formData.deliveryTermsEn || "");
 
       // Add video description if present
       if (formData.videoDescription) {
@@ -1482,6 +1492,48 @@ export function CreateProductForm({
           />
           {errors.descriptionEn && (
             <p className="create-product-error">{errors.descriptionEn}</p>
+          )}
+        </div>{" "}
+        <div>
+          <label htmlFor="deliveryTerms">
+            {language === "ge" ? "მიწოდების პირობები" : "Delivery Terms"}
+          </label>
+          <textarea
+            id="deliveryTerms"
+            name="deliveryTerms"
+            value={formData.deliveryTerms}
+            onChange={handleChange}
+            className="create-product-textarea"
+            placeholder={
+              language === "ge"
+                ? "მიწოდების პირობების აღწერა ქართულად"
+                : "Delivery terms description in Georgian"
+            }
+          />
+          {errors.deliveryTerms && (
+            <p className="create-product-error">{errors.deliveryTerms}</p>
+          )}
+        </div>{" "}
+        <div>
+          <label htmlFor="deliveryTermsEn">
+            {language === "ge"
+              ? "მიწოდების პირობები (ინგლისურად)"
+              : "Delivery Terms (English)"}
+          </label>
+          <textarea
+            id="deliveryTermsEn"
+            name="deliveryTermsEn"
+            value={formData.deliveryTermsEn}
+            onChange={handleChange}
+            className="create-product-textarea"
+            placeholder={
+              language === "ge"
+                ? "მიწოდების პირობების აღწერა ინგლისურად"
+                : "Delivery terms description in English"
+            }
+          />
+          {errors.deliveryTermsEn && (
+            <p className="create-product-error">{errors.deliveryTermsEn}</p>
           )}
         </div>{" "}
         <div>

@@ -52,7 +52,7 @@ export function ShippingForm() {
       router.push("/checkout/payment");
     } catch (error) {
       console.log(error);
-      
+
       // Check if it's a 401 authentication error
       if ((error as any)?.response?.status === 401) {
         toast({
@@ -63,7 +63,7 @@ export function ShippingForm() {
         router.push("/login?redirect=/checkout/shipping");
         return;
       }
-      
+
       toast({
         title: "Error saving shipping details",
         description: "Please try again.",

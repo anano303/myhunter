@@ -52,7 +52,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalItems = items.reduce((total, item) => total + item.qty, 0);
 
   // Save cart to localStorage (only minimal info)
-  const saveToLocalStorage = (cartItems: Array<{productId: string, qty: number, size?: string, color?: string, ageGroup?: string}>) => {
+  const saveToLocalStorage = (
+    cartItems: Array<{
+      productId: string;
+      qty: number;
+      size?: string;
+      color?: string;
+      ageGroup?: string;
+    }>
+  ) => {
     try {
       localStorage.setItem("guestCart", JSON.stringify(cartItems));
     } catch (error) {
@@ -61,7 +69,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Load cart from localStorage (minimal info)
-  const loadFromLocalStorage = (): Array<{productId: string, qty: number, size?: string, color?: string, ageGroup?: string}> => {
+  const loadFromLocalStorage = (): Array<{
+    productId: string;
+    qty: number;
+    size?: string;
+    color?: string;
+    ageGroup?: string;
+  }> => {
     try {
       const stored = localStorage.getItem("guestCart");
       return stored ? JSON.parse(stored) : [];
@@ -73,7 +87,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Fetch full product details for guest cart items
   const enrichGuestCartItems = async (
-    guestItems: Array<{ productId: string; qty: number; size?: string; color?: string; ageGroup?: string }>
+    guestItems: Array<{
+      productId: string;
+      qty: number;
+      size?: string;
+      color?: string;
+      ageGroup?: string;
+    }>
   ): Promise<CartItem[]> => {
     try {
       const enrichedItems: CartItem[] = [];
@@ -93,10 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             ageGroup: item.ageGroup,
           } as CartItem);
         } catch (error) {
-          console.error(
-            `Error fetching product ${item.productId}:`,
-            error
-          );
+          console.error(`Error fetching product ${item.productId}:`, error);
           // Add minimal item if fetch fails
           enrichedItems.push({
             productId: item.productId,
@@ -140,11 +157,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 : item
             );
           } else {
-            updatedMinimalItems = [...currentMinimalItems, { productId, qty } as CartItem];
+            updatedMinimalItems = [
+              ...currentMinimalItems,
+              { productId, qty } as CartItem,
+            ];
           }
 
           saveToLocalStorage(updatedMinimalItems);
-          
+
           // Enrich and update state with full product details
           const enrichedItems = await enrichGuestCartItems(updatedMinimalItems);
           setItems(enrichedItems);
@@ -218,12 +238,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const normalizedSize = size || undefined;
           const normalizedColor = color || undefined;
           const normalizedAgeGroup = ageGroup || undefined;
-          
+
           // Save minimal info to localStorage
           const currentMinimalItems = loadFromLocalStorage();
           // Find exact match including size, color, ageGroup
           const existingItem = currentMinimalItems.find(
-            (item) => 
+            (item) =>
               item.productId === productId &&
               (item.size || undefined) === normalizedSize &&
               (item.color || undefined) === normalizedColor &&
@@ -243,12 +263,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           } else {
             updatedMinimalItems = [
               ...currentMinimalItems,
-              { productId, qty: quantity, size: normalizedSize, color: normalizedColor, ageGroup: normalizedAgeGroup },
+              {
+                productId,
+                qty: quantity,
+                size: normalizedSize,
+                color: normalizedColor,
+                ageGroup: normalizedAgeGroup,
+              },
             ];
           }
 
           saveToLocalStorage(updatedMinimalItems);
-          
+
           // Enrich and update state with full product details
           const enrichedItems = await enrichGuestCartItems(updatedMinimalItems);
           setItems(enrichedItems);
@@ -339,7 +365,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const normalizedSize = size || undefined;
         const normalizedColor = color || undefined;
         const normalizedAgeGroup = ageGroup || undefined;
-        
+
         // Update state with full item info (match by all attributes)
         const updatedStateItems = items.map((item) =>
           item.productId === productId &&
@@ -350,9 +376,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : item
         );
         setItems(updatedStateItems);
-        
+
         // Save minimal info to localStorage
-        const minimalItems = updatedStateItems.map(item => ({
+        const minimalItems = updatedStateItems.map((item) => ({
           productId: item.productId,
           qty: item.qty,
           size: item.size || undefined,
@@ -410,20 +436,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const normalizedSize = size || undefined;
         const normalizedColor = color || undefined;
         const normalizedAgeGroup = ageGroup || undefined;
-        
+
         // Update state (remove from enriched items - match by all attributes)
         const updatedStateItems = items.filter(
-          (item) => !(
-            item.productId === productId &&
-            (item.size || undefined) === normalizedSize &&
-            (item.color || undefined) === normalizedColor &&
-            (item.ageGroup || undefined) === normalizedAgeGroup
-          )
+          (item) =>
+            !(
+              item.productId === productId &&
+              (item.size || undefined) === normalizedSize &&
+              (item.color || undefined) === normalizedColor &&
+              (item.ageGroup || undefined) === normalizedAgeGroup
+            )
         );
         setItems(updatedStateItems);
-        
+
         // Save minimal info to localStorage
-        const minimalItems = updatedStateItems.map(item => ({
+        const minimalItems = updatedStateItems.map((item) => ({
           productId: item.productId,
           qty: item.qty,
           size: item.size || undefined,
@@ -431,7 +458,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           ageGroup: item.ageGroup || undefined,
         }));
         saveToLocalStorage(minimalItems);
-        
+
         toast({
           title: "პროდუქტი წაიშალა",
           description: "პროდუქტი წაიშალა კალათიდან",

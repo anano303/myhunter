@@ -351,6 +351,10 @@ export class ProductsService {
       updateFields.description = data.description;
     if (data.descriptionEn !== undefined)
       updateFields.descriptionEn = data.descriptionEn;
+    if (data.deliveryTerms !== undefined)
+      updateFields.deliveryTerms = data.deliveryTerms;
+    if (data.deliveryTermsEn !== undefined)
+      updateFields.deliveryTermsEn = data.deliveryTermsEn;
     if (data.videoDescription !== undefined)
       updateFields.videoDescription = data.videoDescription;
     if (data.images) updateFields.images = data.images;

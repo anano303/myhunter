@@ -75,6 +75,8 @@ export interface Product {
   images: string[];
   description: string;
   descriptionEn?: string;
+  deliveryTerms?: string;
+  deliveryTermsEn?: string;
   brand: string;
   brandLogo: string;
   category: string | { name: string; _id?: string; id?: string };

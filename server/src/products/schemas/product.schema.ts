@@ -160,6 +160,12 @@ export class Product {
   descriptionEn?: string;
 
   @Prop({ required: false })
+  deliveryTerms?: string;
+
+  @Prop({ required: false })
+  deliveryTermsEn?: string;
+
+  @Prop({ required: false })
   videoDescription?: string; // YouTube embed code or URL
 
   // SEO hashtags for better search visibility

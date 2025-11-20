@@ -121,19 +121,19 @@ export function CartItem({
             />
           )
         ) : (
-          <div 
+          <div
             className="cart-item-image-placeholder"
-            style={{ 
-              width: "100%", 
-              height: "100%", 
-              backgroundColor: '#f3f4f6',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '0.375rem'
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#f3f4f6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "0.375rem",
             }}
           >
-            <span style={{ color: '#9ca3af', fontSize: '14px' }}>No Image</span>
+            <span style={{ color: "#9ca3af", fontSize: "14px" }}>No Image</span>
           </div>
         )}
       </div>

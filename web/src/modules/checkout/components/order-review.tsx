@@ -74,7 +74,7 @@ export function OrderReview() {
       router.push(`/orders/${response.data._id}`);
     } catch (error) {
       console.log(error);
-      
+
       // Check if it's a 401 authentication error
       if ((error as any)?.response?.status === 401) {
         toast({
@@ -85,7 +85,7 @@ export function OrderReview() {
         router.push("/login?redirect=/checkout/review");
         return;
       }
-      
+
       toast({
         title: "Error placing order",
         description: "Please try again.",
