@@ -8,7 +8,7 @@ import { apiClient } from "@/lib/api-client";
 import { TAX_RATE } from "@/config/constants";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useUser } from "@/modules/auth/hooks/use-user";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import "./order-review.css";
@@ -25,6 +25,7 @@ export function OrderReview() {
   const { toast } = useToast();
   const { language, t } = useLanguage();
   const { user } = useUser();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -46,6 +47,10 @@ export function OrderReview() {
       router.push("/login?redirect=/checkout/review");
       return;
     }
+
+    if (isPlacingOrder) return; // Prevent double submission
+
+    setIsPlacingOrder(true);
 
     try {
       const orderItems = items.map((item) => ({
@@ -91,6 +96,8 @@ export function OrderReview() {
         description: t("checkout.pleaseTryAgain"),
         variant: "destructive",
       });
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -215,8 +222,9 @@ export function OrderReview() {
             <button
               className="place-order-button w-full"
               onClick={handlePlaceOrder}
+              disabled={isPlacingOrder}
             >
-              {t("checkout.placeOrder")}
+              {isPlacingOrder ? t("checkout.placingOrder") : t("checkout.placeOrder")}
             </button>
           </div>
         </div>
