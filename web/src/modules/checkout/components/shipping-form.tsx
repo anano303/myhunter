@@ -8,6 +8,7 @@ import { useCheckout } from "../context/checkout-context";
 import { getCountries } from "@/lib/countries";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect } from "react";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 import "./shipping-form.css";
 
@@ -24,6 +25,7 @@ export function ShippingForm() {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useUser();
+  const { t } = useLanguage();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -56,8 +58,8 @@ export function ShippingForm() {
       // Check if it's a 401 authentication error
       if ((error as any)?.response?.status === 401) {
         toast({
-          title: "ავტორიზაცია საჭიროა",
-          description: "გთხოვთ ჯერ შეხვიდეთ სისტემაში",
+          title: t("auth.authenticationRequired"),
+          description: t("auth.pleaseLogin"),
           variant: "destructive",
         });
         router.push("/login?redirect=/checkout/shipping");
@@ -65,8 +67,8 @@ export function ShippingForm() {
       }
 
       toast({
-        title: "Error saving shipping details",
-        description: "Please try again.",
+        title: t("checkout.errorSavingShipping"),
+        description: t("checkout.pleaseTryAgain"),
         variant: "destructive",
       });
     }
@@ -80,16 +82,18 @@ export function ShippingForm() {
   return (
     <div className="shipping-form-card">
       <div className="shipping-form-header">
-        <h1>Shipping Address</h1>
-        <p>Enter your shipping details</p>
+        <h1>{t("checkout.shippingAddress")}</h1>
+        <p>{t("checkout.enterShippingDetails")}</p>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="shipping-form">
         <div className="shipping-form-field">
-          <label htmlFor="address">Street Address</label>
+          <label htmlFor="address">{t("checkout.streetAddress")}</label>
           <input
             id="address"
-            {...register("address", { required: "Address is required" })}
-            placeholder="123 Main St"
+            {...register("address", {
+              required: t("checkout.addressRequired"),
+            })}
+            placeholder={t("checkout.addressPlaceholder")}
           />
           {errors.address && (
             <p className="error-text">{errors.address.message}</p>
@@ -97,21 +101,21 @@ export function ShippingForm() {
         </div>
 
         <div className="shipping-form-field">
-          <label htmlFor="city">City</label>
+          <label htmlFor="city">{t("checkout.city")}</label>
           <input
             id="city"
-            {...register("city", { required: "City is required" })}
-            placeholder="New York"
+            {...register("city", { required: t("checkout.cityRequired") })}
+            placeholder={t("checkout.cityPlaceholder")}
           />
           {errors.city && <p className="error-text">{errors.city.message}</p>}
         </div>
 
         <div className="shipping-form-field">
-          <label htmlFor="postalCode">Postal Code</label>
+          <label htmlFor="postalCode">{t("checkout.postalCode")}</label>
           <input
             id="postalCode"
-            {...register("postalCode", { required: "Postal code is required" })}
-            placeholder="10001"
+            {...register("postalCode")}
+            placeholder={t("checkout.postalCodePlaceholder")}
           />
           {errors.postalCode && (
             <p className="error-text">{errors.postalCode.message}</p>
@@ -119,18 +123,18 @@ export function ShippingForm() {
         </div>
 
         <div className="shipping-form-field">
-          <label htmlFor="phoneNumber">Phone Number</label>
+          <label htmlFor="phoneNumber">{t("checkout.phoneNumber")}</label>
           <input
             id="phoneNumber"
             type="tel"
             {...register("phoneNumber", {
-              required: "Phone number is required",
+              required: t("checkout.phoneNumberRequired"),
               pattern: {
                 value: /^[\+]?[1-9][\d]{0,15}$/,
-                message: "Please enter a valid phone number",
+                message: t("checkout.validPhoneNumber"),
               },
             })}
-            placeholder="+995 555 123 456"
+            placeholder={t("checkout.phoneNumberPlaceholder")}
           />
           {errors.phoneNumber && (
             <p className="error-text">{errors.phoneNumber.message}</p>
@@ -138,15 +142,15 @@ export function ShippingForm() {
         </div>
 
         <div className="shipping-form-field">
-          <label htmlFor="country">Country</label>
+          <label htmlFor="country">{t("checkout.country")}</label>
           <Controller
             name="country"
             control={control}
-            rules={{ required: "Country is required" }}
+            rules={{ required: t("checkout.countryRequired") }}
             render={({ field }) => (
               <select {...field} defaultValue="">
                 <option value="" disabled>
-                  Select a country
+                  {t("checkout.selectCountry")}
                 </option>
                 {getCountries().map((country) => (
                   <option key={country.code} value={country.code}>
@@ -166,7 +170,7 @@ export function ShippingForm() {
           className="shipping-form-button"
           disabled={isSubmitting}
         >
-          Continue to Payment
+          {t("checkout.continueToPayment")}
         </button>
       </form>
     </div>

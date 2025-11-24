@@ -13,14 +13,18 @@ const HomePagesHead = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadBanners = async () => {
       try {
+        setIsLoading(true);
         const activeBanners = await fetchActiveBanners();
         setBanners(activeBanners);
       } catch (error) {
         console.error("Error loading banners:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -75,13 +79,14 @@ const HomePagesHead = () => {
 
   const currentBanner = banners[currentBannerIndex];
 
-  // Preload the main background image
+  // Preload the banner image if available
   useEffect(() => {
-    const imageUrl = currentBanner?.imageUrl || "/mainImage.webP";
+    if (!currentBanner?.imageUrl) return;
+    
     const link = document.createElement("link");
     link.rel = "preload";
     link.as = "image";
-    link.href = imageUrl;
+    link.href = currentBanner.imageUrl;
     document.head.appendChild(link);
 
     return () => {
@@ -92,17 +97,18 @@ const HomePagesHead = () => {
   }, [currentBanner]);
 
   const backgroundStyle =
-    currentBanner && currentBanner.imageUrl
+    !isLoading && currentBanner && currentBanner.imageUrl
       ? {
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url(${currentBanner.imageUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          opacity: 1,
         }
       : {
-          backgroundImage:
-            'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url("/mainImage.webP")',
+          backgroundColor: "rgba(30, 30, 30, 1)", // Dark background instead of image
           backgroundSize: "cover",
           backgroundPosition: "center",
+          opacity: isLoading ? 0.5 : 1,
         };
 
   return (

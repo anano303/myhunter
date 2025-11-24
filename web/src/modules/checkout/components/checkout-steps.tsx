@@ -1,19 +1,24 @@
-import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import './checkout-steps.css';
+"use client";
+
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/LanguageContext";
+import "./checkout-steps.css";
 
 interface CheckoutStepsProps {
   currentStep: number;
 }
 
-const steps = [
-  { id: 1, name: 'ავტორიზაცია' },
-  { id: 2, name: 'მიწოდება' },
-  { id: 3, name: 'გადახდა' },
-  { id: 4, name: 'შეკვეთა' },
-];
-
 export function CheckoutSteps({ currentStep }: CheckoutStepsProps) {
+  const { t } = useLanguage();
+
+  const steps = [
+    { id: 1, name: t("checkout.authenticationStep") },
+    { id: 2, name: t("checkout.shippingStep") },
+    { id: 3, name: t("checkout.paymentStep") },
+    { id: 4, name: t("checkout.orderStep") },
+  ];
+
   return (
     <div className="checkout-steps-container">
       <nav aria-label="Progress">
@@ -22,8 +27,8 @@ export function CheckoutSteps({ currentStep }: CheckoutStepsProps) {
             <li
               key={step.name}
               className={cn(
-                'step-item',
-                stepIdx !== steps.length - 1 ? 'with-connector' : '',
+                "step-item",
+                stepIdx !== steps.length - 1 ? "with-connector" : ""
               )}
             >
               {step.id < currentStep ? (

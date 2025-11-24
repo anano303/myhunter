@@ -23,7 +23,7 @@ export function OrderReview() {
   const { items, clearCart } = useCart();
   const router = useRouter();
   const { toast } = useToast();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { user } = useUser();
 
   // Redirect to login if not authenticated
@@ -78,8 +78,8 @@ export function OrderReview() {
       // Check if it's a 401 authentication error
       if ((error as any)?.response?.status === 401) {
         toast({
-          title: "ავტორიზაცია საჭიროა",
-          description: "გთხოვთ ჯერ შეხვიდეთ სისტემაში",
+          title: t("auth.authenticationRequired"),
+          description: t("auth.pleaseLogin"),
           variant: "destructive",
         });
         router.push("/login?redirect=/checkout/review");
@@ -87,8 +87,8 @@ export function OrderReview() {
       }
 
       toast({
-        title: "Error placing order",
-        description: "Please try again.",
+        title: t("checkout.errorPlacingOrder"),
+        description: t("checkout.pleaseTryAgain"),
         variant: "destructive",
       });
     }
@@ -104,30 +104,30 @@ export function OrderReview() {
       <div className="order-details col-span-8 space-y-6">
         {/* Shipping Address */}
         <div className="card p-6">
-          <h2 className="section-title">Shipping</h2>
+          <h2 className="section-title">{t("checkout.shipping")}</h2>
           <p className="address-details">
-            <strong>Address: </strong>
+            <strong>{t("checkout.address")}: </strong>
             {shippingDetails?.address}, {shippingDetails?.city},{" "}
             {shippingDetails?.postalCode}, {shippingDetails?.country}
           </p>
           <p className="address-details">
-            <strong>Phone: </strong>
+            <strong>{t("checkout.phone")}: </strong>
             {shippingDetails?.phoneNumber}
           </p>
         </div>
 
         {/* Payment Method */}
         <div className="card p-6">
-          <h2 className="section-title">Payment</h2>
+          <h2 className="section-title">{t("checkout.payment")}</h2>
           <p className="payment-method">
-            <strong>Method: </strong>
+            <strong>{t("checkout.method")}: </strong>
             {paymentMethod}
           </p>
         </div>
 
         {/* Order Items */}
         <div className="card p-6">
-          <h2 className="section-title">Order Items</h2>
+          <h2 className="section-title">{t("checkout.orderItems")}</h2>
           <div className="order-items space-y-4">
             {items.map((item) => {
               // Display name based on selected language
@@ -183,34 +183,40 @@ export function OrderReview() {
       {/* Order Summary */}
       <div className="order-summary col-span-4">
         <div className="card p-6">
-          <h2 className="section-title">Order Summary</h2>
+          <h2 className="section-title">{t("checkout.orderSummary")}</h2>
           <div className="summary-details space-y-4">
             <div className="summary-row flex justify-between">
-              <span className="summary-label text-muted-foreground">Items</span>
+              <span className="summary-label text-muted-foreground">
+                {t("checkout.items")}
+              </span>
               <span>{itemsPrice.toFixed(2)} ₾</span>
             </div>
             <div className="summary-row flex justify-between">
               <span className="summary-label text-muted-foreground">
-                Shipping
+                {t("checkout.shippingCost")}
               </span>
               <span>
-                {shippingPrice === 0 ? "Free" : `${shippingPrice.toFixed(2)}₾`}
+                {shippingPrice === 0
+                  ? t("checkout.free")
+                  : `${shippingPrice.toFixed(2)}₾`}
               </span>
             </div>
             <div className="summary-row flex justify-between">
-              <span className="summary-label text-muted-foreground">Tax</span>
+              <span className="summary-label text-muted-foreground">
+                {t("checkout.tax")}
+              </span>
               <span>{taxPrice.toFixed(2)} ₾</span>
             </div>
             <div className="separator" />
             <div className="summary-row flex justify-between font-medium">
-              <span>Total</span>
+              <span>{t("checkout.total")}</span>
               <span>{totalPrice.toFixed(2)} ₾</span>
             </div>
             <button
               className="place-order-button w-full"
               onClick={handlePlaceOrder}
             >
-              Place Order
+              {t("checkout.placeOrder")}
             </button>
           </div>
         </div>

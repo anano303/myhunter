@@ -4,7 +4,7 @@ export interface ShippingDetails {
   email?: string;
   address: string;
   city: string;
-  postalCode: string;
+  postalCode?: string;
   country: string;
   phoneNumber: string;
 }

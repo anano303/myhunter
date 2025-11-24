@@ -9,6 +9,7 @@ import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect } from "react";
+import { useLanguage } from "@/hooks/LanguageContext";
 // import { FaPaypal } from "react-icons/fa";
 // import { CreditCard } from "lucide-react";
 import "./payment-form.css";
@@ -24,6 +25,7 @@ export function PaymentForm() {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useUser();
+  const { t } = useLanguage();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -59,8 +61,8 @@ export function PaymentForm() {
       // Check if it's a 401 authentication error
       if ((error as any)?.response?.status === 401) {
         toast({
-          title: "ავტორიზაცია საჭიროა",
-          description: "გთხოვთ ჯერ შეხვიდეთ სისტემაში",
+          title: t("auth.authenticationRequired"),
+          description: t("auth.pleaseLogin"),
           variant: "destructive",
         });
         router.push("/login?redirect=/checkout/payment");
@@ -68,8 +70,8 @@ export function PaymentForm() {
       }
 
       toast({
-        title: "Error saving payment method",
-        description: "Please try again.",
+        title: t("checkout.errorSavingPayment"),
+        description: t("checkout.pleaseTryAgain"),
         variant: "destructive",
       });
     }
@@ -84,15 +86,17 @@ export function PaymentForm() {
     <div className="card p-6">
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold">Payment Method</h1>
+          <h1 className="text-2xl font-semibold">
+            {t("checkout.paymentMethod")}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Choose how you would like to pay
+            {t("checkout.choosePaymentMethod")}
           </p>
         </div>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="form-item">
-            <label className="form-label">Payment Method</label>
+            <label className="form-label">{t("checkout.paymentMethod")}</label>
             <div className="form-control">
               <div className="grid grid-cols-1 gap-4">
                 {/* PayPal Option - Temporarily Commented */}
@@ -165,7 +169,7 @@ export function PaymentForm() {
                           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                         <span className="text-sm font-medium">
-                          ბარათით გადახდა
+                          {t("checkout.cardPayment")}
                         </span>
                       </div>
                     </label>
@@ -176,7 +180,7 @@ export function PaymentForm() {
           </div>
 
           <button type="submit" className="w-full btn btn-primary">
-            Continue to Review
+            {t("checkout.continueToReview")}
           </button>
         </form>
       </div>

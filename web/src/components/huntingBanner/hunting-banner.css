@@ -106,9 +106,23 @@
   position: relative;
   width: 40%;
   height: 300px;
-
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  background: transparent; /* Remove any background */
+}
+
+.hunting-banner-image img {
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+/* Hide Next.js Image placeholder */
+.hunting-banner-image span {
+  background: transparent !important;
+}
+
+.hunting-banner-image::before {
+  display: none !important;
 }
 
 .hunting-banner-footer {

@@ -83,6 +83,8 @@ export const HuntingBanner: React.FC = () => {
             width={500}
             height={300}
             priority={true}
+            unoptimized
+            style={{ objectFit: "cover", display: "block" }}
           />
         </div>
       </div>
@@ -115,6 +117,8 @@ export const HuntingBanner: React.FC = () => {
             alt={language === "ge" ? "სანადირო იარაღი" : "Hunting Weapon"}
             width={500}
             height={300}
+            unoptimized
+            style={{ objectFit: "cover", display: "block" }}
           />
         </div>
         <div className="hunting-banner-text">
