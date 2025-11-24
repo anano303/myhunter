@@ -221,6 +221,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: "BenchNine", sans-serif;
+  text-wrap: auto;
 }
 
 .item-price {

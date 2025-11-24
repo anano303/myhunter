@@ -5,7 +5,7 @@ export default function ReviewPage() {
   return (
     <div className="Container">
       <div className="max-w-7xl mx-auto py-10 space-y-8">
-        <CheckoutSteps currentStep={4} />
+        <CheckoutSteps currentStep={3} />
         <OrderReview />
       </div>
     </div>

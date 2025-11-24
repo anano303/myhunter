@@ -82,7 +82,7 @@ const HomePagesHead = () => {
   // Preload the banner image if available
   useEffect(() => {
     if (!currentBanner?.imageUrl) return;
-    
+
     const link = document.createElement("link");
     link.rel = "preload";
     link.as = "image";
@@ -173,7 +173,7 @@ const HomePagesHead = () => {
         {/* Action buttons */}
         <div className="action-buttons">
           <Link href="/register" className="registration-btn">
-            <span className="btn-text" >{t("auth.register")}</span>
+            <span className="btn-text">{t("auth.register")}</span>
           </Link>
           <Link href="/login" className="auth-btn">
             <span className="btn-text">{t("auth.login")}</span>

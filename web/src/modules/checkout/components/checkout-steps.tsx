@@ -15,8 +15,7 @@ export function CheckoutSteps({ currentStep }: CheckoutStepsProps) {
   const steps = [
     { id: 1, name: t("checkout.authenticationStep") },
     { id: 2, name: t("checkout.shippingStep") },
-    { id: 3, name: t("checkout.paymentStep") },
-    { id: 4, name: t("checkout.orderStep") },
+    { id: 3, name: t("checkout.orderStep") },
   ];
 
   return (

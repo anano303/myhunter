@@ -184,7 +184,6 @@ export const TRANSLATIONS: Translations = {
       // Steps
       authenticationStep: "ავტორიზაცია",
       shippingStep: "მიწოდება",
-      paymentStep: "გადახდა",
       orderStep: "შეკვეთა",
       // Forms
       shippingAddress: "მიწოდების მისამართი",
@@ -927,7 +926,6 @@ export const TRANSLATIONS: Translations = {
       // Steps
       authenticationStep: "Authentication",
       shippingStep: "Shipping",
-      paymentStep: "Payment",
       orderStep: "Order",
       // Forms
       shippingAddress: "Shipping Address",

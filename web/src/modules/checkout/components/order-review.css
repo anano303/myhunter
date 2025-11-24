@@ -123,6 +123,7 @@
   font-weight: 600;
   color: #f48c06;
   font-size: 1.1rem;
+  text-wrap: auto;
 }
 
 .item-price {

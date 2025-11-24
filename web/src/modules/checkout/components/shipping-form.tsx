@@ -21,7 +21,7 @@ interface ShippingFormData {
 }
 
 export function ShippingForm() {
-  const { setShippingAddress } = useCheckout();
+  const { setShippingAddress, setPaymentMethod } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useUser();
@@ -51,7 +51,12 @@ export function ShippingForm() {
       const response = await apiClient.post("/cart/shipping", data);
       const shippingAddress = response.data;
       setShippingAddress(shippingAddress);
-      router.push("/checkout/payment");
+
+      // Auto-set payment method to BOG
+      setPaymentMethod("BOG");
+
+      // Go directly to review
+      router.push("/checkout/review");
     } catch (error) {
       console.log(error);
 

@@ -225,6 +225,7 @@
   transition: color 0.2s ease;
   font-size: 16px;
   font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+  text-wrap: auto;
 }
 
 .item-name:hover {
