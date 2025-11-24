@@ -41,7 +41,10 @@ export class OrdersController {
     @Query('status') status?: string,
   ) {
     if (status) {
-      return this.ordersService.findUserOrdersByStatus(user._id.toString(), status);
+      return this.ordersService.findUserOrdersByStatus(
+        user._id.toString(),
+        status,
+      );
     }
     return this.ordersService.findUserOrders(user._id.toString());
   }
@@ -82,5 +85,14 @@ export class OrdersController {
   async releaseExpiredStock() {
     await this.stockReservationService.releaseExpiredStockReservations();
     return { message: 'Expired stock reservations released' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/check-payment')
+  async checkPaymentStatus(
+    @Param('id') id: string,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return this.ordersService.checkAndSyncPaymentStatus(id);
   }
 }

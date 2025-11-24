@@ -3,6 +3,8 @@ import {
   Injectable,
   NotFoundException,
   Logger,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types, ClientSession } from 'mongoose';
@@ -13,6 +15,8 @@ import { ProductsService } from '@/products/services/products.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { EmailService } from '@/email/services/email.services';
+import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 
 @Injectable()
 export class OrdersService {
@@ -24,6 +28,7 @@ export class OrdersService {
     private productsService: ProductsService,
     @InjectConnection() private connection: Connection,
     private emailService: EmailService,
+    private configService: ConfigService,
   ) {}
 
   async create(
@@ -372,28 +377,102 @@ export class OrdersService {
       throw new BadRequestException('Order is already paid.');
     }
 
-    // შეამოწმოს თუ შეკვეთა cancelled სტატუსშია, მაშინ არ დაუშვას გადახდა
+    // IMPORTANT: If payment is received, accept it regardless of order status
+    // Even if the order was cancelled due to expired stock reservation,
+    // we should accept the payment since the customer already paid
     if (order.status === 'cancelled') {
-      console.log('Order is cancelled, cannot process payment');
-      throw new BadRequestException(
-        'Cannot pay for cancelled order. Please create a new order.',
+      this.logger.log(
+        `Payment received for cancelled order ${externalOrderId}. Accepting payment and reactivating order.`,
       );
     }
 
-    // თუ სტოკის რეზერვაცია ამოიწურა, მაგრამ გადახდა მოდის, პირდაპირ შევცვალოთ სტატუსი
+    // Check if stock reservation has expired
     const isExpired =
       order.stockReservationExpires &&
       new Date() > order.stockReservationExpires;
 
     if (isExpired) {
-      // თუ რეზერვაცია ამოიწურა, მაგრამ გადახდა მოვიდა, მაინც შევცვალოთ სტატუსი გადახდილში
       this.logger.log(
         `Payment received for expired reservation order ${externalOrderId}. Processing payment anyway.`,
       );
     }
 
-    // შევამოწმოთ სტოკი მხოლოდ იმ შემთხვევაში თუ რეზერვაცია არ ამოიწურა
-    if (!isExpired) {
+    // Check if order was cancelled - in this case, stock was already refunded
+    // We need to re-reserve the stock
+    const wasCancelled = order.status === 'cancelled';
+
+    if (wasCancelled) {
+      this.logger.log(
+        `Order ${externalOrderId} was cancelled, re-reserving stock...`,
+      );
+
+      // Re-reserve stock for cancelled orders that received payment
+      const session = await this.connection.startSession();
+      try {
+        await session.withTransaction(async () => {
+          for (const item of order.orderItems) {
+            const product = await this.productModel
+              .findById(item.productId)
+              .session(session);
+
+            if (!product) {
+              throw new NotFoundException(
+                `Product ${item.name} is no longer available.`,
+              );
+            }
+
+            // Re-deduct stock
+            if (
+              product.variants &&
+              product.variants.length > 0 &&
+              (item.size || item.color || item.ageGroup)
+            ) {
+              const variantIndex = product.variants.findIndex(
+                (v) =>
+                  v.size === item.size &&
+                  v.color === item.color &&
+                  v.ageGroup === item.ageGroup,
+              );
+
+              if (variantIndex === -1) {
+                // No variant found, use general stock
+                if (product.countInStock < item.qty) {
+                  throw new BadRequestException(
+                    `Not enough stock for product ${product.name}. Available: ${product.countInStock}, Requested: ${item.qty}`,
+                  );
+                }
+                product.countInStock -= item.qty;
+              } else {
+                if (product.variants[variantIndex].stock < item.qty) {
+                  throw new BadRequestException(
+                    `Not enough stock for product ${product.name} variant. Available: ${product.variants[variantIndex].stock}, Requested: ${item.qty}`,
+                  );
+                }
+                product.variants[variantIndex].stock -= item.qty;
+              }
+            } else {
+              if (product.countInStock < item.qty) {
+                throw new BadRequestException(
+                  `Not enough stock for product ${product.name}. Available: ${product.countInStock}, Requested: ${item.qty}`,
+                );
+              }
+              product.countInStock -= item.qty;
+            }
+
+            await product.save({ session });
+          }
+        });
+        await session.endSession();
+        this.logger.log(`Stock re-reserved for order ${externalOrderId}`);
+      } catch (error) {
+        await session.endSession();
+        this.logger.error(
+          `Failed to re-reserve stock for order ${externalOrderId}:`,
+          error.message,
+        );
+        throw error;
+      }
+    } else if (!isExpired) {
       // Validate that reserved stock is still valid (stock should be >= 0 after initial reservation)
       for (const item of order.orderItems) {
         const product = await this.productModel.findById(item.productId);
@@ -757,6 +836,185 @@ export class OrdersService {
     } catch (error) {
       console.error(
         '❌ Error preparing admin notification email:',
+        error.message,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Check payment status from BOG and sync with order
+   * This is used when callback doesn't arrive
+   */
+  async checkAndSyncPaymentStatus(orderId: string): Promise<{
+    success: boolean;
+    message: string;
+    order?: OrderDocument;
+  }> {
+    try {
+      // Find order by ID
+      const order = await this.orderModel
+        .findById(orderId)
+        .populate('user', 'name email firstName lastName');
+
+      if (!order) {
+        throw new NotFoundException(`Order with ID ${orderId} not found`);
+      }
+
+      // If already paid, return success
+      if (order.isPaid) {
+        this.logger.log(`Order ${orderId} is already paid`);
+        return {
+          success: true,
+          message: 'Order is already paid',
+          order,
+        };
+      }
+
+      // Check if order has externalOrderId (BOG order ID)
+      if (!order.externalOrderId) {
+        this.logger.log(`Order ${orderId} has no BOG payment initiated`);
+        return {
+          success: false,
+          message: 'No payment initiated for this order',
+          order,
+        };
+      }
+
+      this.logger.log(
+        `Checking BOG payment status for order ${orderId}, external ID: ${order.externalOrderId}, BOG order ID: ${order.bogOrderId || 'not set'}`,
+      );
+
+      // If we have BOG's order_id, we can query their API
+      if (order.bogOrderId) {
+        try {
+          // Get BOG access token
+          const token = await this.getBogToken();
+
+          // Check payment status from BOG using their order_id
+          const paymentStatus = await this.checkBogPaymentStatus(
+            order.bogOrderId,
+            token,
+          );
+
+          this.logger.log(
+            `BOG payment status for ${order.bogOrderId}: ${paymentStatus.status}`,
+          );
+
+          // If payment is completed, update order
+          if (paymentStatus.status === 'completed') {
+            const paymentResult: PaymentResult = {
+              id: order.externalOrderId,
+              status: paymentStatus.status,
+              update_time: new Date().toISOString(),
+              email_address:
+                order.user?.email || order.shippingDetails?.email || 'unknown',
+            };
+
+            const updatedOrder = await this.updateOrderByExternalId(
+              order.externalOrderId,
+              paymentResult,
+            );
+
+            return {
+              success: true,
+              message: 'Payment confirmed and order updated',
+              order: updatedOrder,
+            };
+          }
+
+          // Payment not completed yet
+          return {
+            success: false,
+            message: `Payment status: ${paymentStatus.status}`,
+            order,
+          };
+        } catch (error) {
+          this.logger.error(`Error querying BOG API: ${error.message}`);
+          // Fall through to return unable to verify message
+        }
+      }
+
+      // Note: We can't query BOG API without bogOrderId
+      this.logger.warn(
+        'Cannot query BOG API - bogOrderId not stored (order created before this feature was added)',
+      );
+
+      return {
+        success: false,
+        message:
+          'Cannot verify payment - BOG order_id not stored. If payment was completed, BOG will send a callback automatically.',
+        order,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error checking payment status for order ${orderId}: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Get BOG access token
+   */
+  private async getBogToken(): Promise<string> {
+    try {
+      const clientId = this.configService.get<string>('BOG_CLIENT_ID');
+      const clientSecret = this.configService.get<string>('BOG_CLIENT_SECRET');
+
+      if (!clientId || !clientSecret) {
+        throw new Error('BOG credentials are not configured');
+      }
+
+      const response = await axios.post(
+        'https://oauth2.bog.ge/auth/realms/bog/protocol/openid-connect/token',
+        new URLSearchParams({
+          grant_type: 'client_credentials',
+        }).toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization:
+              'Basic ' +
+              Buffer.from(`${clientId}:${clientSecret}`).toString('base64'),
+          },
+        },
+      );
+
+      return response.data.access_token;
+    } catch (error) {
+      this.logger.error('BOG Token Error:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Check BOG payment status
+   */
+  private async checkBogPaymentStatus(
+    orderId: string,
+    token: string,
+  ): Promise<{ status: string }> {
+    try {
+      const response = await axios.get(
+        `https://api.bog.ge/payments/v1/receipt/${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return {
+        status: response.data.order_status?.key || 'unknown',
+      };
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return { status: 'not_found' };
+      }
+      this.logger.error(
+        `BOG Payment Status Error for ${orderId}:`,
         error.message,
       );
       throw error;

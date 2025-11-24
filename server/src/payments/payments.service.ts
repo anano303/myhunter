@@ -222,16 +222,9 @@ export class PaymentsService {
           );
 
           // Send email notifications
-          console.log('🚀 STARTING EMAIL NOTIFICATION PROCESS...');
           try {
             const order =
               await this.ordersService.findByExternalOrderId(external_order_id);
-            console.log('🔍 FOUND ORDER FOR EMAIL:', {
-              orderId: order?._id,
-              hasOrder: !!order,
-              customerEmail:
-                order?.user?.email || order?.shippingDetails?.email,
-            });
             if (order) {
               // Send customer confirmation email
               await this.sendOrderConfirmationEmail(order);
@@ -298,6 +291,27 @@ export class PaymentsService {
       }
     } catch (error) {
       console.error('Error updating order with external ID:', error);
+      throw error;
+    }
+  }
+
+  async updateOrderWithBogIds(
+    orderId: string,
+    externalOrderId: string,
+    bogOrderId: string,
+  ): Promise<void> {
+    try {
+      const order = await this.ordersService.findById(orderId);
+      if (order) {
+        order.externalOrderId = externalOrderId;
+        order.bogOrderId = bogOrderId;
+        await order.save();
+        console.log(
+          `✅ Updated order ${orderId} with externalOrderId: ${externalOrderId}, bogOrderId: ${bogOrderId}`,
+        );
+      }
+    } catch (error) {
+      console.error('Error updating order with BOG IDs:', error);
       throw error;
     }
   }

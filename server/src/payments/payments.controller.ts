@@ -10,15 +10,16 @@ export class PaymentsController {
     try {
       const result = await this.paymentsService.createPayment(data);
 
-      // Update order with external_order_id for callback processing
-      if (result.uniqueId && data.product?.productId) {
+      // Update order with both external_order_id (our UUID) and BOG's order_id
+      if (result.uniqueId && result.order_id && data.product?.productId) {
         try {
-          await this.paymentsService.updateOrderWithExternalId(
+          await this.paymentsService.updateOrderWithBogIds(
             data.product.productId,
             result.uniqueId,
+            result.order_id,
           );
         } catch (error) {
-          console.error('Failed to update order with external ID:', error);
+          console.error('Failed to update order with BOG IDs:', error);
           // Continue with payment creation even if this fails
         }
       }
@@ -32,17 +33,27 @@ export class PaymentsController {
 
   @Get('bog/status/:orderId')
   async getBogPaymentStatus(@Param('orderId') orderId: string) {
-    return this.paymentsService.getPaymentStatus(orderId);
+    console.log('📊 Checking BOG status for order:', orderId);
+    const status = await this.paymentsService.getPaymentStatus(orderId);
+    console.log('📋 BOG status result:', JSON.stringify(status, null, 2));
+    return status;
   }
 
   @Post('bog/callback')
   async handleBogCallback(@Body() data: any) {
-    console.log('BOG Payment Callback endpoint hit');
-    console.log('Callback data received:', JSON.stringify(data, null, 2));
+    console.log(
+      '🔔 BOG Payment Callback endpoint hit at:',
+      new Date().toISOString(),
+    );
+    console.log('📦 Callback raw body:', JSON.stringify(data, null, 2));
+    console.log('📊 Callback data keys:', Object.keys(data));
 
     const result = await this.paymentsService.handlePaymentCallback(data);
 
-    console.log('Callback processing result:', JSON.stringify(result, null, 2));
+    console.log(
+      '✅ Callback processing result:',
+      JSON.stringify(result, null, 2),
+    );
 
     return {
       status: result.success ? 'success' : 'failed',

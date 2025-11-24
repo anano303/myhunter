@@ -105,6 +105,9 @@ export class Order {
   @Prop({ required: false, unique: true, sparse: true })
   externalOrderId!: string;
 
+  @Prop({ required: false })
+  bogOrderId!: string; // BOG's internal order ID for API queries
+
   @Prop({
     type: String,
     enum: ['pending', 'paid', 'delivered', 'cancelled'],

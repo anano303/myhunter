@@ -79,11 +79,6 @@ async function bootstrap() {
 
   // Add a simple health check at root BEFORE versioning
   app.use('/', (req, res, next) => {
-    console.log(
-      `[${new Date().toISOString()}] ${req.method} ${req.url} - Headers:`,
-      req.headers,
-    );
-
     if (req.method === 'GET' && req.url === '/') {
       console.log('✅ Root health check accessed');
       return res.json({

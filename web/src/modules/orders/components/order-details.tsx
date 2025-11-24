@@ -2,7 +2,7 @@
 
 import { CheckCircle2, XCircle, Store } from "lucide-react";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Color, AgeGroupItem } from "@/types";
 import Image from "next/image";
@@ -12,6 +12,7 @@ import { PayPalButton } from "./paypal-button";
 import { StripeButton } from "./stripe-button";
 import { BOGButton } from "./bog-button";
 import "./order-details.css";
+import { useEffect } from "react";
 
 // Helper function to check if image is from Cloudinary
 const isCloudinaryImage = (src: string) =>
@@ -26,6 +27,46 @@ interface OrderDetailsProps {
 
 export function OrderDetails({ order }: OrderDetailsProps) {
   const { t, language } = useLanguage();
+  const queryClient = useQueryClient();
+
+  // Check payment status mutation
+  const checkPaymentMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      const response = await fetchWithAuth(`/orders/${orderId}/check-payment`, {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to check payment status");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.success && data.order) {
+        // Invalidate and refetch order data
+        queryClient.invalidateQueries({ queryKey: ["order", order._id] });
+        window.location.reload(); // Reload to show updated status
+      }
+    },
+  });
+
+  // Check payment status on mount if order is not paid and has externalOrderId
+  useEffect(() => {
+    if (!order.isPaid && order.externalOrderId) {
+      console.log("Checking payment status for order:", order._id);
+      // Check after 2 seconds to allow user to see the page first
+      const timer = setTimeout(() => {
+        // Verify token exists before making the call
+        const token = localStorage.getItem("soulart_access_token");
+        if (token) {
+          checkPaymentMutation.mutate(order._id);
+        } else {
+          console.warn("No access token found, skipping payment check");
+        }
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [order._id, order.isPaid, order.externalOrderId]);
 
   // Check if stock reservation has expired
   const isStockExpired = order.stockReservationExpires
