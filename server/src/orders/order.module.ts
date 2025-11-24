@@ -5,6 +5,7 @@ import { Order, OrderSchema } from './schemas/order.schema';
 import { OrdersService } from './services/orders.service';
 import { StockReservationService } from './services/stock-reservation.service';
 import { ProductsModule } from '@/products/products.module';
+import { EmailModule } from '@/email/email.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProductsModule } from '@/products/products.module';
       },
     ]),
     ProductsModule, // This will make the Product model available in the OrdersService
+    EmailModule, // This will make the EmailService available in the OrdersService
   ],
   controllers: [OrdersController],
   providers: [OrdersService, StockReservationService],

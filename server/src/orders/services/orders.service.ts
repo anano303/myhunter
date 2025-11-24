@@ -12,6 +12,7 @@ import { Product } from '../../products/schemas/product.schema';
 import { ProductsService } from '@/products/services/products.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
+import { EmailService } from '@/email/services/email.services';
 
 @Injectable()
 export class OrdersService {
@@ -22,6 +23,7 @@ export class OrdersService {
     @InjectModel(Product.name) private productModel: Model<Product>,
     private productsService: ProductsService,
     @InjectConnection() private connection: Connection,
+    private emailService: EmailService,
   ) {}
 
   async create(
@@ -451,6 +453,34 @@ export class OrdersService {
       `Order ${externalOrderId} successfully updated. New isPaid: ${updatedOrder.isPaid}, new status: ${updatedOrder.status}`,
     );
 
+    // Send email notifications after successful payment
+    try {
+      console.log('🚀 SENDING EMAIL NOTIFICATIONS FOR PAID ORDER...');
+      const orderWithUser = await this.orderModel
+        .findById(updatedOrder._id)
+        .populate('user', 'name email firstName lastName');
+
+      if (orderWithUser) {
+        // Send customer confirmation email
+        await this.sendOrderConfirmationEmail(orderWithUser);
+        console.log(
+          `✅ Customer confirmation email sent for order ${externalOrderId}`,
+        );
+
+        // Send admin notification email
+        await this.sendAdminNotificationEmail(orderWithUser);
+        console.log(
+          `✅ Admin notification email sent for order ${externalOrderId}`,
+        );
+      }
+    } catch (emailError) {
+      console.error(
+        '❌ Failed to send email notifications:',
+        emailError.message,
+      );
+      // Don't throw error - payment is successful, just log email failure
+    }
+
     return updatedOrder;
   }
 
@@ -613,6 +643,123 @@ export class OrdersService {
       }
 
       await product.save({ session });
+    }
+  }
+
+  /**
+   * Send order confirmation email to customer
+   */
+  private async sendOrderConfirmationEmail(order: any) {
+    try {
+      const orderData = {
+        customerEmail: order.user?.email || order.shippingDetails?.email || '',
+        orderId: order._id.toString(),
+        customerName:
+          order.user?.name ||
+          `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim() ||
+          'Customer',
+        items:
+          order.orderItems?.map((item: any) => ({
+            name: item.name,
+            quantity: item.qty,
+            price: item.price,
+            size: item.size,
+            color: item.color,
+            ageGroup: item.ageGroup,
+          })) || [],
+        totalAmount: order.totalPrice || 0,
+        shippingAddress: {
+          firstName: order.shippingDetails?.firstName || '',
+          lastName: order.shippingDetails?.lastName || '',
+          address: order.shippingDetails?.address || '',
+          city: order.shippingDetails?.city || '',
+          postalCode: order.shippingDetails?.postalCode,
+          phoneNumber: order.shippingDetails?.phoneNumber || '',
+        },
+        paymentMethod: order.paymentMethod || 'BOG',
+        orderDate: new Date(order.createdAt || Date.now()).toLocaleDateString(
+          'ka-GE',
+          {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          },
+        ),
+      };
+
+      // Only send email if we have customer email
+      if (orderData.customerEmail) {
+        await this.emailService.sendOrderConfirmationEmail(orderData);
+        console.log(
+          `✅ Order confirmation email sent to ${orderData.customerEmail}`,
+        );
+      } else {
+        console.log('⚠️ No customer email found for order:', order._id);
+      }
+    } catch (error) {
+      console.error(
+        '❌ Error preparing order confirmation email:',
+        error.message,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Send admin notification email
+   */
+  private async sendAdminNotificationEmail(order: any) {
+    try {
+      const orderData = {
+        orderId: order._id.toString(),
+        customerName:
+          order.user?.name ||
+          `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim() ||
+          'Customer',
+        customerEmail:
+          order.user?.email || order.shippingDetails?.email || 'N/A',
+        customerPhone: order.shippingDetails?.phoneNumber || 'N/A',
+        items:
+          order.orderItems?.map((item: any) => ({
+            name: item.name,
+            quantity: item.qty,
+            price: item.price,
+            size: item.size,
+            color: item.color,
+            ageGroup: item.ageGroup,
+          })) || [],
+        totalAmount: order.totalPrice || 0,
+        shippingAddress: {
+          firstName: order.shippingDetails?.firstName || '',
+          lastName: order.shippingDetails?.lastName || '',
+          address: order.shippingDetails?.address || '',
+          city: order.shippingDetails?.city || '',
+          postalCode: order.shippingDetails?.postalCode,
+          phoneNumber: order.shippingDetails?.phoneNumber || '',
+        },
+        paymentMethod: order.paymentMethod || 'BOG',
+        orderDate: new Date(order.createdAt || Date.now()).toLocaleDateString(
+          'ka-GE',
+          {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          },
+        ),
+      };
+
+      await this.emailService.sendAdminOrderNotification(orderData);
+      console.log(`✅ Admin notification email sent for order ${order._id}`);
+    } catch (error) {
+      console.error(
+        '❌ Error preparing admin notification email:',
+        error.message,
+      );
+      throw error;
     }
   }
 }

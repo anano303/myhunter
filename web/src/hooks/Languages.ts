@@ -255,7 +255,8 @@ export const TRANSLATIONS: Translations = {
       tax: "დღგ",
       total: "ჯამი",
       totalUSD: "ჯამი (USD)",
-      stockExpired: "მარაგის რეზერვაცია ამოიწურა. გთხოვთ შექმნათ ახალი შეკვეთა.",
+      stockExpired:
+        "მარაგის რეზერვაცია ამოიწურა. გთხოვთ შექმნათ ახალი შეკვეთა.",
       orderCancelled: "შეკვეთა გაუქმდა",
       stockReservedUntil: "მარაგი დაჯავშნულია",
       paymentButton: "გადახდა",

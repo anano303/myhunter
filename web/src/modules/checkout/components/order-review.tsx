@@ -224,7 +224,9 @@ export function OrderReview() {
               onClick={handlePlaceOrder}
               disabled={isPlacingOrder}
             >
-              {isPlacingOrder ? t("checkout.placingOrder") : t("checkout.placeOrder")}
+              {isPlacingOrder
+                ? t("checkout.placingOrder")
+                : t("checkout.placeOrder")}
             </button>
           </div>
         </div>

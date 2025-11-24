@@ -263,8 +263,9 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                       {item.product?.minDeliveryDays &&
                         item.product?.maxDeliveryDays && (
                           <p className="delivery-time">
-                            {t("order.deliveryTime")}: {item.product.minDeliveryDays}
-                            -{item.product.maxDeliveryDays} {t("order.days")}
+                            {t("order.deliveryTime")}:{" "}
+                            {item.product.minDeliveryDays}-
+                            {item.product.maxDeliveryDays} {t("order.days")}
                           </p>
                         )}
                     </div>
@@ -385,9 +386,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
               {!order.isPaid && isStockExpired && (
                 <div className="alert error" style={{ marginBottom: "1rem" }}>
                   <XCircle className="icon" />
-                  <span>
-                    {t("order.stockExpired")}
-                  </span>
+                  <span>{t("order.stockExpired")}</span>
                 </div>
               )}
 
