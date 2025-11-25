@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/modules/auth/hooks/use-user";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getAccessToken } from "@/lib/auth";
 import { useLanguage } from "@/hooks/LanguageContext";
 // import { FaPaypal } from "react-icons/fa";
 // import { CreditCard } from "lucide-react";
@@ -24,15 +25,28 @@ export function PaymentForm() {
   const { setPaymentMethod } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const { t } = useLanguage();
+  const [isMounted, setIsMounted] = useState(false);
+  const [hasAccessToken, setHasAccessToken] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    setHasAccessToken(Boolean(getAccessToken()));
+  }, [isMounted]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!user) {
+    if (!isMounted) return;
+    if (hasAccessToken === null) return;
+    if (!hasAccessToken) {
       router.push("/login?redirect=/checkout/payment");
     }
-  }, [user, router]);
+  }, [hasAccessToken, isMounted, router]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,7 +56,11 @@ export function PaymentForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!user) {
+    if (isLoading || hasAccessToken === null) {
+      return;
+    }
+
+    if (!user || hasAccessToken === false) {
       router.push("/login?redirect=/checkout/payment");
       return;
     }
@@ -78,7 +96,11 @@ export function PaymentForm() {
   }
 
   // Don't render form if not authenticated
-  if (!user) {
+  if (!isMounted || isLoading || hasAccessToken === null) {
+    return null;
+  }
+
+  if (!user || hasAccessToken === false) {
     return null;
   }
 

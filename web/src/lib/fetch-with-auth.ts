@@ -30,16 +30,19 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
 
     // Handle 401 Unauthorized - try to refresh token
     if (response.status === 401) {
+      console.log("🔐 Got 401, attempting token refresh for URL:", url);
       const refreshToken = getRefreshToken();
 
       if (!refreshToken) {
+        console.error("❌ No refresh token found, logging out");
         clearTokens();
-        // Force reload to reset all state
-        window.location.reload();
+        // Redirect to login instead of reload to avoid infinite loop
+        window.location.href = "/login";
         throw new Error("ავტორიზაცია საჭიროა");
       }
 
       try {
+        console.log("🔄 Attempting to refresh token...");
         // Attempt to refresh the token
         const refreshResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
@@ -53,27 +56,34 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
         );
 
         if (!refreshResponse.ok) {
+          console.error(
+            "❌ Token refresh failed with status:",
+            refreshResponse.status
+          );
           clearTokens();
-          // Force reload to reset all state
-          window.location.reload();
+          // Redirect to login instead of reload
+          window.location.href = "/login";
           throw new Error("სესია ვადაგასულია, გთხოვთ თავიდან შეხვიდეთ");
         }
 
         const data = await refreshResponse.json();
         if (data.tokens?.accessToken && data.tokens?.refreshToken) {
+          console.log("✅ Token refreshed successfully");
           storeTokens(data.tokens.accessToken, data.tokens.refreshToken);
           // Retry the original request with new token
           response = await makeRequest();
         } else {
+          console.error("❌ Invalid token response format");
           clearTokens();
-          // Force reload to reset all state
-          window.location.reload();
+          // Redirect to login instead of reload
+          window.location.href = "/login";
           throw new Error("ტოკენის განახლება ვერ მოხერხდა");
         }
       } catch (refreshError) {
+        console.error("❌ Token refresh error:", refreshError);
         clearTokens();
-        // Force reload to reset all state
-        window.location.reload();
+        // Redirect to login instead of reload
+        window.location.href = "/login";
         if (refreshError instanceof Error) {
           throw refreshError;
         }

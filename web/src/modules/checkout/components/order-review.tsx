@@ -9,6 +9,7 @@ import { TAX_RATE } from "@/config/constants";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect, useState } from "react";
+import { getAccessToken } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
 import "./order-review.css";
@@ -24,15 +25,28 @@ export function OrderReview() {
   const router = useRouter();
   const { toast } = useToast();
   const { language, t } = useLanguage();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [hasAccessToken, setHasAccessToken] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    setHasAccessToken(Boolean(getAccessToken()));
+  }, [isMounted]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!user) {
+    if (!isMounted) return;
+    if (hasAccessToken === null) return;
+    if (!hasAccessToken) {
       router.push("/login?redirect=/checkout/review");
     }
-  }, [user, router]);
+  }, [hasAccessToken, isMounted, router]);
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -43,7 +57,11 @@ export function OrderReview() {
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   const handlePlaceOrder = async () => {
-    if (!user) {
+    if (isLoading || hasAccessToken === null) {
+      return;
+    }
+
+    if (!user || hasAccessToken === false) {
       router.push("/login?redirect=/checkout/review");
       return;
     }
@@ -102,7 +120,11 @@ export function OrderReview() {
   };
 
   // Don't render if not authenticated
-  if (!user) {
+  if (!isMounted || isLoading || hasAccessToken === null) {
+    return null;
+  }
+
+  if (!user || hasAccessToken === false) {
     return null;
   }
 

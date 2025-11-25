@@ -22,6 +22,14 @@ export const storeTokens = (accessToken: string, refreshToken: string) => {
     // Also store refresh token in a session storage as a fallback
     // for when the page is refreshed or app restarts
     sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+
+    // Store in cookies for middleware
+    document.cookie = `access_token=${accessToken}; path=/; max-age=${
+      7 * 24 * 60 * 60
+    }`; // 7 days
+    document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${
+      7 * 24 * 60 * 60
+    }`; // 7 days
   } catch (error) {
     console.error("Failed to store tokens:", error);
   }
@@ -91,6 +99,12 @@ export const clearTokens = () => {
     localStorage.removeItem(USER_DATA_KEY);
     sessionStorage.removeItem(REFRESH_TOKEN_KEY);
     refreshTokenInMemory = null;
+
+    // Clear cookies
+    document.cookie =
+      "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    document.cookie =
+      "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
   } catch (error) {
     console.error("Failed to clear tokens:", error);
   }

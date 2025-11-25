@@ -98,7 +98,8 @@ export class AuthController {
     }
 
     const tokens = await this.authService.refresh(body.refreshToken);
-    return { tokens, success: true };
+
+    return { tokens };
   }
 
   @Get('google')

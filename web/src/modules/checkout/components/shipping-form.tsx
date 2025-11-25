@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { useCheckout } from "../context/checkout-context";
 import { getCountries } from "@/lib/countries";
 import { useUser } from "@/modules/auth/hooks/use-user";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getAccessToken } from "@/lib/auth";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 import "./shipping-form.css";
@@ -24,15 +25,28 @@ export function ShippingForm() {
   const { setShippingAddress, setPaymentMethod } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const { t } = useLanguage();
+  const [isMounted, setIsMounted] = useState(false);
+  const [hasAccessToken, setHasAccessToken] = useState<boolean | null>(null);
 
-  // Redirect to login if not authenticated
   useEffect(() => {
-    if (!user) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    setHasAccessToken(Boolean(getAccessToken()));
+  }, [isMounted]);
+
+  // Redirect to login if no access token is present
+  useEffect(() => {
+    if (!isMounted) return;
+    if (hasAccessToken === null) return;
+    if (!hasAccessToken) {
       router.push("/login?redirect=/checkout/shipping");
     }
-  }, [user, router]);
+  }, [hasAccessToken, isMounted, router]);
 
   const {
     register,
@@ -42,7 +56,11 @@ export function ShippingForm() {
   } = useForm<ShippingFormData>();
 
   const onSubmit = async (data: ShippingFormData) => {
-    if (!user) {
+    if (isLoading || hasAccessToken === null) {
+      return;
+    }
+
+    if (!user || hasAccessToken === false) {
       router.push("/login?redirect=/checkout/shipping");
       return;
     }
@@ -80,7 +98,11 @@ export function ShippingForm() {
   };
 
   // Don't render form if not authenticated
-  if (!user) {
+  if (!isMounted || isLoading || hasAccessToken === null) {
+    return null;
+  }
+
+  if (!user || hasAccessToken === false) {
     return null;
   }
 
