@@ -9,7 +9,6 @@ import { TAX_RATE } from "@/config/constants";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect, useState } from "react";
-import { getAccessToken } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
 import "./order-review.css";
@@ -28,25 +27,18 @@ export function OrderReview() {
   const { user, isLoading } = useUser();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [hasAccessToken, setHasAccessToken] = useState<boolean | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  // Redirect to login if not authenticated and auth state is loaded
   useEffect(() => {
-    if (!isMounted) return;
-    setHasAccessToken(Boolean(getAccessToken()));
-  }, [isMounted]);
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isMounted) return;
-    if (hasAccessToken === null) return;
-    if (!hasAccessToken) {
+    if (!isMounted || isLoading) return;
+    if (!user) {
       router.push("/login?redirect=/checkout/review");
     }
-  }, [hasAccessToken, isMounted, router]);
+  }, [user, isLoading, isMounted, router]);
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -57,11 +49,11 @@ export function OrderReview() {
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   const handlePlaceOrder = async () => {
-    if (isLoading || hasAccessToken === null) {
+    if (isLoading) {
       return;
     }
 
-    if (!user || hasAccessToken === false) {
+    if (!user) {
       router.push("/login?redirect=/checkout/review");
       return;
     }
@@ -120,11 +112,11 @@ export function OrderReview() {
   };
 
   // Don't render if not authenticated
-  if (!isMounted || isLoading || hasAccessToken === null) {
+  if (!isMounted || isLoading) {
     return null;
   }
 
-  if (!user || hasAccessToken === false) {
+  if (!user) {
     return null;
   }
 

@@ -8,7 +8,6 @@ import { useCheckout } from "../context/checkout-context";
 import { getCountries } from "@/lib/countries";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect, useState } from "react";
-import { getAccessToken } from "@/lib/auth";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 import "./shipping-form.css";
@@ -28,25 +27,18 @@ export function ShippingForm() {
   const { user, isLoading } = useUser();
   const { t } = useLanguage();
   const [isMounted, setIsMounted] = useState(false);
-  const [hasAccessToken, setHasAccessToken] = useState<boolean | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  // Redirect to login if not authenticated and auth state is loaded
   useEffect(() => {
-    if (!isMounted) return;
-    setHasAccessToken(Boolean(getAccessToken()));
-  }, [isMounted]);
-
-  // Redirect to login if no access token is present
-  useEffect(() => {
-    if (!isMounted) return;
-    if (hasAccessToken === null) return;
-    if (!hasAccessToken) {
+    if (!isMounted || isLoading) return;
+    if (!user) {
       router.push("/login?redirect=/checkout/shipping");
     }
-  }, [hasAccessToken, isMounted, router]);
+  }, [user, isLoading, isMounted, router]);
 
   const {
     register,
@@ -56,11 +48,11 @@ export function ShippingForm() {
   } = useForm<ShippingFormData>();
 
   const onSubmit = async (data: ShippingFormData) => {
-    if (isLoading || hasAccessToken === null) {
+    if (isLoading) {
       return;
     }
 
-    if (!user || hasAccessToken === false) {
+    if (!user) {
       router.push("/login?redirect=/checkout/shipping");
       return;
     }
@@ -98,11 +90,11 @@ export function ShippingForm() {
   };
 
   // Don't render form if not authenticated
-  if (!isMounted || isLoading || hasAccessToken === null) {
+  if (!isMounted || isLoading) {
     return null;
   }
 
-  if (!user || hasAccessToken === false) {
+  if (!user) {
     return null;
   }
 
