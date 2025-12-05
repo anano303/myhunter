@@ -113,7 +113,12 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
                   )}
                 </td>
                 <td className="actions">
-                  <Link href={`/orders/${order._id}`} className="view-details">
+                  <Link
+                    href={`/orders/${
+                      order.orderNumber || order._id || order.externalOrderId
+                    }`}
+                    className="view-details"
+                  >
                     View Details
                   </Link>
                 </td>

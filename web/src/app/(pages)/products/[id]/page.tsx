@@ -39,19 +39,22 @@ function buildAbsoluteImageUrl(image?: string) {
   }
 }
 
+type ProductRouteParams = Promise<{ id: string }>;
+
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: ProductRouteParams;
 }): Promise<Metadata> {
-  const product = await fetchProduct(params.id);
+  const resolvedParams = await params;
+  const product = await fetchProduct(resolvedParams.id);
 
   if (!product) {
     return {
       title: "Product Not Found | MyHunter",
       description: "The requested product could not be found.",
       alternates: {
-        canonical: `${CLIENT_BASE_URL}/products/${params.id}`,
+        canonical: `${CLIENT_BASE_URL}/products/${resolvedParams.id}`,
       },
     };
   }
@@ -111,7 +114,7 @@ export async function generateMetadata({
       type: "website",
       locale: "ka_GE",
       siteName: "MyHunter",
-      url: `${CLIENT_BASE_URL}/products/${params.id}`,
+      url: `${CLIENT_BASE_URL}/products/${resolvedParams.id}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -120,7 +123,7 @@ export async function generateMetadata({
       images: imageUrl ? [imageUrl] : undefined,
     },
     alternates: {
-      canonical: `${CLIENT_BASE_URL}/products/${params.id}`,
+      canonical: `${CLIENT_BASE_URL}/products/${resolvedParams.id}`,
     },
   };
 }
@@ -128,9 +131,10 @@ export async function generateMetadata({
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: ProductRouteParams;
 }) {
-  const product = await fetchProduct(params.id);
+  const resolvedParams = await params;
+  const product = await fetchProduct(resolvedParams.id);
 
   if (!product) {
     notFound();

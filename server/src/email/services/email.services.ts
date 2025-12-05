@@ -55,6 +55,8 @@ export class EmailService {
   async sendOrderConfirmationEmail(orderData: {
     customerEmail: string;
     orderId: string;
+    displayOrderId?: string;
+    orderLink?: string;
     customerName: string;
     items: Array<{
       name: string;
@@ -76,9 +78,11 @@ export class EmailService {
     paymentMethod: string;
     orderDate: string;
   }) {
+    const orderIdentifier = orderData.displayOrderId || orderData.orderId;
+
     console.log('🚀 ATTEMPTING TO SEND CUSTOMER EMAIL:', {
       customerEmail: orderData.customerEmail,
-      orderId: orderData.orderId,
+      orderId: orderIdentifier,
       customerName: orderData.customerName,
     });
 
@@ -103,7 +107,7 @@ export class EmailService {
       const mailOptions = {
         from: emailConfig.from,
         to: orderData.customerEmail,
-        subject: `შეკვეთის დადასტურება - #${orderData.orderId}`,
+        subject: `შეკვეთის დადასტურება - #${orderIdentifier}`,
         html: `
         <!DOCTYPE html>
         <html>
@@ -162,7 +166,7 @@ export class EmailService {
               <table style="width: 100%; margin-bottom: 15px;">
                 <tr>
                   <td style="padding: 8px 0; font-weight: bold;">შეკვეთის ნომერი:</td>
-                  <td style="padding: 8px 0; color: #2d8a3e; font-weight: bold;">#${orderData.orderId}</td>
+                  <td style="padding: 8px 0; color: #2d8a3e; font-weight: bold;">#${orderIdentifier}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; font-weight: bold;">თარიღი:</td>
@@ -173,6 +177,13 @@ export class EmailService {
                   <td style="padding: 8px 0;">${orderData.paymentMethod}</td>
                 </tr>
               </table>
+              ${
+                orderData.orderLink
+                  ? `<div style="text-align: center; margin-top: 15px;">
+                    <a href="${orderData.orderLink}" style="display: inline-block; background-color: #4b5320; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">შეკვეთის ნახვა ვებგვერდზე</a>
+                  </div>`
+                  : ''
+              }
             </div>
 
             <!-- Items Table -->
@@ -224,9 +235,9 @@ export class EmailService {
             <div class="contact-section" style="background-color: #4b5320; color: white; padding: 20px; border-radius: 8px; text-align: center;">
               <h3 style="margin: 0 0 15px 0;">📞 კონტაქტი</h3>
               <p style="margin: 0 0 8px 0;">კითხვების შემთხვევაში დაგვიკავშირდით:</p>
-              <p style="margin: 0 0 8px 0;">📧 info@myhunter.ge</p>
-              <p style="margin: 0 0 8px 0;">📱 +995 XXX XXX XXX</p>
-              <p style="margin: 0;">🌐 www.myhunter.ge</p>
+              <p style="margin: 0 0 8px 0;">📧 <a href="mailto:ssbbmarket@gmail.com" style="color: #fff; text-decoration: underline;">ssbbmarket@gmail.com</a></p>
+              <p style="margin: 0 0 8px 0;">📱 <a href="tel:+995577027700" style="color: #fff; text-decoration: underline;">+995 577027700</a></p>
+              <p style="margin: 0;">🌐 <a href="https://myhunter.ge" style="color: #fff; text-decoration: underline;">myhunter.ge</a></p>
             </div>
 
             <!-- Footer -->
@@ -252,6 +263,8 @@ export class EmailService {
 
   async sendAdminOrderNotification(orderData: {
     orderId: string;
+    displayOrderId?: string;
+    orderLink?: string;
     customerName: string;
     customerEmail: string;
     customerPhone: string;
@@ -275,8 +288,10 @@ export class EmailService {
     paymentMethod: string;
     orderDate: string;
   }) {
+    const orderIdentifier = orderData.displayOrderId || orderData.orderId;
+
     console.log('🚀 ATTEMPTING TO SEND ADMIN EMAIL:', {
-      orderId: orderData.orderId,
+      orderId: orderIdentifier,
       customerEmail: orderData.customerEmail,
       adminEmail: process.env.ADMIN_EMAIL,
     });
@@ -305,7 +320,7 @@ export class EmailService {
       const mailOptions = {
         from: emailConfig.from,
         to: adminEmail,
-        subject: `🛒 ახალი შეკვეთა - #${orderData.orderId}`,
+        subject: `🛒 ახალი შეკვეთა - #${orderIdentifier}`,
         html: `
         <!DOCTYPE html>
         <html>
@@ -351,7 +366,7 @@ export class EmailService {
             <!-- Order Alert -->
             <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 25px; border-radius: 5px;">
               <h3 style="color: #856404; margin: 0 0 10px 0;">⚡ URGENT: ახალი შეკვეთა მიღებულია</h3>
-              <p style="margin: 0; color: #856404;">შეკვეთა #${orderData.orderId} დაუყოვნებლივ დამუშავებას ითხოვს</p>
+              <p style="margin: 0; color: #856404;">შეკვეთა #${orderIdentifier} დაუყოვნებლივ დამუშავებას ითხოვს</p>
             </div>
 
             <!-- Customer Info -->
@@ -370,7 +385,7 @@ export class EmailService {
               <table style="width: 100%; margin-bottom: 15px; background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
                 <tr>
                   <td style="padding: 5px 0; font-weight: bold;">შეკვეთის ნომერი:</td>
-                  <td style="padding: 5px 0; color: #e74c3c; font-weight: bold;">#${orderData.orderId}</td>
+                  <td style="padding: 5px 0; color: #e74c3c; font-weight: bold;">#${orderIdentifier}</td>
                 </tr>
                 <tr>
                   <td style="padding: 5px 0; font-weight: bold;">თარიღი:</td>
@@ -421,7 +436,14 @@ export class EmailService {
             <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; border-radius: 5px; text-align: center;">
               <h3 style="color: #721c24; margin: 0 0 10px 0;">⚠️ მოქმედება საჭიროა</h3>
               <p style="margin: 0 0 15px 0; color: #721c24;">გთხოვთ დაუყოვნებლივ დაამუშავოთ ეს შეკვეთა</p>
-              <p style="margin: 0; color: #721c24; font-weight: bold;">შეკვეთა: #${orderData.orderId}</p>
+              <p style="margin: 0; color: #721c24; font-weight: bold;">შეკვეთა: #${orderIdentifier}</p>
+              ${
+                orderData.orderLink
+                  ? `<div style="margin-top: 15px;">
+                    <a href="${orderData.orderLink}" style="display: inline-block; background-color: #dc3545; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold;">გახსენი შეკვეთა</a>
+                  </div>`
+                  : ''
+              }
             </div>
 
           </div>

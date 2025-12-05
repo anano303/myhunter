@@ -85,30 +85,30 @@ export function OrdersList() {
         <>
           <div className="orders-table-wrapper">
             <table className="orders-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>USER</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                {/* <th>DELIVERY TYPE</th> */}
-                <th>PAID</th>
-                <th>DELIVERED</th>
-                <th className="orders-actions">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order: Order) => {
-                const orderDisplayNumber =
-                  order.orderNumber || order.externalOrderId || order._id;
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>USER</th>
+                  <th>DATE</th>
+                  <th>TOTAL</th>
+                  {/* <th>DELIVERY TYPE</th> */}
+                  <th>PAID</th>
+                  <th>DELIVERED</th>
+                  <th className="orders-actions">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order: Order) => {
+                  const orderDisplayNumber =
+                    order.orderNumber || order.externalOrderId || order._id;
 
-                return (
-                  <tr key={order._id}>
-                    <td>#{orderDisplayNumber}</td>
-                    <td>{order.user.email}</td>
-                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td>{order.totalPrice.toFixed(2)}₾</td>
-                    {/* <td>
+                  return (
+                    <tr key={order._id}>
+                      <td>#{orderDisplayNumber}</td>
+                      <td>{order.user.email}</td>
+                      <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                      <td>{order.totalPrice.toFixed(2)}₾</td>
+                      {/* <td>
                     {order.orderItems.some(item => 
                       item.product && String(item.product.deliveryType) === "SELLER"
                     ) ? (
@@ -132,51 +132,55 @@ export function OrdersList() {
                       // </span>
                     )}
                   </td> */}
-                    <td>
-                      {order.status === "cancelled" ? (
-                        <span className="status-badge cancelled">
-                          <XCircle className="icon" />
-                          Cancelled
-                        </span>
-                      ) : order.status === "paid" || order.isPaid ? (
-                        <span className="status-badge success">
-                          <CheckCircle2 className="icon" />
-                          {order.paidAt &&
-                            new Date(order.paidAt).toLocaleDateString()}
-                        </span>
-                      ) : (
-                        <span className="status-badge error">
-                          <XCircle className="icon" />
-                          Not Paid
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      {order.isDelivered ? (
-                        <span className="status-badge success">
-                          <CheckCircle2 className="icon" />
-                          {order.deliveredAt &&
-                            new Date(order.deliveredAt).toLocaleDateString()}
-                        </span>
-                      ) : (
-                        <span className="status-badge error">
-                          <XCircle className="icon" />
-                          Not Delivered
-                        </span>
-                      )}
-                    </td>
-                    <td className="orders-actions">
-                      <Link
-                        href={`/admin/orders/${order._id}`}
-                        className="view-link"
-                      >
-                        Details
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+                      <td>
+                        {order.status === "cancelled" ? (
+                          <span className="status-badge cancelled">
+                            <XCircle className="icon" />
+                            Cancelled
+                          </span>
+                        ) : order.status === "paid" || order.isPaid ? (
+                          <span className="status-badge success">
+                            <CheckCircle2 className="icon" />
+                            {order.paidAt &&
+                              new Date(order.paidAt).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span className="status-badge error">
+                            <XCircle className="icon" />
+                            Not Paid
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        {order.isDelivered ? (
+                          <span className="status-badge success">
+                            <CheckCircle2 className="icon" />
+                            {order.deliveredAt &&
+                              new Date(order.deliveredAt).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span className="status-badge error">
+                            <XCircle className="icon" />
+                            Not Delivered
+                          </span>
+                        )}
+                      </td>
+                      <td className="orders-actions">
+                        <Link
+                          href={`/admin/orders/${
+                            order.orderNumber ||
+                            order._id ||
+                            order.externalOrderId
+                          }`}
+                          className="view-link"
+                        >
+                          Details
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
 

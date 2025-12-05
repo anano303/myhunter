@@ -86,7 +86,9 @@ export function OrderReview() {
       });
 
       await clearCart();
-      router.push(`/orders/${response.data._id}`);
+      const nextOrderIdentifier =
+        response.data.orderNumber || response.data._id;
+      router.push(`/orders/${nextOrderIdentifier}`);
     } catch (error) {
       console.log(error);
 

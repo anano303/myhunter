@@ -108,7 +108,8 @@ export async function fetchWithAuth(url: string, config: RequestInit = {}) {
 
           // Special handling for specific error messages
           if (
-            errorData.message === "Invalid order ID." &&
+            typeof errorData.message === "string" &&
+            errorData.message.toLowerCase().includes("invalid order") &&
             url.includes("/orders")
           ) {
             // For orders endpoints with this specific error, we'll pass it through

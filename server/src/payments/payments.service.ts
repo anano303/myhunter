@@ -80,6 +80,62 @@ export class PaymentsService {
       const token = await this.getToken();
       const externalOrderId = uuidv4();
 
+      let orderForRedirect: any = null;
+      try {
+        orderForRedirect = await this.ordersService.findById(
+          data.product.productId,
+        );
+      } catch (error) {
+        console.warn(
+          '⚠️ Could not fetch order while preparing BOG payment redirect URLs:',
+          error.message,
+        );
+      }
+
+      const friendlyOrderNumber =
+        orderForRedirect?.orderNumber ||
+        orderForRedirect?.externalOrderId ||
+        orderForRedirect?._id?.toString() ||
+        data.product.productId;
+      const mongoId = orderForRedirect?._id?.toString() || null;
+      const appendOrderParams = (
+        url: string | undefined,
+        defaultUrl: string,
+      ): string => {
+        const ensureStringUrl = url?.trim()?.length ? url : defaultUrl;
+
+        try {
+          const parsed = new URL(ensureStringUrl);
+          if (friendlyOrderNumber) {
+            parsed.searchParams.set('orderId', friendlyOrderNumber);
+          }
+          if (mongoId && friendlyOrderNumber !== mongoId) {
+            parsed.searchParams.set('dbId', mongoId);
+          }
+          return parsed.toString();
+        } catch {
+          const separator = ensureStringUrl.includes('?') ? '&' : '?';
+          const params = new URLSearchParams();
+          if (friendlyOrderNumber) {
+            params.set('orderId', friendlyOrderNumber);
+          }
+          if (mongoId && friendlyOrderNumber !== mongoId) {
+            params.set('dbId', mongoId);
+          }
+          return `${ensureStringUrl}${separator}${params.toString()}`;
+        }
+      };
+
+      const defaultSuccessUrl =
+        data.successUrl || 'https://myhunter.ge/checkout/success';
+      const defaultFailUrl =
+        data.failUrl || 'https://myhunter.ge/checkout/fail';
+      const successRedirectUrl = appendOrderParams(
+        data.successUrl,
+        defaultSuccessUrl,
+      );
+      const failRedirectUrl = appendOrderParams(data.failUrl, defaultFailUrl);
+
       // Fix floating-point precision issues for BOG API
       const unitPrice = parseFloat(data.product.unitPrice.toFixed(2));
       const totalPrice = parseFloat(data.product.totalPrice.toFixed(2));
@@ -105,9 +161,8 @@ export class PaymentsService {
         payment_method: ['card'],
         ttl: 10,
         redirect_urls: {
-          success:
-            data.successUrl || 'https://myhunter.vercel.app/checkout/success',
-          fail: data.failUrl || 'https://myhunter.vercel.app/checkout/fail',
+          success: successRedirectUrl,
+          fail: failRedirectUrl,
         },
       };
 
@@ -306,8 +361,9 @@ export class PaymentsService {
         order.externalOrderId = externalOrderId;
         order.bogOrderId = bogOrderId;
         await order.save();
+        const displayId = order.orderNumber || order.externalOrderId || orderId;
         console.log(
-          `✅ Updated order ${orderId} with externalOrderId: ${externalOrderId}, bogOrderId: ${bogOrderId}`,
+          `✅ Updated order ${displayId} (mongoId: ${orderId}) with externalOrderId: ${externalOrderId}, bogOrderId: ${bogOrderId}`,
         );
       }
     } catch (error) {
@@ -330,9 +386,15 @@ export class PaymentsService {
         userName: order.user?.name,
       });
 
+      const orderDisplayId =
+        order.orderNumber || order.externalOrderId || order._id.toString();
+      const orderLink = this.buildOrderLink(order);
+
       const orderData = {
         customerEmail: order.user?.email || null,
-        orderId: order._id.toString(),
+        orderId: orderDisplayId || order._id?.toString() || '',
+        displayOrderId: orderDisplayId,
+        orderLink,
         customerName: order.user?.name || 'Customer',
         items:
           order.orderItems?.map((item: any) => ({
@@ -379,8 +441,14 @@ export class PaymentsService {
 
   private async sendAdminNotificationEmail(order: any) {
     try {
+      const orderDisplayId =
+        order.orderNumber || order.externalOrderId || order._id.toString();
+      const orderLink = this.buildOrderLink(order);
+
       const orderData = {
-        orderId: order._id.toString(),
+        orderId: orderDisplayId || order._id?.toString() || '',
+        displayOrderId: orderDisplayId,
+        orderLink,
         customerName: order.user?.name || 'Customer',
         customerEmail: order.user?.email || 'N/A',
         customerPhone: order.shippingDetails?.phoneNumber || 'N/A',
@@ -420,5 +488,21 @@ export class PaymentsService {
       console.error('Error preparing admin notification email:', error.message);
       throw error;
     }
+  }
+
+  private buildOrderLink(order?: any): string | undefined {
+    const baseUrlEnv = process.env.ALLOWED_ORIGINS;
+    const baseUrl = baseUrlEnv?.split(',')[0]?.trim() || 'https://myhunter.ge';
+    const orderIdentifier =
+      typeof order === 'string'
+        ? order
+        : order?.orderNumber || order?._id?.toString();
+    if (!orderIdentifier) {
+      return undefined;
+    }
+    const normalizedBase = baseUrl.endsWith('/')
+      ? baseUrl.slice(0, -1)
+      : baseUrl;
+    return `${normalizedBase}/orders/${orderIdentifier}`;
   }
 }

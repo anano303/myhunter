@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import "./page.css";
@@ -8,16 +8,23 @@ import "./page.css";
 function CheckoutFailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [queryParams, setQueryParams] = useState<{
+    orderId: string | null;
+    dbId: string | null;
+  } | null>(null);
 
   useEffect(() => {
-    const orderIdParam = searchParams.get("orderId");
-    setOrderId(orderIdParam);
+    setQueryParams({
+      orderId: searchParams.get("orderId"),
+      dbId: searchParams.get("dbId"),
+    });
   }, [searchParams]);
 
+  const orderIdentifier = queryParams?.orderId || queryParams?.dbId || null;
+
   const handleRetryPayment = () => {
-    if (orderId) {
-      router.push(`/orders/${orderId}`);
+    if (orderIdentifier) {
+      router.push(`/orders/${orderIdentifier}`);
     } else {
       router.push("/cart");
     }
@@ -49,11 +56,11 @@ function CheckoutFailContent() {
           დაგვიკავშირდით მხარდაჭერის სამსახურთან.
         </p>
 
-        {orderId && (
+        {(queryParams?.orderId || queryParams?.dbId) && (
           <div className="order-info">
             <p className="order-info-text">
               <span className="order-info-label">შეკვეთის ნომერი:</span>{" "}
-              {orderId}
+              {queryParams?.orderId || queryParams?.dbId}
             </p>
           </div>
         )}

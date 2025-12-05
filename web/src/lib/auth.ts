@@ -3,9 +3,9 @@
 import { User } from "@/types";
 
 // Token storage keys
-const ACCESS_TOKEN_KEY = "myhunter_access_token";
-const REFRESH_TOKEN_KEY = "myhunter_refresh_token";
-const USER_DATA_KEY = "myhunter_user_data";
+const ACCESS_TOKEN_KEY = "soulart_access_token";
+const REFRESH_TOKEN_KEY = "soulart_refresh_token";
+const USER_DATA_KEY = "soulart_user_data";
 
 // Store tokens in localStorage (access token) and memory (refresh token)
 // We avoid storing refresh token in localStorage for better security

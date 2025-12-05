@@ -284,12 +284,24 @@ export class OrdersService {
   }
 
   async findById(id: string): Promise<OrderDocument> {
-    if (!Types.ObjectId.isValid(id))
-      throw new BadRequestException('Invalid order ID.');
+    let query: Record<string, unknown> | null = null;
+
+    if (Types.ObjectId.isValid(id)) {
+      query = { _id: id };
+    } else {
+      const normalized = this.normalizeOrderNumber(id);
+      if (normalized) {
+        query = { orderNumber: normalized };
+      }
+    }
+
+    if (!query) {
+      throw new BadRequestException('Invalid order identifier.');
+    }
 
     const order = await this.orderModel
-      .findById(id)
-      .populate('user', 'name email');
+      .findOne(query)
+      .populate('user', 'name email firstName lastName');
 
     if (!order) throw new NotFoundException('No order with given ID.');
 
@@ -810,9 +822,14 @@ export class OrdersService {
    */
   private async sendOrderConfirmationEmail(order: any) {
     try {
+      const orderDisplayId = this.getOrderDisplayId(order);
+      const orderLink = this.buildOrderLink(order);
+
       const orderData = {
         customerEmail: order.user?.email || order.shippingDetails?.email || '',
-        orderId: order._id.toString(),
+        orderId: orderDisplayId || order._id?.toString() || '',
+        displayOrderId: orderDisplayId,
+        orderLink,
         customerName:
           order.user?.name ||
           `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim() ||
@@ -871,8 +888,13 @@ export class OrdersService {
    */
   private async sendAdminNotificationEmail(order: any) {
     try {
+      const orderDisplayId = this.getOrderDisplayId(order);
+      const orderLink = this.buildOrderLink(order);
+
       const orderData = {
-        orderId: order._id.toString(),
+        orderId: orderDisplayId || order._id?.toString() || '',
+        displayOrderId: orderDisplayId,
+        orderLink,
         customerName:
           order.user?.name ||
           `${order.shippingDetails?.firstName || ''} ${order.shippingDetails?.lastName || ''}`.trim() ||
@@ -932,14 +954,8 @@ export class OrdersService {
     order?: OrderDocument;
   }> {
     try {
-      // Find order by ID
-      const order = await this.orderModel
-        .findById(orderId)
-        .populate('user', 'name email firstName lastName');
-
-      if (!order) {
-        throw new NotFoundException(`Order with ID ${orderId} not found`);
-      }
+      // Find order by friendly identifier or ObjectId
+      const order = await this.findById(orderId);
 
       // If already paid, return success
       if (order.isPaid) {
@@ -1099,5 +1115,37 @@ export class OrdersService {
       );
       throw error;
     }
+  }
+
+  private getOrderDisplayId(order: any): string {
+    return (
+      order?.orderNumber ||
+      order?.externalOrderId ||
+      order?._id?.toString() ||
+      ''
+    );
+  }
+
+  private getClientBaseUrl(): string {
+    const origins = process.env.ALLOWED_ORIGINS;
+    if (origins && origins.length > 0) {
+      return origins.split(',')[0].trim();
+    }
+    return 'https://myhunter.ge';
+  }
+
+  private buildOrderLink(order: any): string | undefined {
+    const baseUrl = this.getClientBaseUrl();
+    const orderIdentifier =
+      typeof order === 'string'
+        ? order
+        : order?.orderNumber || order?._id?.toString();
+    if (!baseUrl || !orderIdentifier) {
+      return undefined;
+    }
+    const normalizedBase = baseUrl.endsWith('/')
+      ? baseUrl.slice(0, -1)
+      : baseUrl;
+    return `${normalizedBase}/orders/${orderIdentifier}`;
   }
 }

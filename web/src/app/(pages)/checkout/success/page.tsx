@@ -1,18 +1,65 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import type { Order } from "@/types/order";
 import "./page.css";
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [queryParams, setQueryParams] = useState<{
+    orderId: string | null;
+    dbId: string | null;
+  } | null>(null);
 
   useEffect(() => {
-    const orderIdParam = searchParams.get("orderId");
-    setOrderId(orderIdParam);
+    setQueryParams({
+      orderId: searchParams.get("orderId"),
+      dbId: searchParams.get("dbId"),
+    });
   }, [searchParams]);
+
+  const orderIdentifier = queryParams?.orderId || queryParams?.dbId || null;
+
+  const {
+    data: order,
+    isLoading: isLoadingOrder,
+    isError,
+  } = useQuery<Order>({
+    queryKey: ["checkout-success-order", orderIdentifier],
+    enabled: Boolean(orderIdentifier),
+    queryFn: async () => {
+      if (!orderIdentifier) {
+        throw new Error("Order ID is required");
+      }
+      const response = await fetchWithAuth(`/orders/${orderIdentifier}`);
+      return response.json();
+    },
+    retry: 1,
+  });
+
+  const displayOrderNumber =
+    order?.orderNumber ||
+    queryParams?.orderId ||
+    order?.externalOrderId ||
+    order?._id ||
+    queryParams?.dbId;
+
+  const linkIdentifier =
+    order?.orderNumber ||
+    queryParams?.orderId ||
+    order?._id ||
+    queryParams?.dbId ||
+    null;
+
+  const orderDetailsHref = linkIdentifier
+    ? `/orders/${linkIdentifier}`
+    : undefined;
+
+  const showQueryInitialized = Boolean(queryParams);
 
   return (
     <div className="checkout-success-container">
@@ -27,19 +74,29 @@ function CheckoutSuccessContent() {
 
           <p className="success-description"> მადლობა შეძენისთვის ! </p>
 
-          {orderId && (
+          {(displayOrderNumber || orderIdentifier) && (
             <div className="order-info">
               <p className="order-info-text">
                 <span className="order-info-label">შეკვეთის ნომერი:</span>{" "}
-                {orderId}
+                {!showQueryInitialized || isLoadingOrder
+                  ? "იტვირთება..."
+                  : displayOrderNumber}
               </p>
+              {isError && (
+                <p className="order-info-text order-info-hint">
+                  დროებით ვაჩვენებთ ტექნიკურ ნომერს. დეტალურად იხილე ჩემი
+                  შეკვეთებში.
+                </p>
+              )}
             </div>
           )}
 
           <div className="buttons-container">
-            <Link href={`/orders/${orderId}`} className="btn-primary">
-              შეკვეთის დეტალების ნახვა
-            </Link>
+            {orderDetailsHref && showQueryInitialized && (
+              <Link href={orderDetailsHref} className="btn-primary">
+                შეკვეთის დეტალების ნახვა
+              </Link>
+            )}
 
             <Link href="/shop" className="btn-secondary">
               სხვა პროდუქტების ნახვა

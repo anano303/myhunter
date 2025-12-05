@@ -15,7 +15,7 @@ export const organizationSchema = {
   },
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+995-XXX-XXX-XXX", // შეცვალეთ რეალური ნომრით
+    telephone: "+995577027700", // შეცვალეთ რეალური ნომრით
     contactType: "customer service",
     availableLanguage: ["Georgian", "English"],
   },
@@ -49,7 +49,7 @@ export const storeSchema = {
   name: "MyHunter",
   description: "სანადირო და სათევზაო აღჭურვილობის მაღაზია",
   url: "https://myhunter.ge",
-  telephone: "+995-XXX-XXX-XXX", // შეცვალეთ რეალური ნომრით
+  telephone: "+995577027700", // შეცვალეთ რეალური ნომრით
   address: {
     "@type": "PostalAddress",
     streetAddress: "თქვენი მისამართი", // შეცვალეთ რეალური მისამართით

@@ -5,9 +5,10 @@ import { useLanguage } from "@/hooks/LanguageContext";
 interface BOGButtonProps {
   orderId: string;
   amount: number;
+  orderNumber?: string;
 }
 
-export function BOGButton({ orderId, amount }: BOGButtonProps) {
+export function BOGButton({ orderId, amount, orderNumber }: BOGButtonProps) {
   const { t } = useLanguage();
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -35,6 +36,23 @@ export function BOGButton({ orderId, amount }: BOGButtonProps) {
 
       const order = await orderResponse.json();
 
+      const friendlyOrderNumber =
+        orderNumber || order.orderNumber || order.externalOrderId || orderId;
+      const canonicalOrderId = friendlyOrderNumber || orderId;
+
+      // Prepare redirect URLs with canonical and fallback IDs
+      const queryParams = new URLSearchParams({ orderId: canonicalOrderId });
+      if (friendlyOrderNumber && orderId && friendlyOrderNumber !== orderId) {
+        queryParams.set("dbId", orderId);
+      }
+
+      const successUrl = `${
+        window.location.origin
+      }/checkout/success?${queryParams.toString()}`;
+      const failUrl = `${
+        window.location.origin
+      }/checkout/fail?${queryParams.toString()}`;
+
       // Create payment request
       const paymentData = {
         customer: {
@@ -52,8 +70,8 @@ export function BOGButton({ orderId, amount }: BOGButtonProps) {
           quantity: 1,
           totalPrice: amount,
         },
-        successUrl: `${window.location.origin}/checkout/success?orderId=${orderId}`,
-        failUrl: `${window.location.origin}/checkout/fail?orderId=${orderId}`,
+        successUrl,
+        failUrl,
       };
 
       const response = await fetch(

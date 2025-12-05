@@ -132,6 +132,13 @@
   font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
 }
 
+.order-info-hint {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #c4b892;
+  opacity: 0.8;
+}
+
 .order-info-label {
   font-weight: 600;
   color: #f48c06;
