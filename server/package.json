@@ -32,7 +32,8 @@
     "check-user-profiles": "ts-node -r tsconfig-paths/register src/scripts/check-user-profiles.ts",
     "migrate-profile-images": "ts-node -r tsconfig-paths/register src/scripts/migrate-profile-images.ts",
     "migrate-cloudinary": "ts-node -r tsconfig-paths/register src/scripts/cloudinary-migration.ts",
-    "migrate-all-cloudinary": "ts-node -r tsconfig-paths/register src/scripts/migrate-all-cloudinary.ts"
+    "migrate-all-cloudinary": "ts-node -r tsconfig-paths/register src/scripts/migrate-all-cloudinary.ts",
+    "migrate:order-numbers": "ts-node -r tsconfig-paths/register src/scripts/migrate-order-numbers.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.8",

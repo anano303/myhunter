@@ -7,6 +7,8 @@ import "./history.css";
 // Define Order type directly to avoid potential circular imports
 interface OrderType {
   _id: string;
+  orderNumber?: string;
+  externalOrderId?: string;
   createdAt: string;
   totalPrice: number;
   isPaid: boolean;
@@ -16,7 +18,7 @@ interface OrderType {
   orderItems: Array<{
     _id: string;
     product?: {
-      deliveryType?: "SELLER" | "SoulArt";
+      deliveryType?: "SELLER" | "myhunter";
       minDeliveryDays?: number;
       maxDeliveryDays?: number;
     };
@@ -57,12 +59,15 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
-            <tr key={order._id}>
-              <td className="order-id">#{order._id.substring(0, 8)}</td>
-              <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-              <td>{order.totalPrice.toFixed(2)} ₾ </td>
-              {/* <td>
+          {orders.map((order) => {
+            const displayOrderNumber =
+              order.orderNumber || order.externalOrderId || order._id;
+            return (
+              <tr key={order._id}>
+                <td className="order-id">#{displayOrderNumber}</td>
+                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td>{order.totalPrice.toFixed(2)} ₾ </td>
+                {/* <td>
                 {order.orderItems.some(
                   (item) =>
                     item.product &&
@@ -73,47 +78,48 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
                     მიწოდება ავტორისგან
                   </span>
                 ) : (
-                  <span className="badge delivery-badge soulart">
+                  <span className="badge delivery-badge myhunter">
                     <Truck size={14} />
-                    SoulArt-ის კურიერი
+                    myhunter-ის კურიერი
                   </span>
                 )}
               </td> */}
-              <td>
-                {order.isPaid ? (
-                  <span className="badge badge-green">
-                    <CheckCircle2 className="icon" />
-                    {order.paidAt &&
-                      new Date(order.paidAt).toLocaleDateString()}
-                  </span>
-                ) : (
-                  <span className="badge badge-red">
-                    <XCircle className="icon" />
-                    Not Paid
-                  </span>
-                )}
-              </td>
-              <td>
-                {order.isDelivered ? (
-                  <span className="badge badge-default">
-                    <CheckCircle2 className="icon" />
-                    {order.deliveredAt &&
-                      new Date(order.deliveredAt).toLocaleDateString()}
-                  </span>
-                ) : (
-                  <span className="badge badge-gray">
-                    <XCircle className="icon" />
-                    Not Delivered
-                  </span>
-                )}
-              </td>
-              <td className="actions">
-                <Link href={`/orders/${order._id}`} className="view-details">
-                  View Details
-                </Link>
-              </td>
-            </tr>
-          ))}
+                <td>
+                  {order.isPaid ? (
+                    <span className="badge badge-green">
+                      <CheckCircle2 className="icon" />
+                      {order.paidAt &&
+                        new Date(order.paidAt).toLocaleDateString()}
+                    </span>
+                  ) : (
+                    <span className="badge badge-red">
+                      <XCircle className="icon" />
+                      Not Paid
+                    </span>
+                  )}
+                </td>
+                <td>
+                  {order.isDelivered ? (
+                    <span className="badge badge-default">
+                      <CheckCircle2 className="icon" />
+                      {order.deliveredAt &&
+                        new Date(order.deliveredAt).toLocaleDateString()}
+                    </span>
+                  ) : (
+                    <span className="badge badge-gray">
+                      <XCircle className="icon" />
+                      Not Delivered
+                    </span>
+                  )}
+                </td>
+                <td className="actions">
+                  <Link href={`/orders/${order._id}`} className="view-details">
+                    View Details
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

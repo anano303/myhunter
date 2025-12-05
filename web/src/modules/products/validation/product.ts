@@ -20,7 +20,7 @@ export interface ProductFormData {
   countInStock: number;
   images: Array<File | string>;
   brandLogo?: File | string;
-  deliveryType?: "SELLER" | "SoulArt";
+  deliveryType?: "SELLER" | "myhunter";
   minDeliveryDays?: number | string;
   maxDeliveryDays?: number | string;
   variants?: {
@@ -51,7 +51,7 @@ export const productSchema = z.object({
   countInStock: z.coerce.number().min(0),
   images: z.array(fileSchema).min(1),
   brandLogo: fileSchema.optional().nullable().or(z.literal("")),
-  deliveryType: z.enum(["SELLER", "SoulArt"]).optional().nullable(),
+  deliveryType: z.enum(["SELLER", "myhunter"]).optional().nullable(),
   minDeliveryDays: z.number().optional().nullable(),
   maxDeliveryDays: z.number().optional().nullable(),
 });

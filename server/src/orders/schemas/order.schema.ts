@@ -105,6 +105,9 @@ export class Order {
   @Prop({ required: false, unique: true, sparse: true })
   externalOrderId!: string;
 
+  @Prop({ required: false, unique: true })
+  orderNumber!: string;
+
   @Prop({ required: false })
   bogOrderId!: string; // BOG's internal order ID for API queries
 
@@ -127,3 +130,16 @@ export class Order {
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
+
+@Schema({ collection: 'order_counters' })
+export class OrderNumberCounter {
+  @Prop({ required: true, unique: true })
+  key!: string;
+
+  @Prop({ required: true, default: 0 })
+  value!: number;
+}
+
+export type OrderNumberCounterDocument = OrderNumberCounter & mongoose.Document;
+export const OrderNumberCounterSchema =
+  SchemaFactory.createForClass(OrderNumberCounter);

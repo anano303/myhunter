@@ -100,8 +100,8 @@ export function CreateProductForm({
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
   const [availableColors, setAvailableColors] = useState<string[]>([]);
 
-  const [deliveryType, setDeliveryType] = useState<"SELLER" | "SoulArt">(
-    "SoulArt"
+  const [deliveryType, setDeliveryType] = useState<"SELLER" | "myhunter">(
+    "myhunter"
   );
   const [minDeliveryDays, setMinDeliveryDays] = useState("");
   const [maxDeliveryDays, setMaxDeliveryDays] = useState("");
@@ -501,7 +501,7 @@ export function CreateProductForm({
       setHashtagsInput(hashtagsText);
 
       if (initialData.deliveryType) {
-        setDeliveryType(initialData.deliveryType as "SELLER" | "SoulArt");
+        setDeliveryType(initialData.deliveryType as "SELLER" | "myhunter");
       }
       if (initialData.minDeliveryDays) {
         setMinDeliveryDays(initialData.minDeliveryDays.toString());
@@ -653,7 +653,7 @@ export function CreateProductForm({
     setSelectedSizes([]);
     setSelectedColors([]);
 
-    setDeliveryType("SoulArt");
+    setDeliveryType("myhunter");
     setMinDeliveryDays("");
     setMaxDeliveryDays("");
     setDiscountPercentage("");
@@ -1718,11 +1718,11 @@ export function CreateProductForm({
               <input
                 type="radio"
                 name="deliveryType"
-                value="SoulArt"
-                checked={deliveryType === "SoulArt"}
-                onChange={() => setDeliveryType("SoulArt")}
+                value="myhunter"
+                checked={deliveryType === "myhunter"}
+                onChange={() => setDeliveryType("myhunter")}
               />
-              <span>SoulArt მიწოდება</span>
+              <span>myhunter მიწოდება</span>
             </label>
             <label>
               <input

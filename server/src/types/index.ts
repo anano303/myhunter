@@ -61,7 +61,7 @@ export interface Product {
   updatedAt: string;
   status: ProductStatus;
   rejectionReason?: string;
-  deliveryType?: 'SELLER' | 'SoulArt'; // Corrected from 'SOULART' to 'SoulArt'
+  deliveryType?: 'SELLER' | 'myhunter'; // Corrected from 'myhunter' to 'myhunter'
   minDeliveryDays?: number;
   maxDeliveryDays?: number;
   videoDescription?: string; // YouTube embed code or URL

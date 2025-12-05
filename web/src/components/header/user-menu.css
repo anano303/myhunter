@@ -18,7 +18,9 @@
   background-color: rgba(244, 140, 6, 0.1);
   color: #e6cd9f;
 }
-
+.logout-button {
+  max-width: 94%;
+}
 .icon {
   font-size: 14px;
   font-weight: 500;

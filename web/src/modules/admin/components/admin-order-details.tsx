@@ -14,7 +14,8 @@ import { Color, AgeGroupItem } from "@/types";
 import "./AdminOrderDetails.css";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 interface AdminOrderDetailsProps {
   order: Order;
@@ -24,6 +25,8 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   const { toast } = useToast();
   const router = useRouter();
   const { language, t } = useLanguage();
+  const displayOrderNumber =
+    order.orderNumber || order.externalOrderId || order._id;
 
   // Fetch all colors for proper nameEn support
   const { data: availableColors = [] } = useQuery<Color[]>({
@@ -97,7 +100,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
     (item) => item.product && String(item.product.deliveryType) === "SELLER"
   );
 
-  const soulartDeliveryItems = order.orderItems.filter(
+  const myhunterDeliveryItems = order.orderItems.filter(
     (item) => !item.product || String(item.product.deliveryType) !== "SELLER"
   );
 
@@ -120,7 +123,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
     <div className="admin-order-details">
       <div className="headerOrders">
         {" "}
-        <h1>{t("adminOrders.orderNumber", { id: order._id })}</h1>
+        <h1>{t("adminOrders.orderNumber", { id: displayOrderNumber })}</h1>
         <div className="status">
           <span
             className={`badge ${
@@ -228,7 +231,11 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                         src={item.image}
                         alt={getDisplayName(item)}
                         className="item-image"
-                        style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "cover",
+                        }}
                       />
                     ) : (
                       <Image
@@ -288,20 +295,24 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 ))}
               </div>
             )}
-            {soulartDeliveryItems.length > 0 && (
+            {myhunterDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 <div className="delivery-group-header">
                   <Truck size={18} />
-                  {/* <h3>SoulArt-ის კურიერი</h3> */}
+                  {/* <h3>MyHunter-ის კურიერი</h3> */}
                 </div>{" "}
-                {soulartDeliveryItems.map((item) => (
+                {myhunterDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
                     {isCloudinaryImage(item.image) ? (
                       <img
                         src={item.image}
                         alt={getDisplayName(item)}
                         className="item-image"
-                        style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "cover",
+                        }}
                       />
                     ) : (
                       <Image
@@ -352,7 +363,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
             )}{" "}
             {/* If there are no delivery type groups, show items normally */}
             {sellerDeliveryItems.length === 0 &&
-              soulartDeliveryItems.length === 0 &&
+              myhunterDeliveryItems.length === 0 &&
               order.orderItems.map((item) => (
                 <div key={item.productId} className="order-item">
                   <Image

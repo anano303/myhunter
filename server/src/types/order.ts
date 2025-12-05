@@ -43,6 +43,7 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
   externalOrderId: string; // Optional field for external order ID
+  orderNumber?: string;
   status: 'pending' | 'paid' | 'delivered' | 'cancelled';
   statusReason?: string;
   stockReservationExpires?: string;

@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrdersController } from './controller/orders.controller';
-import { Order, OrderSchema } from './schemas/order.schema';
+import {
+  Order,
+  OrderSchema,
+  OrderNumberCounter,
+  OrderNumberCounterSchema,
+} from './schemas/order.schema';
 import { OrdersService } from './services/orders.service';
 import { StockReservationService } from './services/stock-reservation.service';
 import { ProductsModule } from '@/products/products.module';
@@ -13,6 +18,10 @@ import { EmailModule } from '@/email/email.module';
       {
         name: Order.name,
         schema: OrderSchema,
+      },
+      {
+        name: OrderNumberCounter.name,
+        schema: OrderNumberCounterSchema,
       },
     ]),
     ProductsModule, // This will make the Product model available in the OrdersService

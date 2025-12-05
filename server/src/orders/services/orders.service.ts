@@ -9,7 +9,11 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types, ClientSession } from 'mongoose';
 import { PaymentResult } from 'src/interfaces';
-import { Order, OrderDocument } from '../schemas/order.schema';
+import {
+  Order,
+  OrderDocument,
+  OrderNumberCounter,
+} from '../schemas/order.schema';
 import { Product } from '../../products/schemas/product.schema';
 import { ProductsService } from '@/products/services/products.service';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -21,15 +25,79 @@ import axios from 'axios';
 @Injectable()
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
+  private static readonly ORDER_NUMBER_PREFIX = 'SSBB';
+  private static readonly ORDER_NUMBER_PAD_LENGTH = 5;
 
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(OrderNumberCounter.name)
+    private orderNumberCounterModel: Model<OrderNumberCounter>,
     private productsService: ProductsService,
     @InjectConnection() private connection: Connection,
     private emailService: EmailService,
     private configService: ConfigService,
   ) {}
+
+  private async generateOrderNumber(session: ClientSession): Promise<string> {
+    const counter = await this.orderNumberCounterModel.findOneAndUpdate(
+      { key: 'order-number' },
+      { $inc: { value: 1 } },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+        session,
+      },
+    );
+
+    const sequence = counter.value;
+    return `${OrdersService.ORDER_NUMBER_PREFIX}${sequence
+      .toString()
+      .padStart(OrdersService.ORDER_NUMBER_PAD_LENGTH, '0')}`;
+  }
+
+  private normalizeOrderNumber(search?: string): string | null {
+    if (!search) {
+      return null;
+    }
+
+    let value = search.trim();
+    if (!value) {
+      return null;
+    }
+
+    value = value.replace(/^#/, '').toUpperCase();
+
+    if (!value) {
+      return null;
+    }
+
+    if (value.startsWith(OrdersService.ORDER_NUMBER_PREFIX)) {
+      const numericPart = value
+        .slice(OrdersService.ORDER_NUMBER_PREFIX.length)
+        .replace(/[^0-9]/g, '');
+
+      if (!numericPart) {
+        return null;
+      }
+
+      return `${OrdersService.ORDER_NUMBER_PREFIX}${numericPart.padStart(
+        OrdersService.ORDER_NUMBER_PAD_LENGTH,
+        '0',
+      )}`;
+    }
+
+    const digitsOnly = value.replace(/[^0-9]/g, '');
+    if (!digitsOnly) {
+      return null;
+    }
+
+    return `${OrdersService.ORDER_NUMBER_PREFIX}${digitsOnly.padStart(
+      OrdersService.ORDER_NUMBER_PAD_LENGTH,
+      '0',
+    )}`;
+  }
 
   async create(
     orderAttrs: Partial<Order>,
@@ -168,6 +236,8 @@ export class OrdersService {
           }),
         );
 
+        const orderNumber = await this.generateOrderNumber(session);
+
         const createdOrder = await this.orderModel.create(
           [
             {
@@ -180,6 +250,7 @@ export class OrdersService {
               shippingPrice,
               totalPrice,
               externalOrderId,
+              orderNumber,
               stockReservationExpires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes from now
             },
           ],
@@ -193,10 +264,19 @@ export class OrdersService {
     }
   }
 
-  async findAll(): Promise<OrderDocument[]> {
-    // Sort by createdAt in descending order (newest first)
+  async findAll(orderNumber?: string): Promise<OrderDocument[]> {
+    const filter: Record<string, unknown> = {};
+
+    if (orderNumber) {
+      const normalized = this.normalizeOrderNumber(orderNumber);
+      if (!normalized) {
+        return [];
+      }
+      filter['orderNumber'] = normalized;
+    }
+
     const orders = await this.orderModel
-      .find()
+      .find(filter)
       .populate('user', 'name email')
       .sort({ createdAt: -1 });
 

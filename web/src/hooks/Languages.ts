@@ -267,7 +267,7 @@ export const TRANSLATIONS: Translations = {
     about: {
       title: "ჩვენს შესახებ",
       description:
-        "SoulArt არის პლატფორმა, რომელიც აერთიანებს მხატვრებს და ხელოვნების მოყვარულებს. ჩვენი მიზანია შევქმნათ სივრცე, სადაც შეძლებთ გაყიდოთ და შეიძინოთ უნიკალური ხელოვნების ნიმუშები, შექმნათ პირადი გალერეა და გახდეთ კოლექციონერი ან მხატვარი.",
+        "myhunter არის პლატფორმა, რომელიც აერთიანებს მხატვრებს და ხელოვნების მოყვარულებს. ჩვენი მიზანია შევქმნათ სივრცე, სადაც შეძლებთ გაყიდოთ და შეიძინოთ უნიკალური ხელოვნების ნიმუშები, შექმნათ პირადი გალერეა და გახდეთ კოლექციონერი ან მხატვარი.",
       mission: {
         title: "მისია",
         description:
@@ -281,10 +281,10 @@ export const TRANSLATIONS: Translations = {
       vision: {
         title: "ხედვა",
         description:
-          "SoulArt არის პირველი მსგავსი პლატფორმა საქართველოში, რომელიც აერთიანებს ხელოვნების სამყაროს. ჩვენი ხედვაა გავხდეთ ხელოვნების მოყვარულთა და მხატვართა მთავარი ადგილი.",
+          "myhunter არის პირველი მსგავსი პლატფორმა საქართველოში, რომელიც აერთიანებს ხელოვნების სამყაროს. ჩვენი ხედვაა გავხდეთ ხელოვნების მოყვარულთა და მხატვართა მთავარი ადგილი.",
       },
       whyUs: {
-        title: "რატომ SoulArt?",
+        title: "რატომ myhunter?",
         description:
           "საქართველოში მსგავსი პლატფორმა არ არსებობს. ჩვენ ვქმნით უნიკალურ შესაძლებლობას, სადაც ხელოვნება და ტექნოლოგია ერთმანეთს ხვდება.",
       },
@@ -298,9 +298,9 @@ export const TRANSLATIONS: Translations = {
 
     // Seller benefits
     sellerBenefits: {
-      title: "შექმენი შენი პირადი ონლაინ გალერეა Soulart-ზე",
+      title: "შექმენი შენი პირადი ონლაინ გალერეა myhunter-ზე",
       subtitle:
-        "Soulart.ge — პირველი ქართული პლატფორმა ხელოვანებისთვის, სადაც შეგიძლიათ შექმნათ უნიკალური ონლაინ გალერეა და გაყიდოთ თქვენი პროდუქტები მარტივად და კომფორტულად. გახსენით ახალი შესაძლებლობები თქვენი პროდუქტებისთვის!",
+        "myhunter.ge — პირველი ქართული პლატფორმა ხელოვანებისთვის, სადაც შეგიძლიათ შექმნათ უნიკალური ონლაინ გალერეა და გაყიდოთ თქვენი პროდუქტები მარტივად და კომფორტულად. გახსენით ახალი შესაძლებლობები თქვენი პროდუქტებისთვის!",
       benefits: {
         title: "🌟 უპირატესობები ხელოვანებისთვის",
         items: [
@@ -318,13 +318,13 @@ export const TRANSLATIONS: Translations = {
         items: [
           "მიწოდების ტიპს თავად ირჩევთ პროდუქტის ატვირთვისას",
           "პირადი მიწოდების შემთხვევაში - დამატებითი გადასახადი არ არის",
-          "Soulart-ის კურიერის სერვისით სარგებლობისას დაემატება მხოლოდ 4% ლოჯისტიკური საკომისიო",
+          "myhunter-ის კურიერის სერვისით სარგებლობისას დაემატება მხოლოდ 4% ლოჯისტიკური საკომისიო",
           "მიწოდების ვარიანტები ავტომატურად ჩანს თქვენს პანელში და მარტივად იმართება",
           "უსაფრთხო ტრანზაქციები და მყიდველებთან კომუნიკაცია პლატფორმის შიგნით",
         ],
       },
       cta: {
-        text: "✨ დაიწყეთ მოგზაურობა Soulart-ზე და მიეცით თქვენს პროდუქტებს ის აუდიტორია, რომელსაც იმსახურებენ!",
+        text: "✨ დაიწყეთ მოგზაურობა myhunter-ზე და მიეცით თქვენს პროდუქტებს ის აუდიტორია, რომელსაც იმსახურებენ!",
         button: "დარეგისტრირდი ახლავე",
       },
     },
@@ -692,7 +692,7 @@ export const TRANSLATIONS: Translations = {
       tax: "გადასახადი",
       total: "სულ",
       sellerDelivery: "აგზავნის ავტორი",
-      soulartDelivery: "SoulArt-ის კურიერი",
+      myhunterDelivery: "myhunter-ის კურიერი",
       stockReservationExpired:
         "სტოქის რეზერვაცია ვადაგასულია. გთხოვთ, შექმნათ ახალი შეკვეთა.",
       stockReservedUntil: "სტოქი დარეზერვებულია:",
@@ -1043,7 +1043,7 @@ export const TRANSLATIONS: Translations = {
     about: {
       title: "About Us",
       description:
-        "SoulArt is a platform that brings artists and art lovers together. Our goal is to create a space where you can sell and buy unique pieces of art, create your personal gallery, and become a collector or artist.",
+        "myhunter is a platform that brings artists and art lovers together. Our goal is to create a space where you can sell and buy unique pieces of art, create your personal gallery, and become a collector or artist.",
       mission: {
         title: "Mission",
         description:
@@ -1057,10 +1057,10 @@ export const TRANSLATIONS: Translations = {
       vision: {
         title: "Vision",
         description:
-          "SoulArt is the first such platform in Georgia that unites the art world. Our vision is to become the primary destination for art lovers and artists.",
+          "myhunter is the first such platform in Georgia that unites the art world. Our vision is to become the primary destination for art lovers and artists.",
       },
       whyUs: {
-        title: "Why SoulArt?",
+        title: "Why myhunter?",
         description:
           "There is no similar platform in Georgia. We create a unique opportunity where art and technology meet.",
       },
@@ -1384,7 +1384,7 @@ export const TRANSLATIONS: Translations = {
       tax: "Tax",
       total: "Total",
       sellerDelivery: "Ships by Author",
-      soulartDelivery: "SoulArt Courier",
+      myhunterDelivery: "myhunter Courier",
       stockReservationExpired:
         "Stock reservation has expired. Please create a new order.",
       stockReservedUntil: "Stock reserved until:",

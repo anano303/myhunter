@@ -489,7 +489,7 @@ export function ProductsList() {
               </td> */}
               {/* <td className="prd-td">
                 <div className="delivery-info">
-                  <span>{product.deliveryType || "SOULART"}</span>
+                  <span>{product.deliveryType || "myhunter"}</span>
                   {product.deliveryType === "SELLER" &&
                     product.minDeliveryDays &&
                     product.maxDeliveryDays && (

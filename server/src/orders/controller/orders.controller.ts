@@ -30,8 +30,8 @@ export class OrdersController {
 
   @UseGuards(RolesGuard)
   @Get()
-  async getOrders() {
-    return this.ordersService.findAll();
+  async getOrders(@Query('orderNumber') orderNumber?: string) {
+    return this.ordersService.findAll(orderNumber);
   }
 
   @UseGuards(JwtAuthGuard)

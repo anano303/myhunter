@@ -95,7 +95,7 @@ export interface Product {
   updatedAt: string;
   status: ProductStatus;
   rejectionReason?: string;
-  deliveryType?: "SELLER" | "SoulArt";
+  deliveryType?: "SELLER" | "myhunter";
   minDeliveryDays?: number;
   maxDeliveryDays?: number;
   hashtags?: string[]; // Added hashtags for SEO

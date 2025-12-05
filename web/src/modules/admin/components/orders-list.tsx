@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import Link from "next/link";
@@ -11,19 +11,42 @@ import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export function OrdersList() {
   const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [orderNumberFilter, setOrderNumberFilter] = useState("");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["orders", page],
+    queryKey: ["orders", page, orderNumberFilter],
     queryFn: async () => {
-      const response = await fetchWithAuth(`/orders?page=${page}&limit=8`);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: "8",
+      });
+
+      if (orderNumberFilter.trim()) {
+        params.set("orderNumber", orderNumberFilter.trim());
+      }
+
+      const response = await fetchWithAuth(`/orders?${params.toString()}`);
       const data = await response.json();
       console.log("Orders data:", data);
+      const items = Array.isArray(data) ? data : [];
       return {
-        items: Array.isArray(data) ? data : [],
-        pages: Math.ceil((Array.isArray(data) ? data.length : 0) / 8),
+        items,
+        pages: orderNumberFilter ? 1 : Math.ceil(items.length / 8),
       };
     },
   });
+
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPage(1);
+    setOrderNumberFilter(searchInput.trim());
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setOrderNumberFilter("");
+  };
 
   if (isLoading) {
     return (
@@ -32,7 +55,7 @@ export function OrdersList() {
   }
 
   const orders = data?.items || [];
-  const totalPages = data?.pages || 0;
+  const totalPages = orderNumberFilter ? 1 : data?.pages || 0;
   console.log("Rendered orders:", orders);
 
   return (
@@ -40,11 +63,28 @@ export function OrdersList() {
       <div className="orders-header">
         <h1 className="orders-title">Orders</h1>
       </div>
+      <div className="orders-toolbar">
+        <form className="orders-search" onSubmit={handleSearchSubmit}>
+          <input
+            type="text"
+            placeholder="Search by order number (SSBB#####)"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button type="submit">Search</button>
+          {orderNumberFilter && (
+            <button type="button" onClick={handleClearSearch}>
+              Clear
+            </button>
+          )}
+        </form>
+      </div>
       {!orders || orders.length === 0 ? (
         <p>No orders found</p>
       ) : (
         <>
-          <table className="orders-table">
+          <div className="orders-table-wrapper">
+            <table className="orders-table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -58,13 +98,17 @@ export function OrdersList() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order: Order) => (
-                <tr key={order._id}>
-                  <td>#{order._id}</td>
-                  <td>{order.user.email}</td>
-                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td>${order.totalPrice.toFixed(2)}</td>
-                  {/* <td>
+              {orders.map((order: Order) => {
+                const orderDisplayNumber =
+                  order.orderNumber || order.externalOrderId || order._id;
+
+                return (
+                  <tr key={order._id}>
+                    <td>#{orderDisplayNumber}</td>
+                    <td>{order.user.email}</td>
+                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td>{order.totalPrice.toFixed(2)}₾</td>
+                    {/* <td>
                     {order.orderItems.some(item => 
                       item.product && String(item.product.deliveryType) === "SELLER"
                     ) ? (
@@ -82,57 +126,59 @@ export function OrdersList() {
                           ))}
                       </span>
                     ) : (
-                      // <span className="delivery-badge soulart">
+                      // <span className="delivery-badge myhunter">
                       //   <Truck className="icon" />
-                      //   SoulArt-ის კურიერი
+                      //   myhunter-ის კურიერი
                       // </span>
                     )}
                   </td> */}
-                  <td>
-                    {order.status === "cancelled" ? (
-                      <span className="status-badge cancelled">
-                        <XCircle className="icon" />
-                        Cancelled
-                      </span>
-                    ) : order.status === "paid" || order.isPaid ? (
-                      <span className="status-badge success">
-                        <CheckCircle2 className="icon" />
-                        {order.paidAt &&
-                          new Date(order.paidAt).toLocaleDateString()}
-                      </span>
-                    ) : (
-                      <span className="status-badge error">
-                        <XCircle className="icon" />
-                        Not Paid
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {order.isDelivered ? (
-                      <span className="status-badge success">
-                        <CheckCircle2 className="icon" />
-                        {order.deliveredAt &&
-                          new Date(order.deliveredAt).toLocaleDateString()}
-                      </span>
-                    ) : (
-                      <span className="status-badge error">
-                        <XCircle className="icon" />
-                        Not Delivered
-                      </span>
-                    )}
-                  </td>
-                  <td className="orders-actions">
-                    <Link
-                      href={`/admin/orders/${order._id}`}
-                      className="view-link"
-                    >
-                      Details
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      {order.status === "cancelled" ? (
+                        <span className="status-badge cancelled">
+                          <XCircle className="icon" />
+                          Cancelled
+                        </span>
+                      ) : order.status === "paid" || order.isPaid ? (
+                        <span className="status-badge success">
+                          <CheckCircle2 className="icon" />
+                          {order.paidAt &&
+                            new Date(order.paidAt).toLocaleDateString()}
+                        </span>
+                      ) : (
+                        <span className="status-badge error">
+                          <XCircle className="icon" />
+                          Not Paid
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {order.isDelivered ? (
+                        <span className="status-badge success">
+                          <CheckCircle2 className="icon" />
+                          {order.deliveredAt &&
+                            new Date(order.deliveredAt).toLocaleDateString()}
+                        </span>
+                      ) : (
+                        <span className="status-badge error">
+                          <XCircle className="icon" />
+                          Not Delivered
+                        </span>
+                      )}
+                    </td>
+                    <td className="orders-actions">
+                      <Link
+                        href={`/admin/orders/${order._id}`}
+                        className="view-link"
+                      >
+                        Details
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
-          </table>
+            </table>
+          </div>
 
           {totalPages > 1 && (
             <div className="pagination">

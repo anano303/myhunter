@@ -35,7 +35,7 @@ export enum ProductStatus {
 
 export enum DeliveryType {
   SELLER = 'SELLER',
-  SoulArt = 'SoulArt',
+  myhunter = 'myhunter',
 }
 
 export enum MainCategory {
@@ -208,7 +208,7 @@ export class Product {
   @Prop({ type: String })
   rejectionReason?: string;
 
-  @Prop({ type: String, enum: DeliveryType, default: DeliveryType.SoulArt })
+  @Prop({ type: String, enum: DeliveryType, default: DeliveryType.myhunter })
   deliveryType?: DeliveryType;
 
   @Prop({ type: Number })

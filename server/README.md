@@ -112,3 +112,13 @@ Each subcategory can have its own set of attributes (sizes, colors, age groups) 
 ### Product Categorization
 
 Products can be assigned to categories and include attributes like size, color, and age group. The inventory system supports product variants based on these attributes.
+
+## Order number migration
+
+Legacy orders created before December 2025 do not automatically receive the new `SSBB#####` identifiers. Run the dedicated migration script once to backfill formatted numbers and sync the counter used for future orders:
+
+```bash
+npm run migrate:order-numbers
+```
+
+The script walks through every order missing an `orderNumber`, assigns the next sequential value (ordered by `createdAt`), and updates the `order-number` counter so newly created orders continue the sequence without gaps. After it finishes, refresh the admin dashboard to confirm that historic orders (for example the ones originally showing `#693035a8…` etc.) now display the SSBB-prefixed format.

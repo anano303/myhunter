@@ -28,6 +28,8 @@ interface OrderDetailsProps {
 export function OrderDetails({ order }: OrderDetailsProps) {
   const { t, language } = useLanguage();
   const queryClient = useQueryClient();
+  const displayOrderNumber =
+    order.orderNumber || order.externalOrderId || order._id;
 
   // Check payment status mutation
   const checkPaymentMutation = useMutation({
@@ -56,7 +58,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
       // Check after 2 seconds to allow user to see the page first
       const timer = setTimeout(() => {
         // Verify token exists before making the call
-        const token = localStorage.getItem("soulart_access_token");
+        const token = localStorage.getItem("myhunter_access_token");
         if (token) {
           checkPaymentMutation.mutate(order._id);
         } else {
@@ -153,7 +155,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
     (item) => item.product && String(item.product.deliveryType) === "SELLER"
   );
 
-  const soulartDeliveryItems = order.orderItems.filter(
+  const myhunterDeliveryItems = order.orderItems.filter(
     (item) => !item.product || String(item.product.deliveryType) !== "SELLER"
   );
 
@@ -169,7 +171,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
     <div className="order-container">
       <div className="order-header">
         <h1 className="order-title">
-          {t("order.order")} #{order._id}
+          {t("order.order")} #{displayOrderNumber}
         </h1>
         <span className={`order-badge ${orderStatus.className}`}>
           {orderStatus.text}
@@ -315,13 +317,13 @@ export function OrderDetails({ order }: OrderDetailsProps) {
               </div>
             )}
 
-            {soulartDeliveryItems.length > 0 && (
+            {myhunterDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 {/* <div className="delivery-group-header">
                   <Truck className="icon" />
-                  <h3>{t("SoulArt Courier")}</h3>
+                  <h3>{t("myhunter Courier")}</h3>
                 </div> */}
-                {soulartDeliveryItems.map((item) => (
+                {myhunterDeliveryItems.map((item) => (
                   <div
                     key={`${item.productId}-${item.color ?? "c"}-${
                       item.size ?? "s"
