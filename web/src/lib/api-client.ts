@@ -80,9 +80,7 @@ declare global {
 export const setupResponseInterceptors = (
   refreshAuthTokenFn: RefreshAuthTokenFunction
 ): void => {
-  // Clear existing interceptors if any
-  apiClient.interceptors.response.clear();
-
+  // Add response interceptor for automatic token refresh
   apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
@@ -104,7 +102,7 @@ export const setupResponseInterceptors = (
         return Promise.reject(error);
       }
 
-      // If there's no access token or refresh token, reject immediately
+      // If there's no access token, reject immediately
       const token = getAccessToken();
       if (!token) {
         return Promise.reject(error);
@@ -114,11 +112,13 @@ export const setupResponseInterceptors = (
 
       try {
         await refreshAuthTokenFn();
-        // Update the Authorization header with new token
-        originalRequest.headers.Authorization = `Bearer ${getAccessToken()}`;
+
+        // Get new token after refresh and update header
+        const newToken = getAccessToken();
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
         return apiClient(originalRequest);
       } catch (refreshError: unknown) {
-        console.error("❌ Error during refresh:", refreshError);
         // Clear user data in query client to fix UI state
         const queryClient = window.queryClient;
         if (queryClient) {

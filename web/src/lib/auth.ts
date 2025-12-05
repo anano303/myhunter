@@ -23,13 +23,13 @@ export const storeTokens = (accessToken: string, refreshToken: string) => {
     // for when the page is refreshed or app restarts
     sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 
-    // Store in cookies for middleware
+    // Store in cookies for middleware (30 days to match refresh token)
     document.cookie = `access_token=${accessToken}; path=/; max-age=${
-      7 * 24 * 60 * 60
-    }`; // 7 days
+      30 * 24 * 60 * 60
+    }`; // 30 days
     document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${
-      7 * 24 * 60 * 60
-    }`; // 7 days
+      30 * 24 * 60 * 60
+    }`; // 30 days
   } catch (error) {
     console.error("Failed to store tokens:", error);
   }

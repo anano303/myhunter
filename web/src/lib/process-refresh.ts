@@ -75,7 +75,7 @@ export const refreshAuthToken = async (): Promise<boolean> => {
     resetRefreshState();
     return false;
   } catch (error) {
-    console.error("❌ Token refresh error:", error);
+    console.error("Token refresh error:", error);
     clearTokens();
     processQueue(error);
     resetRefreshState();
