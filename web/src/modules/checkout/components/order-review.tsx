@@ -19,7 +19,11 @@ const isCloudinaryImage = (src: string) =>
   src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 export function OrderReview() {
-  const { shippingAddress: shippingDetails, paymentMethod } = useCheckout();
+  const {
+    shippingAddress: shippingDetails,
+    paymentMethod,
+    isLoaded: isCheckoutLoaded,
+  } = useCheckout();
   const { items, clearCart } = useCart();
   const router = useRouter();
   const { toast } = useToast();
@@ -39,6 +43,14 @@ export function OrderReview() {
       router.push("/login?redirect=/checkout/review");
     }
   }, [user, isLoading, isMounted, router]);
+
+  // Redirect to shipping if no shipping details after checkout is loaded
+  useEffect(() => {
+    if (!isMounted || !isCheckoutLoaded) return;
+    if (!shippingDetails) {
+      router.push("/checkout/shipping");
+    }
+  }, [shippingDetails, isCheckoutLoaded, isMounted, router]);
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -113,12 +125,16 @@ export function OrderReview() {
     }
   };
 
-  // Don't render if not authenticated
-  if (!isMounted || isLoading) {
+  // Don't render if not authenticated or checkout not loaded
+  if (!isMounted || isLoading || !isCheckoutLoaded) {
     return null;
   }
 
   if (!user) {
+    return null;
+  }
+
+  if (!shippingDetails) {
     return null;
   }
 
