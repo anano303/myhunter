@@ -36,6 +36,7 @@ export enum ProductStatus {
 export enum DeliveryType {
   SELLER = 'SELLER',
   myhunter = 'myhunter',
+  SoulArt = 'SoulArt',
 }
 
 export enum MainCategory {
