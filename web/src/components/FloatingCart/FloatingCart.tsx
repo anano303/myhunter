@@ -75,7 +75,6 @@ export function FloatingCart() {
 
   // Touch drag handlers for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
     setIsDragging(true);
     const touch = e.touches[0];
     setDragStart({

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CHECKOUT_STORAGE_KEY = "myhunter_checkout_data";
 
@@ -72,16 +72,36 @@ const clearStorage = () => {
   }
 };
 
+// Get initial values from localStorage synchronously
+const getInitialCheckoutData = (): CheckoutStorageData | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(CHECKOUT_STORAGE_KEY);
+    if (stored) {
+      const data = JSON.parse(stored) as CheckoutStorageData;
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+      if (Date.now() - data.timestamp < ONE_DAY) {
+        return data;
+      } else {
+        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+      }
+    }
+  } catch (error) {
+    console.error("Error loading initial checkout data:", error);
+  }
+  return null;
+};
+
 export function CheckoutProvider({ children }: { children: React.ReactNode }) {
+  // Start with null to avoid hydration mismatch
   const [shippingAddress, setShippingAddressState] =
     useState<ShippingAddress | null>(null);
   const [paymentMethod, setPaymentMethodState] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const isLoadingRef = useRef(true); // Track if we're in the loading phase
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount - this runs only on client
   useEffect(() => {
-    const stored = loadFromStorage();
+    const stored = getInitialCheckoutData();
     if (stored) {
       if (stored.shippingAddress) {
         setShippingAddressState(stored.shippingAddress);
@@ -90,28 +110,11 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
         setPaymentMethodState(stored.paymentMethod);
       }
     }
-    // Use requestAnimationFrame to ensure state updates are processed
-    requestAnimationFrame(() => {
-      isLoadingRef.current = false;
+    // Use microtask to ensure state updates are flushed before marking initialized
+    Promise.resolve().then(() => {
       setIsInitialized(true);
     });
   }, []);
-
-  // Save to localStorage when state changes (but only after loading phase)
-  useEffect(() => {
-    // Skip saving during initial load
-    if (isLoadingRef.current) {
-      return;
-    }
-    // Only save if we have at least some data
-    if (shippingAddress || paymentMethod) {
-      saveToStorage({
-        shippingAddress,
-        paymentMethod,
-        timestamp: Date.now(),
-      });
-    }
-  }, [shippingAddress, paymentMethod]);
 
   const setShippingAddress = (address: ShippingAddress) => {
     setShippingAddressState(address);
