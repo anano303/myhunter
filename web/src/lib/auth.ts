@@ -81,19 +81,19 @@ export const getRefreshToken = (): string | null => {
       refreshTokenInMemory = token; // Restore in-memory copy
       return token;
     }
-    
+
     // Last resort: try to get from cookie
     const cookieToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('refresh_token='))
-      ?.split('=')[1];
-    
+      .split("; ")
+      .find((row) => row.startsWith("refresh_token="))
+      ?.split("=")[1];
+
     if (cookieToken) {
       refreshTokenInMemory = cookieToken;
       localStorage.setItem(REFRESH_TOKEN_KEY, cookieToken); // Restore to localStorage
       return cookieToken;
     }
-    
+
     return null;
   } catch (error) {
     console.error("Failed to get refresh token:", error);
@@ -274,20 +274,21 @@ export const initializeAuth = () => {
   try {
     // Try localStorage first
     let token = localStorage.getItem(REFRESH_TOKEN_KEY);
-    
+
     // If not in localStorage, try cookie
     if (!token) {
-      token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('refresh_token='))
-        ?.split('=')[1] || null;
-      
+      token =
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("refresh_token="))
+          ?.split("=")[1] || null;
+
       // If found in cookie, restore to localStorage
       if (token) {
         localStorage.setItem(REFRESH_TOKEN_KEY, token);
       }
     }
-    
+
     if (token) {
       refreshTokenInMemory = token;
     }

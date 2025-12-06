@@ -18,7 +18,10 @@ export const authApi = {
 
     if (response.data.accessToken && response.data.refreshToken) {
       localStorage.setItem("myhunter_access_token", response.data.accessToken);
-      localStorage.setItem("myhunter_refresh_token", response.data.refreshToken);
+      localStorage.setItem(
+        "myhunter_refresh_token",
+        response.data.refreshToken
+      );
     }
 
     return response.data;
@@ -42,7 +45,8 @@ export const authApi = {
 
   logout: async () => {
     try {
-      await axios.post("/auth/logout");
+      const refreshToken = localStorage.getItem("myhunter_refresh_token");
+      await axios.post("/auth/logout", { refreshToken });
     } finally {
       localStorage.removeItem("myhunter_access_token");
       localStorage.removeItem("myhunter_refresh_token");
