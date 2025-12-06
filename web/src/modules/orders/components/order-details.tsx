@@ -58,7 +58,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
       // Check after 2 seconds to allow user to see the page first
       const timer = setTimeout(() => {
         // Verify token exists before making the call
-        const token = localStorage.getItem("soulart_access_token");
+        const token = localStorage.getItem("myhunter_access_token");
         if (token) {
           checkPaymentMutation.mutate(order._id);
         } else {

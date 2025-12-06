@@ -28,7 +28,7 @@ const publicRoutes = [
 // მარტივი რექვესთ ინტერცეპტორი
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("myhunter_access_token");
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -52,8 +52,8 @@ axiosInstance.interceptors.response.use(
       );
 
       if (!isPublicRoute) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("myhunter_access_token");
+        localStorage.removeItem("myhunter_refresh_token");
         window.location.href = "/login";
       }
     }

@@ -17,8 +17,8 @@ export const authApi = {
     const response = await axios.post<AuthResponse>("/auth/login", credentials);
 
     if (response.data.accessToken && response.data.refreshToken) {
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
+      localStorage.setItem("myhunter_access_token", response.data.accessToken);
+      localStorage.setItem("myhunter_refresh_token", response.data.refreshToken);
     }
 
     return response.data;
@@ -44,8 +44,8 @@ export const authApi = {
     try {
       await axios.post("/auth/logout");
     } finally {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("myhunter_access_token");
+      localStorage.removeItem("myhunter_refresh_token");
     }
   },
 };

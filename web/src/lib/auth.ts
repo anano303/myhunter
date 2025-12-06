@@ -3,9 +3,9 @@
 import { User } from "@/types";
 
 // Token storage keys
-const ACCESS_TOKEN_KEY = "soulart_access_token";
-const REFRESH_TOKEN_KEY = "soulart_refresh_token";
-const USER_DATA_KEY = "soulart_user_data";
+const ACCESS_TOKEN_KEY = "myhunter_access_token";
+const REFRESH_TOKEN_KEY = "myhunter_refresh_token";
+const USER_DATA_KEY = "myhunter_user_data";
 
 // Store tokens in localStorage (access token) and memory (refresh token)
 // We avoid storing refresh token in localStorage for better security
@@ -17,11 +17,8 @@ export const storeTokens = (accessToken: string, refreshToken: string) => {
 
   try {
     localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken); // Store refresh token in localStorage for persistence
     refreshTokenInMemory = refreshToken;
-
-    // Also store refresh token in a session storage as a fallback
-    // for when the page is refreshed or app restarts
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 
     // Store in cookies for middleware (30 days to match refresh token)
     document.cookie = `access_token=${accessToken}; path=/; max-age=${
@@ -77,13 +74,27 @@ export const getRefreshToken = (): string | null => {
   // First try in-memory token
   if (refreshTokenInMemory) return refreshTokenInMemory;
 
-  // Fallback to session storage
+  // Fallback to localStorage (persists across browser restarts)
   try {
-    const token = sessionStorage.getItem(REFRESH_TOKEN_KEY);
+    const token = localStorage.getItem(REFRESH_TOKEN_KEY);
     if (token) {
       refreshTokenInMemory = token; // Restore in-memory copy
+      return token;
     }
-    return token;
+    
+    // Last resort: try to get from cookie
+    const cookieToken = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('refresh_token='))
+      ?.split('=')[1];
+    
+    if (cookieToken) {
+      refreshTokenInMemory = cookieToken;
+      localStorage.setItem(REFRESH_TOKEN_KEY, cookieToken); // Restore to localStorage
+      return cookieToken;
+    }
+    
+    return null;
   } catch (error) {
     console.error("Failed to get refresh token:", error);
     return null;
@@ -96,8 +107,8 @@ export const clearTokens = () => {
 
   try {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_DATA_KEY);
-    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
     refreshTokenInMemory = null;
 
     // Clear cookies
@@ -255,13 +266,28 @@ export const getTokenTimeRemaining = (): number => {
   }
 };
 
-// Initialize - restore in-memory refresh token from session storage
+// Initialize - restore in-memory refresh token from localStorage
 // Call this when your app starts
 export const initializeAuth = () => {
   if (typeof window === "undefined") return;
 
   try {
-    const token = sessionStorage.getItem(REFRESH_TOKEN_KEY);
+    // Try localStorage first
+    let token = localStorage.getItem(REFRESH_TOKEN_KEY);
+    
+    // If not in localStorage, try cookie
+    if (!token) {
+      token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('refresh_token='))
+        ?.split('=')[1] || null;
+      
+      // If found in cookie, restore to localStorage
+      if (token) {
+        localStorage.setItem(REFRESH_TOKEN_KEY, token);
+      }
+    }
+    
     if (token) {
       refreshTokenInMemory = token;
     }
