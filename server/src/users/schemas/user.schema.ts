@@ -31,8 +31,8 @@ export class User {
   @Prop()
   updatedAt?: Date;
 
-  @Prop({ type: String, default: null })
-  refreshToken?: string | null;
+  @Prop({ type: [String], default: [] })
+  refreshTokens: string[]; // Array to support multiple sessions/devices
 
   @Prop()
   passwordResetToken?: string;

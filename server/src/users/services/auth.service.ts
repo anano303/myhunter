@@ -158,8 +158,16 @@ export class AuthService {
       ),
     ]);
 
+    // Add new refresh token to array (supports multiple devices/sessions)
+    // Limit to 10 active sessions max, remove oldest if exceeded
+    const MAX_SESSIONS = 10;
     await this.userModel.findByIdAndUpdate(user._id, {
-      refreshToken: jti,
+      $push: {
+        refreshTokens: {
+          $each: [jti],
+          $slice: -MAX_SESSIONS, // Keep only the last MAX_SESSIONS tokens
+        },
+      },
     });
 
     return {
@@ -182,13 +190,19 @@ export class AuthService {
       }
 
       const user = await this.userModel.findById(payload.sub);
-      if (!user || !user.refreshToken) {
+      if (!user || !user.refreshTokens || user.refreshTokens.length === 0) {
         throw new UnauthorizedException();
       }
 
-      if (user.refreshToken !== payload.jti) {
+      // Check if the refresh token JTI exists in the array (supports multiple sessions)
+      if (!user.refreshTokens.includes(payload.jti)) {
         throw new UnauthorizedException('Invalid refresh token');
       }
+
+      // Remove old token and add new one (token rotation for security)
+      await this.userModel.findByIdAndUpdate(user._id, {
+        $pull: { refreshTokens: payload.jti },
+      });
 
       return this.generateTokens(user);
     } catch {
@@ -196,9 +210,27 @@ export class AuthService {
     }
   }
 
-  async logout(userId: string): Promise<void> {
+  async logout(userId: string, refreshToken?: string): Promise<void> {
+    if (refreshToken) {
+      // Logout only from current session (remove specific token)
+      try {
+        const payload = await this.jwtService.verifyAsync<TokenPayload>(
+          refreshToken,
+          { secret: process.env.JWT_REFRESH_SECRET },
+        );
+        if (payload.jti) {
+          await this.userModel.findByIdAndUpdate(userId, {
+            $pull: { refreshTokens: payload.jti },
+          });
+          return;
+        }
+      } catch {
+        // Token invalid, just clear all
+      }
+    }
+    // Logout from all sessions
     await this.userModel.findByIdAndUpdate(userId, {
-      refreshToken: null,
+      refreshTokens: [],
     });
   }
 }
