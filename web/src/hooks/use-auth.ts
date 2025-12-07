@@ -27,18 +27,11 @@ export function useAuth() {
       } catch (error) {
         console.error("Error fetching user profile:", error);
 
-        // If unauthorized, clear tokens and invalidate the query
-        if (
-          (error as { response?: { status?: number } })?.response?.status ===
-          401
-        ) {
-          clearTokens();
-          // Force reload to reset all state
-          window.location.reload();
-          return null;
-        }
+        // Don't clear tokens here - let the axios interceptor handle 401 and refresh
+        // The interceptor will redirect to login if refresh also fails
+        // If we get here after a 401, it means refresh failed and we're already being redirected
 
-        // Return locally stored user data as fallback only if we're not unauthorized
+        // Return locally stored user data as fallback
         const localUserData = getUserData();
         return localUserData;
       }

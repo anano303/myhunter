@@ -1,5 +1,6 @@
 import { axios } from "@/lib/axios";
 import { User } from "@/types";
+import { storeTokens, clearTokens, getRefreshToken } from "@/lib/auth";
 
 interface LoginCredentials {
   email: string;
@@ -17,11 +18,7 @@ export const authApi = {
     const response = await axios.post<AuthResponse>("/auth/login", credentials);
 
     if (response.data.accessToken && response.data.refreshToken) {
-      localStorage.setItem("myhunter_access_token", response.data.accessToken);
-      localStorage.setItem(
-        "myhunter_refresh_token",
-        response.data.refreshToken
-      );
+      storeTokens(response.data.accessToken, response.data.refreshToken);
     }
 
     return response.data;
@@ -45,11 +42,10 @@ export const authApi = {
 
   logout: async () => {
     try {
-      const refreshToken = localStorage.getItem("myhunter_refresh_token");
+      const refreshToken = getRefreshToken();
       await axios.post("/auth/logout", { refreshToken });
     } finally {
-      localStorage.removeItem("myhunter_access_token");
-      localStorage.removeItem("myhunter_refresh_token");
+      clearTokens();
     }
   },
 };
