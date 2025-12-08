@@ -21,6 +21,7 @@ export function FloatingCart() {
 
   // Drag functionality states
   const [isDragging, setIsDragging] = useState(false);
+  const [hasDragged, setHasDragged] = useState(false);
   const [position, setPosition] = useState(() => {
     // Load saved position from localStorage or use default
     if (typeof window !== "undefined") {
@@ -31,7 +32,7 @@ export function FloatingCart() {
     }
     return { bottom: 120, left: 20 };
   });
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLDivElement>(null);
 
   // Save position to localStorage whenever it changes
@@ -44,26 +45,27 @@ export function FloatingCart() {
     if (e.button !== 0) return; // Only left click
     e.preventDefault();
     setIsDragging(true);
-    setDragStart({
-      x: e.clientX - (window.innerWidth - position.left - 60),
+    setHasDragged(false);
+    // Calculate offset from click point to button position
+    setDragOffset({
+      x: e.clientX - position.left,
       y: e.clientY - (window.innerHeight - position.bottom - 60),
     });
   };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging) return;
+    setHasDragged(true);
 
-    const newX = e.clientX - dragStart.x;
-    const newY = e.clientY - dragStart.y;
+    // New position based on mouse position minus offset
+    const newLeft = e.clientX - dragOffset.x;
+    const newTop = e.clientY - dragOffset.y;
 
-    // Convert to bottom/left positioning and constrain to viewport
-    const left = Math.max(
-      0,
-      Math.min(window.innerWidth - 60, window.innerWidth - newX - 60)
-    );
+    // Constrain to viewport
+    const left = Math.max(0, Math.min(window.innerWidth - 60, newLeft));
     const bottom = Math.max(
       0,
-      Math.min(window.innerHeight - 60, window.innerHeight - newY - 60)
+      Math.min(window.innerHeight - 60, window.innerHeight - newTop - 60)
     );
 
     setPosition({ bottom, left });
@@ -76,9 +78,11 @@ export function FloatingCart() {
   // Touch drag handlers for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsDragging(true);
+    setHasDragged(false);
     const touch = e.touches[0];
-    setDragStart({
-      x: touch.clientX - (window.innerWidth - position.left - 60),
+    // Calculate offset from touch point to button position
+    setDragOffset({
+      x: touch.clientX - position.left,
       y: touch.clientY - (window.innerHeight - position.bottom - 60),
     });
   };
@@ -86,19 +90,18 @@ export function FloatingCart() {
   const handleTouchMove = (e: TouchEvent) => {
     if (!isDragging) return;
     e.preventDefault();
+    setHasDragged(true);
 
     const touch = e.touches[0];
-    const newX = touch.clientX - dragStart.x;
-    const newY = touch.clientY - dragStart.y;
+    // New position based on touch position minus offset
+    const newLeft = touch.clientX - dragOffset.x;
+    const newTop = touch.clientY - dragOffset.y;
 
-    // Convert to bottom/left positioning and constrain to viewport
-    const left = Math.max(
-      0,
-      Math.min(window.innerWidth - 60, window.innerWidth - newX - 60)
-    );
+    // Constrain to viewport
+    const left = Math.max(0, Math.min(window.innerWidth - 60, newLeft));
     const bottom = Math.max(
       0,
-      Math.min(window.innerHeight - 60, window.innerHeight - newY - 60)
+      Math.min(window.innerHeight - 60, window.innerHeight - newTop - 60)
     );
 
     setPosition({ bottom, left });
@@ -125,11 +128,11 @@ export function FloatingCart() {
         document.removeEventListener("touchend", handleTouchEnd);
       };
     }
-  }, [isDragging, dragStart]);
+  }, [isDragging, dragOffset]);
 
   // Click handler - only open if not dragging
   const handleClick = () => {
-    if (!isDragging) {
+    if (!hasDragged) {
       setIsOpen(!isOpen);
     }
   };
