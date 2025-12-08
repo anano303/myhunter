@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBanners, deleteBanner } from "../api/banner";
-import { Banner } from "@/types/banner";
+import { Banner, BannerType } from "@/types/banner";
 import { Pencil, Trash2, Plus, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
@@ -12,7 +12,8 @@ import "./banner-list.css";
 import { BannerModal } from "./banner-modal";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 export function BannerList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,8 +25,8 @@ export function BannerList() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["banners"],
-    queryFn: getBanners,
+    queryKey: ["banners", "main"],
+    queryFn: () => getBanners(BannerType.MAIN),
   });
 
   const deleteMutation = useMutation({
@@ -103,7 +104,11 @@ export function BannerList() {
                       src={banner.imageUrl || ""}
                       alt={banner.title}
                       className="banner-image"
-                      style={{ width: '80px', height: '50px', objectFit: 'cover' }}
+                      style={{
+                        width: "80px",
+                        height: "50px",
+                        objectFit: "cover",
+                      }}
                     />
                   ) : (
                     <Image

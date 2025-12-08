@@ -16,7 +16,16 @@ export class BannerService {
   async findAll(type?: BannerType): Promise<Banner[]> {
     const filter: Record<string, unknown> = {};
     if (type) {
-      filter.type = type;
+      // თუ main ტიპია, ვეძებთ main ან type არ აქვს (ძველი ბანერები)
+      if (type === BannerType.MAIN) {
+        filter.$or = [
+          { type: BannerType.MAIN },
+          { type: { $exists: false } },
+          { type: null },
+        ];
+      } else {
+        filter.type = type;
+      }
     }
     return this.bannerModel
       .find(filter)
@@ -27,7 +36,16 @@ export class BannerService {
   async findActive(type?: BannerType): Promise<Banner[]> {
     const filter: Record<string, unknown> = { isActive: true };
     if (type) {
-      filter.type = type;
+      // თუ main ტიპია, ვეძებთ main ან type არ აქვს (ძველი ბანერები)
+      if (type === BannerType.MAIN) {
+        filter.$or = [
+          { type: BannerType.MAIN },
+          { type: { $exists: false } },
+          { type: null },
+        ];
+      } else {
+        filter.type = type;
+      }
     }
     return this.bannerModel
       .find(filter)

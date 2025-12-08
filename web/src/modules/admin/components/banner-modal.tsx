@@ -3,14 +3,15 @@
 import React, { useState, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createBanner, updateBanner } from "../api/banner";
-import { Banner, CreateBannerData } from "@/types/banner";
+import { Banner, BannerType, CreateBannerData } from "@/types/banner";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import "./banner-modal.css";
 
 // Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) => src.includes('cloudinary') || src.includes('res.cloudinary.com');
+const isCloudinaryImage = (src: string) =>
+  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 interface BannerModalProps {
   banner: Banner | null;
@@ -30,6 +31,7 @@ export function BannerModal({ banner, onClose, onSuccess }: BannerModalProps) {
     buttonLink: banner?.buttonLink || "",
     isActive: banner?.isActive ?? true,
     sortOrder: banner?.sortOrder || 0,
+    type: BannerType.MAIN, // Always main type from admin panel
   });
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -196,13 +198,17 @@ export function BannerModal({ banner, onClose, onSuccess }: BannerModalProps) {
               </label>
             </div>
 
-            {imagePreview && (
-              isCloudinaryImage(imagePreview) ? (
+            {imagePreview &&
+              (isCloudinaryImage(imagePreview) ? (
                 <img
                   src={imagePreview}
                   alt="Preview"
                   className="image-preview"
-                  style={{ width: '200px', height: '120px', objectFit: 'cover' }}
+                  style={{
+                    width: "200px",
+                    height: "120px",
+                    objectFit: "cover",
+                  }}
                 />
               ) : (
                 <Image
@@ -212,16 +218,21 @@ export function BannerModal({ banner, onClose, onSuccess }: BannerModalProps) {
                   height={120}
                   className="image-preview"
                 />
-              )
-            )}
+              ))}
 
-            {isEditing && banner?.imageUrl && !imagePreview && (
-              isCloudinaryImage(banner.imageUrl) ? (
+            {isEditing &&
+              banner?.imageUrl &&
+              !imagePreview &&
+              (isCloudinaryImage(banner.imageUrl) ? (
                 <img
                   src={banner.imageUrl}
                   alt="Current banner"
                   className="current-image"
-                  style={{ width: '200px', height: '120px', objectFit: 'cover' }}
+                  style={{
+                    width: "200px",
+                    height: "120px",
+                    objectFit: "cover",
+                  }}
                 />
               ) : (
                 <Image
@@ -231,8 +242,7 @@ export function BannerModal({ banner, onClose, onSuccess }: BannerModalProps) {
                   height={120}
                   className="current-image"
                 />
-              )
-            )}
+              ))}
           </div>
 
           <div className="form-group">
