@@ -158,8 +158,12 @@ axiosInstance.interceptors.response.use(
           );
 
           // Update cookies
-          document.cookie = `access_token=${data.tokens.accessToken}; path=/; max-age=${30 * 24 * 60 * 60}`;
-          document.cookie = `refresh_token=${data.tokens.refreshToken}; path=/; max-age=${30 * 24 * 60 * 60}`;
+          document.cookie = `access_token=${
+            data.tokens.accessToken
+          }; path=/; max-age=${30 * 24 * 60 * 60}`;
+          document.cookie = `refresh_token=${
+            data.tokens.refreshToken
+          }; path=/; max-age=${30 * 24 * 60 * 60}`;
 
           // Process queued requests
           processQueue(null, data.tokens.accessToken);
