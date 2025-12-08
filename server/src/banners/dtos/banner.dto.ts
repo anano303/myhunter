@@ -1,4 +1,11 @@
-import { IsString, IsBoolean, IsOptional, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+} from 'class-validator';
+import { BannerType } from '../schemas/banner.schema';
 
 export class CreateBannerDto {
   @IsString()
@@ -27,6 +34,10 @@ export class CreateBannerDto {
   @IsNumber()
   @IsOptional()
   sortOrder?: number;
+
+  @IsEnum(BannerType)
+  @IsOptional()
+  type?: BannerType;
 }
 
 export class UpdateBannerDto {
@@ -61,4 +72,8 @@ export class UpdateBannerDto {
   @IsNumber()
   @IsOptional()
   sortOrder?: number;
+
+  @IsEnum(BannerType)
+  @IsOptional()
+  type?: BannerType;
 }

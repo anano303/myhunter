@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Banner } from '../schemas/banner.schema';
+import { Banner, BannerType } from '../schemas/banner.schema';
 import { CreateBannerDto, UpdateBannerDto } from '../dtos/banner.dto';
 
 @Injectable()
@@ -13,14 +13,33 @@ export class BannerService {
     return banner.save();
   }
 
-  async findAll(): Promise<Banner[]> {
-    return this.bannerModel.find().sort({ sortOrder: 1, createdAt: -1 }).exec();
+  async findAll(type?: BannerType): Promise<Banner[]> {
+    const filter: Record<string, unknown> = {};
+    if (type) {
+      filter.type = type;
+    }
+    return this.bannerModel
+      .find(filter)
+      .sort({ sortOrder: 1, createdAt: -1 })
+      .exec();
   }
 
-  async findActive(): Promise<Banner[]> {
+  async findActive(type?: BannerType): Promise<Banner[]> {
+    const filter: Record<string, unknown> = { isActive: true };
+    if (type) {
+      filter.type = type;
+    }
     return this.bannerModel
-      .find({ isActive: true })
+      .find(filter)
       .sort({ sortOrder: 1, createdAt: -1 })
+      .exec();
+  }
+
+  // Get hunting banners specifically
+  async findHuntingBanners(): Promise<Banner[]> {
+    return this.bannerModel
+      .find({ type: BannerType.HUNTING, isActive: true })
+      .sort({ sortOrder: 1 })
       .exec();
   }
 

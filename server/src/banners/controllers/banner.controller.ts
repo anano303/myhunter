@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { BannerService } from '../services/banner.service';
@@ -20,6 +21,7 @@ import { RolesGuard } from '../../guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../../types/role.enum';
 import { AppService } from '../../app/services/app.service';
+import { BannerType } from '../schemas/banner.schema';
 
 @Controller('banners')
 export class BannerController {
@@ -37,7 +39,7 @@ export class BannerController {
     @UploadedFiles() images?: Express.Multer.File[],
   ) {
     try {
-      let imageUrl = '';
+      let imageUrl = createBannerDto.imageUrl || '';
 
       if (images && images.length > 0) {
         // Upload image to Cloudinary with banner optimization
@@ -61,13 +63,19 @@ export class BannerController {
   }
 
   @Get()
-  async findAll() {
-    return this.bannerService.findAll();
+  async findAll(@Query('type') type?: BannerType) {
+    return this.bannerService.findAll(type);
   }
 
   @Get('active')
-  async findActive() {
-    return this.bannerService.findActive();
+  async findActive(@Query('type') type?: BannerType) {
+    return this.bannerService.findActive(type);
+  }
+
+  // Hunting banners endpoint - separate from main banners
+  @Get('hunting')
+  async findHuntingBanners() {
+    return this.bannerService.findHuntingBanners();
   }
 
   @Get(':id')

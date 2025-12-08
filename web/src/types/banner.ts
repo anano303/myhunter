@@ -1,3 +1,8 @@
+export enum BannerType {
+  MAIN = "main",
+  HUNTING = "hunting",
+}
+
 export interface Banner {
   _id: string;
   title: string;
@@ -8,6 +13,7 @@ export interface Banner {
   imageUrl: string;
   isActive: boolean;
   sortOrder: number;
+  type: BannerType;
   createdAt: string;
   updatedAt: string;
 }
@@ -21,4 +27,5 @@ export interface CreateBannerData {
   imageUrl?: string;
   isActive?: boolean;
   sortOrder?: number;
+  type?: BannerType;
 }

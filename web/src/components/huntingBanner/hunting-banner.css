@@ -250,3 +250,200 @@
     gap: 1rem;
   }
 }
+
+/* Admin Edit Button */
+.admin-edit-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+  background-color: rgba(75, 83, 32, 0.9);
+  border: 2px solid #e6cd9f;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f5e9d1;
+  font-size: 0.9rem;
+  font-family: "FiraGo", sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.admin-edit-button:hover {
+  background-color: rgba(92, 100, 40, 1);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Banner Edit Modal Overlay */
+.banner-edit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Banner Edit Modal */
+.banner-edit-modal {
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid #e6cd9f;
+}
+
+.banner-edit-modal h3 {
+  color: #e6cd9f;
+  font-family: "FiraGo", sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.banner-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.banner-edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #f5e9d1;
+  font-family: "FiraGo", sans-serif;
+  font-size: 0.9rem;
+}
+
+.banner-edit-form input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #4b5320;
+  border-radius: 6px;
+  background-color: #3a3a3a;
+  color: #f5e9d1;
+  font-size: 1rem;
+  font-family: "FiraGo", sans-serif;
+  transition: border-color 0.3s ease;
+}
+
+.banner-edit-form input:focus {
+  outline: none;
+  border-color: #e6cd9f;
+}
+
+.banner-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.banner-edit-cancel,
+.banner-edit-save {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: "FiraGo", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.banner-edit-cancel {
+  background-color: transparent;
+  border: 1px solid #888;
+  color: #ccc;
+}
+
+.banner-edit-cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.banner-edit-save {
+  background-color: #4b5320;
+  border: none;
+  color: #f5e9d1;
+}
+
+.banner-edit-save:hover {
+  background-color: #5c6428;
+}
+
+/* Image upload section styles */
+.banner-image-upload-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.upload-divider {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.banner-upload-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #3a7ca5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.banner-upload-button:hover {
+  background-color: #2f6a8f;
+}
+
+.banner-upload-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.banner-image-preview {
+  margin-top: 0.5rem;
+}
+
+.banner-image-preview p {
+  color: #aaa;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+.hunting-banner-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: #4b5320;
+}

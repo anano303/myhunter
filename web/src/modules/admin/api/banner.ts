@@ -1,14 +1,15 @@
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
-import { Banner, CreateBannerData } from "@/types/banner";
+import { Banner, BannerType, CreateBannerData } from "@/types/banner";
 import { getAccessToken } from "@/lib/auth";
 
-export async function getBanners(): Promise<{
+export async function getBanners(type?: BannerType): Promise<{
   success: boolean;
   data?: Banner[];
   error?: string;
 }> {
   try {
-    const response = await fetchWithAuth(`/banners`);
+    const url = type ? `/banners?type=${type}` : `/banners`;
+    const response = await fetchWithAuth(url);
 
     if (!response.ok) {
       return { success: false, error: "Failed to fetch banners" };
@@ -22,13 +23,14 @@ export async function getBanners(): Promise<{
   }
 }
 
-export async function getActiveBanners(): Promise<{
+export async function getActiveBanners(type?: BannerType): Promise<{
   success: boolean;
   data?: Banner[];
   error?: string;
 }> {
   try {
-    const response = await fetchWithAuth(`/banners/active`);
+    const url = type ? `/banners/active?type=${type}` : `/banners/active`;
+    const response = await fetchWithAuth(url);
 
     if (!response.ok) {
       return { success: false, error: "Failed to fetch active banners" };
@@ -38,6 +40,29 @@ export async function getActiveBanners(): Promise<{
     return { success: true, data };
   } catch (error) {
     console.error("Error fetching active banners:", error);
+    return { success: false, error: "Network error" };
+  }
+}
+
+// Get hunting banners specifically
+export async function getHuntingBanners(): Promise<{
+  success: boolean;
+  data?: Banner[];
+  error?: string;
+}> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/banners/hunting`
+    );
+
+    if (!response.ok) {
+      return { success: false, error: "Failed to fetch hunting banners" };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error fetching hunting banners:", error);
     return { success: false, error: "Network error" };
   }
 }
