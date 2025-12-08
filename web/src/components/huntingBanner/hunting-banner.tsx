@@ -69,7 +69,7 @@ export const HuntingBanner: React.FC = () => {
           </h2>
 
           <Link
-            href="/shop?mainCategory=68d70291fdc08a711c36056"
+            href="/shop?mainCategory=68d70291fdc08a711c360564"
             className="hunting-banner-button"
           >
             {language === "ge" ? "აღმოაჩინე" : "Discover"}
@@ -122,7 +122,7 @@ export const HuntingBanner: React.FC = () => {
         </div>
         <div className="hunting-banner-text">
           <h2>
-       {language === "ge"
+            {language === "ge"
               ? "აღმოაჩინე საუკეთესო სანადირო და სალაშქრო ინვენტარი!"
               : "Discover the best hunting and hiking equipment with us!"}
           </h2>
@@ -131,7 +131,10 @@ export const HuntingBanner: React.FC = () => {
               ? "აღმოაჩინე საუკეთესო სანადირო და სალაშქრო ინვენტარი!"
               : "Discover the best hunting and hiking equipment with us!"}
           </p> */}
-          <Link href="/shop?mainCategory=684c7806548e708c4db3fe79" className="hunting-banner-button">
+          <Link
+            href="/shop?mainCategory=684c7806548e708c4db3fe79"
+            className="hunting-banner-button"
+          >
             {language === "ge" ? "აღმოაჩინე" : "Discover"}
           </Link>
         </div>
