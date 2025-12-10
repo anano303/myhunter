@@ -153,6 +153,82 @@
   font-size: 1.5rem;
 }
 
+/* Warning box for important notices */
+.warning-box {
+  background: rgba(139, 90, 43, 0.3);
+  border: 2px solid rgba(255, 193, 7, 0.5);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.warning-box::before {
+  content: "⚠️";
+  position: absolute;
+  top: -12px;
+  left: 15px;
+  background: rgba(58, 72, 39, 0.95);
+  padding: 0 8px;
+  font-size: 1.2rem;
+}
+
+.warning-box h4 {
+  color: #ffc107;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.warning-box p {
+  color: #e6d5b0;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.warning-box ul {
+  margin-bottom: 0.5rem;
+}
+
+.warning-box li {
+  color: #e6d5b0;
+}
+
+/* Important note highlighting */
+.important-note {
+  background: rgba(138, 125, 82, 0.2);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid #8a7d52;
+  font-style: italic;
+}
+
+/* Ordered list styling */
+.return-section ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  counter-reset: item;
+  list-style: none;
+}
+
+.return-section ol li {
+  margin-bottom: 0.75rem;
+  color: #d9c9a3;
+  padding-left: 2rem;
+  position: relative;
+  line-height: 1.7;
+  counter-increment: item;
+}
+
+.return-section ol li::before {
+  content: counter(item) ".";
+  position: absolute;
+  left: 0;
+  color: #8a7d52;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
 .effective-date {
   text-align: center;
   padding: 1.5rem;
@@ -281,4 +357,51 @@
   .effective-date p {
     font-size: 0.85rem;
   }
+
+  .download-section {
+    margin-top: 1.5rem;
+  }
+
+  .download-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Download Section */
+.download-section {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: rgba(48, 60, 32, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(245, 233, 209, 0.3);
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #6b5c35 0%, #8a7d52 100%);
+  color: #f5e9d1;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: "FiraGo", sans-serif;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(245, 233, 209, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.download-btn:hover {
+  background: linear-gradient(135deg, #8a7d52 0%, #a69666 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.download-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }

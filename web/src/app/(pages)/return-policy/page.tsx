@@ -11,16 +11,26 @@ export default function ReturnPolicy() {
       <div className="return-content">
         <h1 className="return-title">
           {language === "en"
-            ? "Return & Refund Policy"
-            : "დაბრუნებისა და თანხის უკან დაბრუნების პოლიტიკა"}
+            ? "MyHunter – Return & Refund Policy"
+            : "MyHunter – დაბრუნებისა და ანაზღაურების პოლიტიკა"}
         </h1>
 
         <div className="return-section">
           <h2>{language === "en" ? "1. Overview" : "1. მიმოხილვა"}</h2>
           <p>
             {language === "en"
-              ? "At MyHunter, we are committed to providing high-quality hunting and fishing equipment. Due to the specialized nature of our products, especially firearms and ammunition, we have a strict return policy. We only accept returns for products with factory defects."
-              : "MyHunter-ში ჩვენ ვართ პასუხისმგებელნი მაღალი ხარისხის სანადირო და სათევზაო ინვენტარის მიწოდებაზე. ჩვენი პროდუქტების სპეციალიზებული ხასიათის გამო, განსაკუთრებით ცეცხლსასროლი იარაღისა და საბრძოლო მასალის, ჩვენ გვაქვს მკაცრი დაბრუნების პოლიტიკა. ჩვენ ვიღებთ დაბრუნებას მხოლოდ ქარხნული წუნის მქონე პროდუქტებზე."}
+              ? "MyHunter is committed to providing high-quality hunting, tactical, and fishing equipment. Due to the technical and specialized nature of our products—particularly firearm parts, optics, accessories, and tactical equipment—we maintain a clear and strict return policy."
+              : "MyHunter უზრუნველყოფს მაღალი ხარისხის სანადირო, ტაქტიკური და სათევზაო ინვენტარის მიწოდებას. ჩვენი პროდუქტების სპეციფიკური და ტექნიკური ხასიათის გამო, განსაკუთრებით იარაღის ნაწილები, ოპტიკა, აქსესუარები და ტაქტიკური მოწყობილობები, მოქმედებს მკაფიო და მკაცრი დაბრუნების პოლიტიკა."}
+          </p>
+          <p>
+            {language === "en"
+              ? "We accept returns only in cases where the product contains a confirmed manufacturer defect, verified through visual inspection or an official manufacturer confirmation."
+              : "ჩვენ ვიღებთ დაბრუნებას მხოლოდ იმ შემთხვევაში, როდესაც პროდუქტი ნამდვილად შეიცავს ქარხნულ დეფექტს, რომელიც დადასტურდება ვიზუალური შემოწმებით ან მწარმოებლის ოფიციალური დასკვნით."}
+          </p>
+          <p className="important-note">
+            {language === "en"
+              ? "MyHunter reserves the right to refuse a return if, upon inspection, it is determined that the defect is not a manufacturing flaw but was caused by customer action, error, mechanical damage, improper installation, or use under unsuitable conditions."
+              : "MyHunter–ს უფლება აქვს უარი თქვას დაბრუნებაზე, თუ პროდუქტის შემოწმებისას აღმოჩნდება, რომ დეფექტი არ წარმოადგენს ქარხნულ წუნს, არამედ გამოწვეულია მომხმარებლის ქმედებით, შეცდომით, მექანიკური დაზიანებით, არასწორი ინსტალაციით ან შეუსაბამო პირობებში გამოყენებით."}
           </p>
         </div>
 
@@ -32,36 +42,54 @@ export default function ReturnPolicy() {
           </h2>
           <p>
             {language === "en"
-              ? "We accept returns only under the following conditions:"
-              : "ჩვენ ვიღებთ დაბრუნებას მხოლოდ შემდეგ პირობებში:"}
+              ? "A return is accepted only under the following conditions:"
+              : "დაბრუნება მიიღება მხოლოდ შემდეგ პირობებში:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "The product has a verified factory defect or manufacturing flaw"
-                : "პროდუქტს აქვს დადასტურებული ქარხნული წუნი ან წარმოების ხარვეზი"}
+                ? "A confirmed manufacturer defect or production flaw is present"
+                : "დადასტურებული ქარხნული წუნი ან წარმოების ხარვეზი"}
             </li>
             <li>
               {language === "en"
-                ? "The defect was not caused by misuse, improper storage, or user error"
-                : "დეფექტი არ არის გამოწვეული არასწორი გამოყენებით, შენახვით ან მომხმარებლის შეცდომით"}
+                ? "The defect must not be caused by the customer's actions—misuse, improper installation, modification, damage, or improper storage"
+                : "დეფექტი არ უნდა იყოს გამოწვეული მომხმარებლის მოქმედებით — არასწორი გამოყენება, მონტაჟი, მოდიფიკაცია, დაზიანება ან არასწორი შენახვა"}
+            </li>
+            <li className="important-note">
+              {language === "en"
+                ? "Any damage caused by improper installation (e.g., excessive mounting torque, incorrect ring sizes, wrong collimator/footprint selection, etc.) is not covered by warranty or return policy"
+                : "ნებისმიერი ზიანი, რომელიც გამოწვეულია არასათანადო ინსტალაციით (მაგ. ზედმეტი დამჭერის ძალა, არასწორი ზომის რინგები, არასწორი კოლიმატორის/ფუტპრინტის შერჩევა და სხვ.), არ ექვემდებარება არც გარანტიას, არც დაბრუნებას"}
             </li>
             <li>
               {language === "en"
-                ? "The return request is made within 14 days of delivery"
+                ? "The return request is submitted within 14 days of delivery"
                 : "დაბრუნების მოთხოვნა გაკეთებულია მიწოდებიდან 14 დღის განმავლობაში"}
             </li>
             <li>
               {language === "en"
-                ? "The product is in its original packaging with all accessories and documentation"
-                : "პროდუქტი არის ორიგინალურ შეფუთვაში ყველა აქსესუართან და დოკუმენტაციასთან ერთად"}
+                ? "The product must be in its original packaging, including all accessories, manuals, and documentation"
+                : "პროდუქტი უნდა იყოს ორიგინალურ შეფუთვაში, ყველა აქსესუართან, ბროშურასთან და დოკუმენტთან ერთად"}
             </li>
             <li>
               {language === "en"
-                ? "The product has not been used, damaged, or altered"
-                : "პროდუქტი არ არის გამოყენებული, დაზიანებული ან შეცვლილი"}
+                ? "The product must not be used, altered, or damaged"
+                : "პროდუქტი არ უნდა იყოს გამოყენებული, დაზიანებული ან შეცვლილი"}
+            </li>
+            <li>
+              {language === "en"
+                ? "In case of visible cosmetic defects, the issue must be reported immediately upon delivery"
+                : "ვიზუალური დეფექტის შემთხვევაში, დაზიანება უნდა იყოს დაფიქსირებული პროდუქტის მიღებისთანავე"}
             </li>
           </ul>
+          <div className="warning-box">
+            <h4>{language === "en" ? "Diagnostic Cost" : "დიაგნოსტიკის ხარჯი"}</h4>
+            <p>
+              {language === "en"
+                ? "If the returned product is found to be fully functional and defect-free upon inspection, MyHunter reserves the right not to issue a refund or replacement. Additionally, the customer will be responsible for covering round-trip shipping costs."
+                : "თუ დაბრუნებული პროდუქტი შემოწმებისას აღმოჩნდება სრულად გამართული და დეფექტის გარეშე, MyHunter–ს უფლება აქვს არ დააბრუნოს თანხა და არ განახორციელოს ჩანაცვლება. ასევე, მომხმარებელი ვალდებულია დაფაროს ორმხრივი ტრანსპორტირების ხარჯი."}
+            </p>
+          </div>
         </div>
 
         <div className="return-section">
@@ -72,34 +100,34 @@ export default function ReturnPolicy() {
           </h2>
           <p>
             {language === "en"
-              ? "The following items cannot be returned under any circumstances:"
-              : "შემდეგი ნივთები არ შეიძლება დაბრუნდეს არანაირ გარემოებებში:"}
+              ? "For safety reasons and due to product specificity, the following items cannot be returned:"
+              : "მომხმარებლის უსაფრთხოებისა და პროდუქციის სპეციფიკის გამო, შემდეგი ნივთები არ ექვემდებარება დაბრუნებას:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "Ammunition and explosives (for safety and legal reasons)"
-                : "საბრძოლო მასალა და ასაფეთქებელი ნივთიერებები (უსაფრთხოებისა და კანონიერების მიზეზით)"}
+                ? "Ammunition, explosives, and all potentially hazardous categories"
+                : "საბრძოლო მასალა, ასაფეთქებლები და ნებისმიერი პოტენციურად საშიში კატეგორია"}
             </li>
             <li>
               {language === "en"
-                ? "Used or opened products without factory defects"
-                : "გამოყენებული ან გახსნილი პროდუქტები ქარხნული წუნის გარეშე"}
+                ? "Any product that has been opened, used, or tested and does not have a manufacturing defect"
+                : "ნებისმიერი პროდუქტი, რომელიც გამოყენებულია ან გახსნილია და არ აქვს ქარხნული წუნი"}
             </li>
             <li>
               {language === "en"
-                ? "Custom-ordered or personalized items"
-                : "შეკვეთით დამზადებული ან პერსონალიზებული ნივთები"}
+                ? "Customized or special-order items"
+                : "პერსონალიზებული ან შეკვეთით დამზადებული ნივთები"}
             </li>
             <li>
               {language === "en"
-                ? "Products damaged due to misuse or negligence"
-                : "პროდუქტები, რომლებიც დაზიანდა არასწორი გამოყენების ან დაუდევრობის გამო"}
+                ? "Products damaged due to improper installation, misuse, or negligence"
+                : "პროდუქტები, რომლებიც დაზიანდა მონტაჟის, არასწორი გამოყენების ან დაუდევრობის შედეგად"}
             </li>
-            <li>
+            <li className="important-note">
               {language === "en"
-                ? "Clearance or sale items marked as final sale"
-                : "გაყიდვის ან აქციის პროდუქტები, რომლებიც მონიშნულია როგორც საბოლოო გაყიდვა"}
+                ? "Final Sale and promotional products are not eligible for returns or replacements, except in cases of obvious and confirmed manufacturer defects"
+                : "Final Sale და აქციის პროდუქტებზე არ მოქმედებს არც დაბრუნება, არც ჩანაცვლება, გარდა მწარმოებლის აშკარა და დადასტურებული ქარხნული წუნისა"}
             </li>
           </ul>
         </div>
@@ -107,79 +135,79 @@ export default function ReturnPolicy() {
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "4. Factory Defect Verification"
+              ? "4. Manufacturer Defect Verification"
               : "4. ქარხნული წუნის დადასტურება"}
           </h2>
           <p>
             {language === "en"
-              ? "To qualify for a return due to a factory defect, the following process must be followed:"
-              : "ქარხნული წუნის გამო დაბრუნებისთვის, უნდა შესრულდეს შემდეგი პროცესი:"}
+              ? "To initiate a return due to a potential manufacturing defect:"
+              : "დაბრუნების პროცესის დასაწყებად:"}
           </p>
-          <ul>
+          <ol>
             <li>
               {language === "en"
-                ? "Contact our customer service within 14 days of receiving the product"
-                : "დაუკავშირდით ჩვენს მომხმარებელთა სერვისს პროდუქტის მიღებიდან 14 დღის განმავლობაში"}
+                ? "Contact us within 14 days of receiving the product"
+                : "დაგვიკავშირდით 14 დღის განმავლობაში"}
             </li>
             <li>
               {language === "en"
-                ? "Provide detailed photos and description of the defect"
-                : "მიაწოდეთ დეტალური ფოტოები და წუნის აღწერა"}
+                ? "Provide detailed photos/videos showing the defect"
+                : "მოგვაწოდეთ დეტალური ფოტოები/ვიდეოები დეფექტის შესახებ"}
             </li>
             <li>
               {language === "en"
-                ? "Our technical team will review your claim within 2-3 business days"
-                : "ჩვენი ტექნიკური გუნდი განიხილავს თქვენს პრეტენზიას 2-3 სამუშაო დღის განმავლობაში"}
+                ? "Our technical team will review the claim within 2–3 business days"
+                : "ჩვენი ტექნიკური ჯგუფი განიხილავს პრეტენზიას 2–3 სამუშაო დღეში"}
             </li>
             <li>
               {language === "en"
                 ? "If approved, we will provide return shipping instructions"
-                : "თუ დამტკიცდება, ჩვენ მოგაწოდებთ დაბრუნების ტრანსპორტირების ინსტრუქციებს"}
+                : "დამტკიცების შემთხვევაში მიიღებთ ინსტრუქციებს დაბრუნების შესახებ"}
             </li>
             <li>
               {language === "en"
-                ? "Upon receiving and inspecting the product, we will process your refund or replacement"
-                : "პროდუქტის მიღებისა და შემოწმების შემდეგ, ჩვენ დავამუშავებთ თქვენს თანხის დაბრუნებას ან ჩანაცვლებას"}
+                ? "After receiving and inspecting the product, we will process your refund or replacement"
+                : "პროდუქტის მიღებისა და შემოწმების შემდეგ მოხდება თანხის დაბრუნება ან ჩანაცვლება"}
             </li>
-          </ul>
+          </ol>
         </div>
 
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "5. Refund Process"
+              ? "5. Refund Processing"
               : "5. თანხის დაბრუნების პროცესი"}
           </h2>
           <p>
             {language === "en"
-              ? "Once your return is approved and received:"
-              : "თქვენი დაბრუნების დამტკიცებისა და მიღების შემდეგ:"}
+              ? "Once the returned item is received and approved:"
+              : "დამტკიცებული დაბრუნების მიღების შემდეგ:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "We will inspect the returned item within 3-5 business days"
-                : "ჩვენ შევამოწმებთ დაბრუნებულ ნივთს 3-5 სამუშაო დღის განმავლობაში"}
+                ? "Inspection takes 3–5 business days"
+                : "პროდუქტის შემოწმება ხდება 3–5 სამუშაო დღეში"}
             </li>
             <li>
               {language === "en"
-                ? "If the factory defect is confirmed, a full refund will be issued"
-                : "თუ ქარხნული წუნი დადასტურდება, გადახდილი თანხა სრულად დაბრუნდება"}
+                ? "If a defect is confirmed, a full refund will be issued"
+                : "თუ დეფექტი დადასტურდება, თანხა სრულად დაბრუნდება"}
             </li>
             <li>
               {language === "en"
-                ? "Refunds are processed to the original payment method"
-                : "თანხა უბრუნდება იმავე გადახდის მეთოდს, რომლითაც შეიძინეთ"}
+                ? "Refunds are sent to the original method of payment"
+                : "თანხა ბრუნდება იმავე გადახდის მეთოდით"}
             </li>
             <li>
               {language === "en"
-                ? "Processing time varies by bank: 5-10 business days for cards, 3-7 days for bank transfers"
-                : "დამუშავების დრო დამოკიდებულია ბანკზე: 5-10 სამუშაო დღე ბარათებისთვის, 3-7 დღე საბანკო გადარიცხვისთვის"}
+                ? "Banking processing times: Cards: 5–10 business days; Bank transfer: 3–7 business days"
+                : "ბანკის დამუშავების დრო: ბარათები: 5–10 სამუშაო დღე; საბანკო გადარიცხვა: 3–7 სამუშაო დღე"}
             </li>
             <li>
               {language === "en"
-                ? "Original shipping costs are non-refundable unless the defect was our error"
-                : "თავდაპირველი ტრანსპორტირების ხარჯები არ ბრუნდება, თუ დეფექტი არ იყო ჩვენი შეცდომა"}
+                ? "Shipping costs are non-refundable unless the error was caused by MyHunter"
+                : "ტრანსპორტირების ხარჯები არ ბრუნდება, გარდა იმ შემთხვევისა, როდესაც შეცდომა მოხდა MyHunter-ის მხრიდან"}
             </li>
           </ul>
         </div>
@@ -192,29 +220,29 @@ export default function ReturnPolicy() {
           </h2>
           <p>
             {language === "en"
-              ? "For approved factory defect claims, you may choose:"
-              : "დამტკიცებული ქარხნული წუნის პრეტენზიებისთვის, თქვენ შეგიძლიათ აირჩიოთ:"}
+              ? "If a manufacturing defect is confirmed, you may choose:"
+              : "დადასტურებული ქარხნული დეფექტის შემთხვევაში შეგიძლიათ აირჩიოთ:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "Full refund to your original payment method"
-                : "თანხის სრული დაბრუნება თქვენს საწყის გადახდის მეთოდზე"}
+                ? "Full refund"
+                : "თანხის სრული დაბრუნება"}
             </li>
             <li>
               {language === "en"
-                ? "Direct replacement with the same product (if available in stock)"
-                : "პირდაპირი ჩანაცვლება იმავე პროდუქტით (თუ ხელმისაწვდომია საწყობში)"}
+                ? "Replacement with the same product (if available in stock)"
+                : "იმავე მოდელის პროდუქტის ჩანაცვლება (თუ არის მარაგში)"}
             </li>
             <li>
               {language === "en"
-                ? "Store credit for the full amount, valid for 12 months"
-                : "მაღაზიის კრედიტი სრული თანხით, ძალაშია 12 თვის განმავლობაში"}
+                ? "Store credit valid for 12 months"
+                : "მაღაზიის კრედიტი (12 თვის ვადით)"}
             </li>
             <li>
               {language === "en"
-                ? "Exchange for a different product of equal or greater value"
-                : "გაცვლა სხვა პროდუქტზე თანაბარი ან უფრო მაღალი ღირებულებით"}
+                ? "Exchange for another product of equal or higher value (with price difference covered by the customer)"
+                : "გაცვლა სხვა პროდუქტზე უფრო მაღალი ღირებულებით — ფასის სხვაობის დაფარვით"}
             </li>
           </ul>
         </div>
@@ -222,39 +250,34 @@ export default function ReturnPolicy() {
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "7. Shipping and Handling"
-              : "7. ტრანსპორტირება და მიწოდება"}
+              ? "7. Return Shipping"
+              : "7. დაბრუნების ტრანსპორტირება"}
           </h2>
           <p>
             {language === "en"
-              ? "For approved returns:"
-              : "დამტკიცებული დაბრუნებისთვის:"}
+              ? "If the defect claim is approved:"
+              : "დამტკიცებული დეფექტის შემთხვევაში:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "We will provide a prepaid return shipping label for factory defects"
-                : "ჩვენ მოგაწოდებთ წინასწარ გადახდილ დაბრუნების ტრანსპორტირების ეტიკეტს ქარხნული წუნისთვის"}
+                ? "You will receive a prepaid return shipping label"
+                : "მოგეცემათ წინასწარ გადახდილი დაბრუნების ეტიკეტი"}
             </li>
             <li>
               {language === "en"
-                ? "Pack the item securely in its original packaging"
-                : "შეაფუთეთ ნივთი უსაფრთხოდ მის ორიგინალურ შეფუთვაში"}
+                ? "The product must be securely packaged in its original packaging with all components"
+                : "პროდუქტი უნდა გაიგზავნოს ორიგინალურ შეფუთვაში, უსაფრთხოდ, სრული კომპლექტაციით"}
             </li>
             <li>
               {language === "en"
-                ? "Include all accessories, manuals, and documentation"
-                : "ჩართეთ ყველა აქსესუარი, სახელმძღვანელო და დოკუმენტაცია"}
+                ? "Returns must be shipped using the courier service specified by MyHunter"
+                : "დაბრუნება უნდა მოხდეს მხოლოდ იმ კურიერული მომსახურებით, რომელსაც MyHunter მიუთითებს"}
             </li>
             <li>
               {language === "en"
-                ? "Ship via the courier service we specify"
-                : "გაგზავნეთ კურიერული სერვისით, რომელსაც ჩვენ მივუთითებთ"}
-            </li>
-            <li>
-              {language === "en"
-                ? "Keep the tracking number for your records"
-                : "შეინახეთ თვალთვალის ნომერი თქვენი ჩანაწერებისთვის"}
+                ? "Customers must retain the tracking number"
+                : "თვალთვალის ნომერი უნდა შეინახოთ"}
             </li>
           </ul>
         </div>
@@ -262,74 +285,94 @@ export default function ReturnPolicy() {
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "8. Damaged During Shipping"
-              : "8. ტრანსპორტირების დროს დაზიანებული"}
+              ? "8. Products Damaged During Shipping"
+              : "8. ტრანსპორტირების დროს დაზიანებული პროდუქტი"}
           </h2>
           <p>
             {language === "en"
-              ? "If your product arrives damaged:"
-              : "თუ თქვენი პროდუქტი დაზიანებული მოვიდა:"}
+              ? "If the product arrives damaged:"
+              : "თუ პროდუქტი ჩამოვიდა დაზიანებული:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "Do not discard the packaging - photograph all damage immediately"
-                : "არ გადაყაროთ შეფუთვა - დაუყოვნებლივ გადაუღეთ ფოტო ყველა დაზიანებას"}
+                ? "Do not discard the packaging"
+                : "შეფუთვა არ გადაყაროთ"}
             </li>
             <li>
               {language === "en"
-                ? "Contact us within 48 hours of delivery with photos"
-                : "დაგვიკავშირდით მიწოდებიდან 48 საათის განმავლობაში ფოტოებით"}
+                ? "Take photos of all damage (product + box)"
+                : "გადაიღეთ ყველა მხარე/დეტალი"}
             </li>
             <li>
               {language === "en"
-                ? "Note any damage on the delivery receipt before signing"
-                : "აღნიშნეთ ნებისმიერი დაზიანება მიწოდების ქვითარზე ხელმოწერამდე"}
+                ? "Contact us within 48 hours of delivery"
+                : "დაგვიკავშირდით მიწოდებიდან 48 საათში"}
             </li>
             <li>
               {language === "en"
-                ? "We will arrange immediate replacement or refund"
-                : "ჩვენ მოვაწყობთ დაუყოვნებელ ჩანაცვლებას ან თანხის დაბრუნებას"}
+                ? "MyHunter will arrange an immediate replacement or refund"
+                : "MyHunter უზრუნველყოფს დაუყოვნებელ ჩანაცვლებას ან თანხის დაბრუნებას"}
             </li>
             <li>
               {language === "en"
-                ? "Shipping damage claims are fully covered by MyHunter"
-                : "ტრანსპორტირების დაზიანების პრეტენზიებს სრულად ფარავს MyHunter"}
+                ? "All shipping-related damage claims are fully covered by MyHunter"
+                : "ტრანსპორტირების დაზიანებას სრულად ფარავს MyHunter"}
             </li>
           </ul>
+          <div className="warning-box">
+            <h4>{language === "en" ? "Additional Condition" : "დამატებითი პირობა"}</h4>
+            <ul>
+              <li>
+                {language === "en"
+                  ? "If only the outer packaging (box/bag) is damaged but the product inside is completely undamaged, fully functional, and free of defects, no refund or replacement will be issued"
+                  : "თუ მხოლოდ შეფუთვა (ყუთი/პაკეტი) არის დაზიანებული, ხოლო შიგთავსი/პროდუქტი დაუზიანებელია სრულად ფუნქციონალურად და არ აქვს დეფექტი — თანხა არ ბრუნდება და ჩანაცვლება არ ხდება"}
+              </li>
+              <li>
+                {language === "en"
+                  ? "Minor cosmetic defects caused by packaging damage (micro scratches, slight color variations, etc.) do not constitute a manufacturing defect"
+                  : "შეფუთვისგან/შეფუთვის დაზიანებისგან გამოწვეული მცირე ესთეტიკური დეფექტები (მიკრო ნაკაწრები, მცირე შეღებვის სხვაობა და ა.შ.) არ წარმოადგენს ქარხნულ წუნს"}
+              </li>
+            </ul>
+            <p>
+              {language === "en"
+                ? "This rule applies if: the product is in 100% perfect visual and technical condition; it is confirmed that only the packaging suffered damage; the product is not a collectible or sensitive item where packaging significantly affects value."
+                : "ეს პირობა მუშაობს შემდეგ შემთხვევაში: პროდუქტი არ აღემატება 100% სრულყოფილ ვიზუალურ და ტექნიკურ მდგომარეობას; დადასტურდება, რომ დაზიანება ეხება მხოლოდ გარე შეფუთვას; პროდუქტი არ არის კოლექციური ან ისეთი კატეგორია, სადაც შეფუთვა წარმოადგენს მნიშვნელოვანი ღირებულების ნაწილს."}
+            </p>
+          </div>
         </div>
 
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "9. Wrong Item Received"
+              ? "9. Incorrect Item Received"
               : "9. არასწორი პროდუქტის მიღება"}
           </h2>
           <p>
             {language === "en"
-              ? "If you receive the wrong item:"
+              ? "If you receive an incorrect product:"
               : "თუ მიიღეთ არასწორი ნივთი:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "Contact us immediately with your order number and photos"
-                : "დაუყოვნებლივ დაგვიკავშირდით თქვენი შეკვეთის ნომრითა და ფოტოებით"}
+                ? "Contact us immediately"
+                : "დაუყოვნებლივ დაგვიკავშირდით"}
             </li>
             <li>
               {language === "en"
-                ? "We will arrange return pickup at no cost to you"
-                : "ჩვენ მოვაწყობთ დაბრუნების აღებას თქვენთვის უფასოდ"}
+                ? "Provide photos and the order number"
+                : "მოგვაწოდეთ შეკვეთის ნომერი და ფოტოები"}
             </li>
             <li>
               {language === "en"
-                ? "The correct item will be shipped immediately"
-                : "სწორი ნივთი გაიგზავნება დაუყოვნებლივ"}
+                ? "We will arrange free return shipping"
+                : "ჩვენ მოვაწყობთ უფასო დაბრუნებას"}
             </li>
             <li>
               {language === "en"
-                ? "Priority shipping will be provided at no extra charge"
-                : "პრიორიტეტული ტრანსპორტირება მიეწოდება დამატებითი საფასურის გარეშე"}
+                ? "The correct item will be shipped with priority processing at no additional cost"
+                : "სწორი პროდუქტი იგზავნება პრიორიტეტულად, დამატებითი საფასურის გარეშე"}
             </li>
           </ul>
         </div>
@@ -337,39 +380,34 @@ export default function ReturnPolicy() {
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "10. Warranty Information"
-              : "10. გარანტიის ინფორმაცია"}
+              ? "10. Warranty Conditions"
+              : "10. გარანტიის პირობები"}
           </h2>
           <p>
             {language === "en"
-              ? "Many of our products come with manufacturer warranties:"
-              : "ჩვენი მრავალი პროდუქტი მოდის მწარმოებლის გარანტიით:"}
+              ? "Many products come with a manufacturer warranty:"
+              : "ბევრ პროდუქტს აქვს მწარმოებლის გარანტია:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "Warranty periods vary by product and manufacturer (typically 1-5 years)"
-                : "გარანტიის პერიოდები განსხვავდება პროდუქტისა და მწარმოებლის მიხედვით (ჩვეულებრივ 1-5 წელი)"}
+                ? "Warranty periods range from 1 to 5 years, depending on the item"
+                : "გარანტიის ვადა: 1–5 წელი, პროდუქტის მიხედვით"}
             </li>
             <li>
               {language === "en"
-                ? "Warranty covers manufacturing defects, not wear and tear or misuse"
-                : "გარანტია ფარავს წარმოების დეფექტებს, არა ცვეთას ან არასწორ გამოყენებას"}
+                ? "Warranty covers manufacturing defects only"
+                : "გარანტია ფარავს მხოლოდ წარმოების დეფექტებს"}
             </li>
             <li>
               {language === "en"
-                ? "Keep your receipt and warranty card for warranty claims"
-                : "შეინახეთ თქვენი ქვითარი და გარანტიის ბარათი გარანტიული პრეტენზიებისთვის"}
+                ? "Warranty does not cover: wear and tear; improper use; unauthorized repairs/modifications; incorrect installation"
+                : "გარანტია არ ფარავს: ცვეთას; არასწორ ექსპლუატაციას; თვითნებურ რემონტს; არასწორ მონტაჟს"}
             </li>
             <li>
               {language === "en"
-                ? "We facilitate warranty claims with manufacturers on your behalf"
-                : "ჩვენ ვუწყობთ ხელს გარანტიულ პრეტენზიებს მწარმოებლებთან თქვენს სახელზე"}
-            </li>
-            <li>
-              {language === "en"
-                ? "Extended warranty options may be available for select products"
-                : "გაფართოებული გარანტიის ვარიანტები შეიძლება იყოს ხელმისაწვდომი შერჩეული პროდუქტებისთვის"}
+                ? "A receipt and warranty card (if applicable) are required for warranty service"
+                : "გარანტიის მოთხოვნისთვის აუცილებელია ქვითარი და დოკუმენტაცია"}
             </li>
           </ul>
         </div>
@@ -377,39 +415,39 @@ export default function ReturnPolicy() {
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "11. Customer Responsibility"
+              ? "11. Customer Responsibilities"
               : "11. მომხმარებლის პასუხისმგებლობა"}
           </h2>
           <p>
             {language === "en"
-              ? "To ensure a smooth return process:"
-              : "დაბრუნების გლუვი პროცესის უზრუნველსაყოფად:"}
+              ? "Customers must:"
+              : "მომხმარებელმა უნდა უზრუნველყოს:"}
           </p>
           <ul>
             <li>
               {language === "en"
-                ? "Inspect products upon delivery and report issues within 48 hours"
-                : "შეამოწმეთ პროდუქტები მიწოდებისას და მოგვახსენეთ პრობლემებს 48 საათში"}
+                ? "Inspect all products upon delivery (within 48 hours)"
+                : "პროდუქტის შემოწმება მიწოდებისთანავე (48 საათში)"}
             </li>
             <li>
               {language === "en"
-                ? "Follow product care and maintenance instructions provided"
-                : "მიჰყევით პროდუქტის მოვლისა და მოვლის ინსტრუქციებს"}
+                ? "Use products according to all provided instructions"
+                : "პროდუქტის სწორად გამოყენება ინსტრუქციის შესაბამისად"}
             </li>
             <li>
               {language === "en"
-                ? "Use products only for their intended purpose"
-                : "გამოიყენეთ პროდუქტები მხოლოდ მათი განკუთვნილი დანიშნულებით"}
+                ? "Store firearm parts, ammunition, and tactical equipment in compliance with Georgian law"
+                : "იარაღისა და საბრძოლო მასალის შენახვა საქართველოს კანონმდებლობის შესაბამისად"}
             </li>
             <li>
               {language === "en"
-                ? "Store firearms and ammunition according to Georgian law"
-                : "შეინახეთ ცეცხლსასროლი იარაღი და საბრძოლო მასალა საქართველოს კანონის შესაბამისად"}
+                ? "Retain all receipts, documentation, and packaging for potential returns"
+                : "ყველა დოკუმენტაციის, ქვითრისა და შეფუთვის შენახვა"}
             </li>
-            <li>
+            <li className="important-note">
               {language === "en"
-                ? "Keep all receipts, documentation, and packaging for potential returns"
-                : "შეინახეთ ყველა ქვითარი, დოკუმენტაცია და შეფუთვა შესაძლო დაბრუნებისთვის"}
+                ? "Product installation performed by a third party (technician, service center, etc.) is the sole responsibility of that party and not MyHunter"
+                : "პროდუქტის ინსტალაცია რომელიც შესრულებულია მესამე პირის მიერ (ოსტატი, სერვისი და ა.შ.), პასუხისმგებლობას მთლიანად იღებს აღნიშნული პირი და არა MyHunter"}
             </li>
           </ul>
         </div>
@@ -417,27 +455,27 @@ export default function ReturnPolicy() {
         <div className="return-section">
           <h2>
             {language === "en"
-              ? "12. Contact for Returns"
-              : "12. დაბრუნებისთვის საკონტაქტო"}
+              ? "12. Return Contact Information"
+              : "12. დაბრუნების საკონტაქტო ინფორმაცია"}
           </h2>
           <p>
             {language === "en"
-              ? "To initiate a return or for questions about our return policy:"
-              : "დაბრუნების დასაწყებად ან ჩვენი დაბრუნების პოლიტიკის შესახებ კითხვებისთვის:"}
+              ? "To begin a return request or for questions regarding our return policy:"
+              : "დაბრუნების პროცესის დასაწყებად დაგვიკავშირდით:"}
           </p>
           <div className="return-contact-info">
             <p>
-              {language === "en" ? "Email: " : "ელ-ფოსტა: "}
+              📧 {language === "en" ? "Email: " : "ელ-ფოსტა: "}
               ssbbmarket@gmail.com
             </p>
             <p>
-              {language === "en" ? "Phone: " : "ტელეფონი: "}
+              📞 {language === "en" ? "Phone: " : "ტელეფონი: "}
               +995 577 027 700
             </p>
             <p>
-              {language === "en"
-                ? "Business Hours: Monday-Saturday, 10:00-19:00"
-                : "სამუშაო საათები: ორშაბათი-შაბათი, 10:00-19:00"}
+              ⏱ {language === "en"
+                ? "Hours: Monday–Saturday, 10:00–19:00"
+                : "სამუშაო საათები: ორშაბათი–შაბათი, 10:00–19:00"}
             </p>
           </div>
         </div>
@@ -446,10 +484,22 @@ export default function ReturnPolicy() {
           <p>
             <strong>
               {language === "en"
-                ? "Last Updated: November 20, 2025"
-                : "ბოლო განახლება: 20 ნოემბერი, 2025"}
+                ? "Last Updated: December 10, 2025"
+                : "ბოლო განახლება: 10 დეკემბერი, 2025"}
             </strong>
           </p>
+        </div>
+
+        <div className="download-section">
+          <a
+            href="/return.pdf"
+            download="MyHunter_Return_Policy.pdf"
+            className="download-btn"
+          >
+            📥 {language === "en"
+              ? "Download Return Policy (PDF)"
+              : "დაბრუნების პოლიტიკის ჩამოტვირთვა (PDF)"}
+          </a>
         </div>
       </div>
     </div>
