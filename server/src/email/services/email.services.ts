@@ -1,4 +1,3 @@
-import { emailConfig } from '@/email.config';
 import { Injectable } from '@nestjs/common';
 
 import * as nodemailer from 'nodemailer';
@@ -6,39 +5,50 @@ import * as nodemailer from 'nodemailer';
 @Injectable()
 export class EmailService {
   private transporter;
+  private emailFrom: string;
 
   constructor() {
     console.log('🔧 EmailService constructor called');
-    console.log('📧 Email config:', {
-      host: emailConfig.host,
-      port: emailConfig.port,
-      secure: emailConfig.secure,
-      user: emailConfig.auth.user ? '***' : 'NOT SET',
-      pass: emailConfig.auth.pass ? '***' : 'NOT SET',
-      from: emailConfig.from,
+    
+    // Runtime-ში ვკითხულობთ env ცვლადებს
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
+    this.emailFrom = process.env.EMAIL_FROM || 'no-reply@example.com';
+    
+    console.log('📧 Email config (runtime):', {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      user: emailUser ? '***' : 'NOT SET',
+      pass: emailPass ? '***' : 'NOT SET',
+      from: this.emailFrom,
     });
 
     this.transporter = nodemailer.createTransport({
-      host: emailConfig.host, // ✅ `service` არ არის საჭირო
-      port: emailConfig.port,
-      secure: emailConfig.secure,
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
-        user: emailConfig.auth.user,
-        pass: emailConfig.auth.pass,
+        user: emailUser,
+        pass: emailPass,
       },
       tls: {
-        rejectUnauthorized: false, // ✅ სერტიფიკატის გადამოწმების გამორთვა
+        rejectUnauthorized: false,
       },
     });
 
     console.log('✅ Email transporter created successfully');
   }
 
+  private getFromEmail(): string {
+    return this.emailFrom;
+  }
+
   async sendPasswordResetEmail(to: string, resetToken: string) {
     const resetLink = `${process.env.ALLOWED_ORIGINS}/reset-password?token=${resetToken}`;
 
     const mailOptions = {
-      from: emailConfig.from,
+      from: this.getFromEmail(),
       to,
       subject: 'Password Reset Request',
       html: `
@@ -105,7 +115,7 @@ export class EmailService {
         .join('');
 
       const mailOptions = {
-        from: emailConfig.from,
+        from: this.getFromEmail(),
         to: orderData.customerEmail,
         subject: `შეკვეთის დადასტურება - #${orderIdentifier}`,
         html: `
@@ -317,8 +327,11 @@ export class EmailService {
       // Admin email - send to store management
       const adminEmail = process.env.ADMIN_EMAIL || 'ssbbmarket@gmail.com';
 
+      console.log('📧 SENDING EMAIL FROM:', this.getFromEmail());
+      console.log('📧 SENDING EMAIL TO:', adminEmail);
+
       const mailOptions = {
-        from: emailConfig.from,
+        from: this.getFromEmail(),
         to: adminEmail,
         subject: `🛒 ახალი შეკვეთა - #${orderIdentifier}`,
         html: `

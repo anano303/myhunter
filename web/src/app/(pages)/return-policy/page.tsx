@@ -83,7 +83,9 @@ export default function ReturnPolicy() {
             </li>
           </ul>
           <div className="warning-box">
-            <h4>{language === "en" ? "Diagnostic Cost" : "დიაგნოსტიკის ხარჯი"}</h4>
+            <h4>
+              {language === "en" ? "Diagnostic Cost" : "დიაგნოსტიკის ხარჯი"}
+            </h4>
             <p>
               {language === "en"
                 ? "If the returned product is found to be fully functional and defect-free upon inspection, MyHunter reserves the right not to issue a refund or replacement. Additionally, the customer will be responsible for covering round-trip shipping costs."
@@ -225,9 +227,7 @@ export default function ReturnPolicy() {
           </p>
           <ul>
             <li>
-              {language === "en"
-                ? "Full refund"
-                : "თანხის სრული დაბრუნება"}
+              {language === "en" ? "Full refund" : "თანხის სრული დაბრუნება"}
             </li>
             <li>
               {language === "en"
@@ -321,7 +321,9 @@ export default function ReturnPolicy() {
             </li>
           </ul>
           <div className="warning-box">
-            <h4>{language === "en" ? "Additional Condition" : "დამატებითი პირობა"}</h4>
+            <h4>
+              {language === "en" ? "Additional Condition" : "დამატებითი პირობა"}
+            </h4>
             <ul>
               <li>
                 {language === "en"
@@ -473,7 +475,8 @@ export default function ReturnPolicy() {
               +995 577 027 700
             </p>
             <p>
-              ⏱ {language === "en"
+              ⏱{" "}
+              {language === "en"
                 ? "Hours: Monday–Saturday, 10:00–19:00"
                 : "სამუშაო საათები: ორშაბათი–შაბათი, 10:00–19:00"}
             </p>
@@ -496,7 +499,8 @@ export default function ReturnPolicy() {
             download="MyHunter_Return_Policy.pdf"
             className="download-btn"
           >
-            📥 {language === "en"
+            📥{" "}
+            {language === "en"
               ? "Download Return Policy (PDF)"
               : "დაბრუნების პოლიტიკის ჩამოტვირთვა (PDF)"}
           </a>
