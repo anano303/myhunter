@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
-import { useRouter } from "next/navigation";
 import "./BrandLogos.css";
 import noPhoto from "../../assets/nophoto.webp";
 import { Product } from "@/types";
@@ -36,7 +36,6 @@ const fallbackBrands = [
 ];
 
 const BrandLogos = () => {
-  const router = useRouter();
   const [isAnimationPaused, setIsAnimationPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -131,9 +130,9 @@ const BrandLogos = () => {
   const pauseAnimation = () => setIsAnimationPaused(true);
   const resumeAnimation = () => setIsAnimationPaused(false);
 
-  // Navigate to shop page with brand filter when a brand is clicked
-  const handleBrandClick = (brandName: string) => {
-    router.push(`/shop?brand=${encodeURIComponent(brandName)}`);
+  // Generate brand URL
+  const getBrandUrl = (brandName: string) => {
+    return `/shop?brand=${encodeURIComponent(brandName)}`;
   };
 
   // Observer for animation
@@ -188,10 +187,10 @@ const BrandLogos = () => {
           <div className="brand-logos-slider">
             {/* First set of logos */}
             {brands.map((brand, index) => (
-              <div
+              <Link
                 key={`brand-${index}`}
+                href={getBrandUrl(brand.name)}
                 className="brand-logo-item"
-                onClick={() => handleBrandClick(brand.name)}
               >
                 <div className="brand-logo-wrapper">
                   {isCloudinaryImage(brand.logo || noPhoto.src) ? (
@@ -216,15 +215,15 @@ const BrandLogos = () => {
                   )}
                 </div>
                 <div className="brand-name">{brand.name}</div>
-              </div>
+              </Link>
             ))}
 
             {/* Duplicate set for seamless loop */}
             {brands.map((brand, index) => (
-              <div
+              <Link
                 key={`brand-duplicate-${index}`}
+                href={getBrandUrl(brand.name)}
                 className="brand-logo-item"
-                onClick={() => handleBrandClick(brand.name)}
               >
                 <div className="brand-logo-wrapper">
                   {isCloudinaryImage(brand.logo || noPhoto.src) ? (
@@ -249,7 +248,7 @@ const BrandLogos = () => {
                   )}
                 </div>
                 <div className="brand-name">{brand.name}</div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (

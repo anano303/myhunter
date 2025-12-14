@@ -111,7 +111,10 @@
   align-items: center;
   padding: 0 30px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer; /* Added cursor to indicate clickable */
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from Link */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  touch-action: manipulation; /* Improve touch responsiveness */
 }
 
 .brand-logo-item:hover {
