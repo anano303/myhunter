@@ -52,11 +52,30 @@ export function OrderReview() {
     }
   }, [shippingDetails, isCheckoutLoaded, isMounted, router]);
 
+  // Calculate shipping price based on city
+  const calculateShippingPrice = (): number => {
+    if (!shippingDetails?.city) return 15; // Default to regional price
+    const city = shippingDetails.city.toLowerCase().trim();
+    // Check if it's Tbilisi (Georgian or English, any case/format)
+    const tbilisiVariants = [
+      "თბილისი",
+      "tbilisi",
+      "tibilisi",
+      "tbilissi",
+      "თბილისსი",
+      "თბილისისი",
+    ];
+    if (tbilisiVariants.some((variant) => city.includes(variant))) {
+      return 8;
+    }
+    return 15; // All other regions
+  };
+
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
   );
-  const shippingPrice: number = itemsPrice > 100 ? 0 : 0;
+  const shippingPrice: number = calculateShippingPrice();
   const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
@@ -297,11 +316,7 @@ export function OrderReview() {
               <span className="summary-label text-muted-foreground">
                 {t("checkout.shippingCost")}
               </span>
-              <span>
-                {shippingPrice === 0
-                  ? t("checkout.free")
-                  : `${shippingPrice.toFixed(2)}₾`}
-              </span>
+              <span>{shippingPrice.toFixed(2)} ₾</span>
             </div>
             <div className="summary-row flex justify-between">
               <span className="summary-label text-muted-foreground">
@@ -315,13 +330,18 @@ export function OrderReview() {
               <span>{totalPrice.toFixed(2)} ₾</span>
             </div>
             <button
-              className="place-order-button w-full"
+              className={`place-order-button w-full ${isPlacingOrder ? 'loading' : ''}`}
               onClick={handlePlaceOrder}
               disabled={isPlacingOrder}
             >
-              {isPlacingOrder
-                ? t("checkout.placingOrder")
-                : t("checkout.placeOrder")}
+              {isPlacingOrder ? (
+                <>
+                  <span className="spinner"></span>
+                  {t("checkout.placingOrder")}
+                </>
+              ) : (
+                t("checkout.placeOrder")
+              )}
             </button>
           </div>
         </div>

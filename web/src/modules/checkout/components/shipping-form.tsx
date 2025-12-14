@@ -25,7 +25,7 @@ export function ShippingForm() {
   const router = useRouter();
   const { toast } = useToast();
   const { user, isLoading } = useUser();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -127,6 +127,11 @@ export function ShippingForm() {
             placeholder={t("checkout.cityPlaceholder")}
           />
           {errors.city && <p className="error-text">{errors.city.message}</p>}
+          <p className="shipping-info-text">
+            {language === "ge"
+              ? "მიწოდება: თბილისი - 8₾, რეგიონები - 15₾"
+              : "Delivery: Tbilisi - 8₾, Regions - 15₾"}
+          </p>
         </div>
 
         <div className="shipping-form-field">

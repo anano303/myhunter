@@ -198,6 +198,16 @@
   color: #ff6b6b;
 }
 
+.shipping-info-text {
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(75, 83, 32, 0.2);
+  border-radius: 6px;
+  border-left: 3px solid #5b6c18;
+}
+
 .shipping-form-button {
   width: 100%;
   background: linear-gradient(135deg, #4b5320, #5c6525);

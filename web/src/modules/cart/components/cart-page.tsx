@@ -56,9 +56,6 @@ export function CartPage() {
   }
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
-  const shipping = subtotal > 100 ? 0 : 0;
-  const tax = Number((0.02 * subtotal).toFixed(2));
-  const total = subtotal + shipping + tax;
 
   const handleCheckout = () => {
     if (!user) {
@@ -101,20 +98,10 @@ export function CartPage() {
                 <span className="summary-label">{t("cart.total")}</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
-              <div className="summary-row">
-                <span className="summary-label">{t("cart.delivery")}</span>
-                <span>
-                  {shipping === 0 ? t("cart.free") : formatPrice(shipping)}
-                </span>
-              </div>
-              <div className="summary-row">
-                <span className="summary-label">{t("cart.commission")}</span>
-                <span>{formatPrice(tax)}</span>
-              </div>
               <hr className="separator" />
               <div className="summary-row total">
                 <span>{t("cart.totalCost")}</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
               <button className="checkout-button" onClick={handleCheckout}>
                 {t("cart.checkout")}
