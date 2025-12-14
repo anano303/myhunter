@@ -9,7 +9,7 @@ import "./header.scss";
 import UserMenu from "./user-menu";
 import { LanguageSwitcher } from "@/components/language-switcher/language-switcher";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Home, ShoppingBag, Star, X } from "lucide-react";
+import { Home, ShoppingBag, Star, X, Mail } from "lucide-react";
 import SearchBox from "../SearchBox/search-box";
 
 export default function Header() {
@@ -98,6 +98,16 @@ export default function Header() {
               >
                 <Star size={20} className="nav-icon" />
                 <span>{t("navigation.about")}</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                href="/contact"
+                className="nav-link"
+                onClick={() => setIsNavOpen(false)}
+              >
+                <Mail size={20} className="nav-icon" />
+                <span>{t("navigation.contact")}</span>
               </Link>
             </li>
           </ul>

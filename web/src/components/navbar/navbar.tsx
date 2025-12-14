@@ -31,6 +31,7 @@ const Navbar: React.FC = () => {
     { href: "/video", textKey: "navigation.forum", icon: video },
     { href: "/forum", textKey: "navigation.forum", icon: forum },
     { href: "/about", textKey: "navigation.about", icon: about },
+    { href: "/contact", textKey: "navigation.contact", icon: about },
   ];
 
   const handleClick = (e: React.MouseEvent, index: number, href: string) => {
