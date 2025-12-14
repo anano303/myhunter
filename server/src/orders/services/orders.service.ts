@@ -117,6 +117,21 @@ export class OrdersService {
     if (orderItems && orderItems.length < 1)
       throw new BadRequestException('No order items received.');
 
+    // Check for duplicate orders - same user, same total, within last 2 minutes
+    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+    const existingOrder = await this.orderModel.findOne({
+      user: userId,
+      totalPrice,
+      createdAt: { $gte: twoMinutesAgo },
+    });
+
+    if (existingOrder) {
+      this.logger.warn(
+        `Duplicate order detected for user ${userId}. Returning existing order ${existingOrder.orderNumber}`,
+      );
+      return existingOrder;
+    }
+
     // Start MongoDB transaction to prevent race conditions
     const session = await this.connection.startSession();
 

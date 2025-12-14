@@ -60,6 +60,38 @@ export function OrderReview() {
   const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
+  // Helper to check for duplicate order submission
+  const checkDuplicateOrder = (): boolean => {
+    try {
+      const lastOrderData = localStorage.getItem("myhunter_last_order");
+      if (lastOrderData) {
+        const { totalPrice: lastTotal, timestamp, productIds } = JSON.parse(lastOrderData);
+        const currentProductIds = items.map(i => i.productId).sort().join(",");
+        const timeDiff = Date.now() - timestamp;
+        
+        // If same products and total within last 2 minutes, it's likely a duplicate
+        if (lastTotal === totalPrice && productIds === currentProductIds && timeDiff < 2 * 60 * 1000) {
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error("Error checking duplicate order:", e);
+    }
+    return false;
+  };
+
+  const saveOrderAttempt = () => {
+    try {
+      localStorage.setItem("myhunter_last_order", JSON.stringify({
+        totalPrice,
+        timestamp: Date.now(),
+        productIds: items.map(i => i.productId).sort().join(",")
+      }));
+    } catch (e) {
+      console.error("Error saving order attempt:", e);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     if (isLoading) {
       return;
@@ -72,7 +104,19 @@ export function OrderReview() {
 
     if (isPlacingOrder) return; // Prevent double submission
 
+    // Check for duplicate order attempt
+    if (checkDuplicateOrder()) {
+      toast({
+        title: t("checkout.duplicateOrder") || "შეკვეთა უკვე გაიგზავნა",
+        description: t("checkout.duplicateOrderDescription") || "გთხოვთ დაელოდოთ ან შეამოწმოთ თქვენი შეკვეთები",
+        variant: "destructive",
+      });
+      router.push("/profile/orders");
+      return;
+    }
+
     setIsPlacingOrder(true);
+    saveOrderAttempt(); // Save attempt to prevent duplicates
 
     try {
       const orderItems = items.map((item) => ({
