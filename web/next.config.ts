@@ -47,6 +47,20 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  // Disable caching for development - forces fresh content
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

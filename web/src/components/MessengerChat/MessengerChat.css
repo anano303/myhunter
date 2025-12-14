@@ -45,11 +45,19 @@
 .fb_dialog,
 .fb_dialog_advanced,
 .fb_customer_chat_icon,
-iframe[data-testid="bubble_iframe"] {
+.fb_dialog_content,
+.fb_iframe_widget,
+iframe[data-testid="bubble_iframe"],
+iframe[title*="Messenger"],
+iframe[title*="messenger"],
+div[class*="fb_dialog"],
+div[class*="fb-customerchat"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Animation for the messenger button */
@@ -124,7 +132,7 @@ iframe[data-testid="bubble_iframe"] {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 1000;
+  z-index: 999999;
 }
 
 /* Chat options menu */
@@ -136,6 +144,12 @@ iframe[data-testid="bubble_iframe"] {
   flex-direction: column;
   gap: 10px;
   animation: slideUp 0.3s ease;
+  z-index: 9999999;
+}
+
+.chatIcon {
+  z-index: 999999 !important;
+  position: relative;
 }
 
 @keyframes slideUp {

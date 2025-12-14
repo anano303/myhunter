@@ -1,23 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MessengerChat.css";
 
 const MessengerChat = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleMessengerClick = () => {
+  const handleMessengerClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     window.open("https://m.me/SSBBmarket", "_blank");
     setIsOpen(false);
   };
 
-  const handleWhatsAppClick = () => {
+  const handleWhatsAppClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     window.open("https://wa.me/995577027700", "_blank");
     setIsOpen(false);
   };
 
+  const handleMainClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="chat-container">
+    <div className="chat-container" ref={containerRef}>
       {/* Chat options menu */}
       {isOpen && (
         <div className="chat-options">
@@ -59,12 +82,9 @@ const MessengerChat = () => {
       {/* Main chat button - original design */}
       <div
         className="chatIcon"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleMainClick}
         title="დაგვიკავშირდით მესენჯერში"
         style={{
-          position: "fixed",
-          bottom: "30px",
-          right: "30px",
           width: "60px",
           height: "60px",
           borderRadius: "50%",
@@ -73,7 +93,6 @@ const MessengerChat = () => {
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
-          zIndex: 1000,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "scale(1.1)";

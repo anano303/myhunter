@@ -109,13 +109,13 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/logo.png" />
         <link rel="mask-icon" href="/logo.png" color="#000000" />
         <meta name="msapplication-TileImage" content="/logo.png" />
-        {/* Facebook SDK - Fix appId to lowercase appid */}
-        <script
+        {/* Facebook SDK - temporarily disabled to fix chat button */}
+        {/* <script
           async
           defer
           crossOrigin="anonymous"
           src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appid=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
-        />
+        /> */}
         {/* Remove the problematic prefetch links */}
         {/* Add Google Fonts link */}
         {/* <link
