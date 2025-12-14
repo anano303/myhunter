@@ -21,6 +21,7 @@ export const TRANSLATIONS: Translations = {
       myOrders: "ჩემი შეკვეთები",
       forum: "ფორუმი",
       about: "ჩვენს შესახებ",
+      contact: "კონტაქტი",
       login: "ავტორიზაცია",
       profile: "პროფილი",
       orders: "შეკვეთები",
@@ -351,6 +352,9 @@ export const TRANSLATIONS: Translations = {
       subscribe: "გამოწერა",
       emailPlaceholder: "შეიყვანეთ თქვენი ელფოსტა",
       beforeYouLeave: "სანამ წახვალ დააპიპინეეე!!!",
+      privacy: "კონფიდენციალურობა",
+      terms: "წესები და პირობები",
+      returnPolicy: "დაბრუნების წესები",
     },
     home: {
       heroTitle: "შეარჩიე ხელოვანების პროდუქტები ან გაყიდე შენი 🖌️",
@@ -486,6 +490,7 @@ export const TRANSLATIONS: Translations = {
       subject: "თემა",
       message: "მესიჯი",
       send: "გაგზავნა",
+      sending: "იგზავნება...",
       nameRequired: "სახელის შეყვანა აუცილებელია",
       emailRequired: "ელ-ფოსტის შეყვანა აუცილებელია",
       subjectRequired: "თემის შეყვანა აუცილებელია",
@@ -494,6 +499,11 @@ export const TRANSLATIONS: Translations = {
       emailPlaceholder: "შეიყვანეთ თქვენი ელ-ფოსტა",
       subjectPlaceholder: "შეიყვანეთ თემა",
       messagePlaceholder: "შეიყვანეთ თქვენი შეტყობინება",
+      successTitle: "შეტყობინება გაიგზავნა!",
+      successMessage:
+        "თქვენი შეტყობინება წარმატებით გაიგზავნა. მალე დაგიკავშირდებით!",
+      sendAnother: "ახალი შეტყობინების გაგზავნა",
+      sendError: "შეცდომა შეტყობინების გაგზავნისას. გთხოვთ სცადოთ თავიდან.",
     },
 
     // Art Categories
@@ -803,6 +813,7 @@ export const TRANSLATIONS: Translations = {
       myOrders: "My Orders",
       forum: "Forum",
       about: "About",
+      contact: "Contact",
       login: "Login",
       profile: "Profile",
       orders: "Orders",
@@ -1096,6 +1107,9 @@ export const TRANSLATIONS: Translations = {
       subscribe: "Subscribe",
       emailPlaceholder: "Enter your email",
       beforeYouLeave: "Before you go, piiip it out!!!",
+      privacy: "Privacy Policy",
+      terms: "Terms & Conditions",
+      returnPolicy: "Return Policy",
     },
 
     home: {
@@ -1226,6 +1240,7 @@ export const TRANSLATIONS: Translations = {
       subject: "Subject",
       message: "Message",
       send: "Send",
+      sending: "Sending...",
       nameRequired: "Name is required",
       emailRequired: "Email is required",
       subjectRequired: "Subject is required",
@@ -1234,6 +1249,11 @@ export const TRANSLATIONS: Translations = {
       emailPlaceholder: "Enter your email",
       subjectPlaceholder: "Enter subject",
       messagePlaceholder: "Enter your message",
+      successTitle: "Message Sent!",
+      successMessage:
+        "Your message has been sent successfully. We will contact you soon!",
+      sendAnother: "Send Another Message",
+      sendError: "Error sending message. Please try again.",
     },
 
     // Art Categories

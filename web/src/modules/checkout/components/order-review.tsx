@@ -330,7 +330,9 @@ export function OrderReview() {
               <span>{totalPrice.toFixed(2)} ₾</span>
             </div>
             <button
-              className={`place-order-button w-full ${isPlacingOrder ? 'loading' : ''}`}
+              className={`place-order-button w-full ${
+                isPlacingOrder ? "loading" : ""
+              }`}
               onClick={handlePlaceOrder}
               disabled={isPlacingOrder}
             >

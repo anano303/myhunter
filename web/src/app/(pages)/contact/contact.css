@@ -219,3 +219,54 @@ label {
     );
   background-blend-mode: normal, multiply, overlay;
 }
+
+/* Success message styles */
+.success-message {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.success-message h2 {
+  color: #5b6c18;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.success-message p {
+  color: #e6cd9f;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Spinner for loading state */
+.form-button .spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(230, 205, 159, 0.3);
+  border-top-color: #e6cd9f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.form-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-error {
+  text-align: center;
+  margin-bottom: 1rem;
+}

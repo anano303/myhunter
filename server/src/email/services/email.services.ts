@@ -472,4 +472,76 @@ export class EmailService {
       throw error;
     }
   }
+
+  async sendContactFormEmail(contactData: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+  }) {
+    const adminEmail = process.env.ADMIN_EMAIL || 'ssbbmarket@gmail.com';
+
+    console.log('📧 Sending contact form email to admin:', adminEmail);
+
+    const mailOptions = {
+      from: this.getFromEmail(),
+      to: adminEmail,
+      subject: `[MyHunter Contact] ${contactData.subject}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+        </head>
+        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            
+            <div style="background: linear-gradient(135deg, #5b6c18, #4a5a14); padding: 25px; text-align: center;">
+              <h1 style="color: #f5e9d1; margin: 0; font-size: 24px;">📬 ახალი შეტყობინება</h1>
+              <p style="color: #d4c5a9; margin: 10px 0 0 0;">MyHunter - საკონტაქტო ფორმა</p>
+            </div>
+
+            <div style="padding: 25px;">
+              <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #5b6c18; margin: 0 0 15px 0;">👤 გამომგზავნის ინფორმაცია</h3>
+                <p style="margin: 5px 0;"><strong>სახელი:</strong> ${contactData.name}</p>
+                <p style="margin: 5px 0;"><strong>ელ-ფოსტა:</strong> <a href="mailto:${contactData.email}">${contactData.email}</a></p>
+              </div>
+
+              <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #5b6c18; margin: 0 0 15px 0;">📝 თემა</h3>
+                <p style="margin: 0; font-size: 16px; font-weight: bold;">${contactData.subject}</p>
+              </div>
+
+              <div style="background: #fff3cd; border-radius: 8px; padding: 20px; border-left: 4px solid #5b6c18;">
+                <h3 style="color: #5b6c18; margin: 0 0 15px 0;">💬 შეტყობინება</h3>
+                <p style="margin: 0; white-space: pre-wrap; line-height: 1.6;">${contactData.message}</p>
+              </div>
+
+              <div style="margin-top: 20px; text-align: center;">
+                <a href="mailto:${contactData.email}?subject=Re: ${contactData.subject}" 
+                   style="display: inline-block; background: #5b6c18; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+                  📧 პასუხის გაგზავნა
+                </a>
+              </div>
+            </div>
+
+            <div style="background: #2a2a2a; padding: 15px; text-align: center;">
+              <p style="color: #888; margin: 0; font-size: 12px;">ეს შეტყობინება გაიგზავნა MyHunter-ის საკონტაქტო ფორმიდან</p>
+            </div>
+
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log('✅ Contact form email sent successfully!');
+    } catch (error) {
+      console.error('❌ Error sending contact form email:', error);
+      throw error;
+    }
+  }
 }
