@@ -46,19 +46,27 @@ export class SubCategoriesController {
     type: Boolean,
     description: 'Include inactive subcategories',
   })
+  @ApiQuery({
+    name: 'withProducts',
+    required: false,
+    type: Boolean,
+    description: 'Only return subcategories that have at least one product',
+  })
   @ApiResponse({ status: 200, description: 'Returns all subcategories' })
   findAllSubCategories(
     @Query('categoryId') categoryId?: string,
     @Query('includeInactive') includeInactive?: string,
+    @Query('withProducts') withProducts?: string,
   ) {
     console.log(
-      `[SubCategoriesController] GET /categories/sub request. Query params -> categoryId: "${categoryId}", includeInactive: "${includeInactive}"`,
+      `[SubCategoriesController] GET /categories/sub request. Query params -> categoryId: "${categoryId}", includeInactive: "${includeInactive}", withProducts: "${withProducts}"`,
     );
     try {
       // The service method is async, so this will return a Promise
       const subcategoriesPromise = this.subCategoryService.findAll(
         categoryId,
         includeInactive === 'true',
+        withProducts === 'true',
       );
       console.log(
         `[SubCategoriesController] Called subCategoryService.findAll for categoryId: "${categoryId}"`,

@@ -208,7 +208,8 @@ export const TRANSLATIONS: Translations = {
       errorSavingShipping: "შეცდომა მიწოდების დეტალების შენახვისას",
       pleaseTryAgain: "გთხოვთ სცადოთ თავიდან.",
       duplicateOrder: "შეკვეთა უკვე გაიგზავნა",
-      duplicateOrderDescription: "გთხოვთ დაელოდოთ ან შეამოწმოთ თქვენი შეკვეთები",
+      duplicateOrderDescription:
+        "გთხოვთ დაელოდოთ ან შეამოწმოთ თქვენი შეკვეთები",
       paymentMethod: "გადახდის მეთოდი",
       choosePaymentMethod: "აირჩიეთ როგორ გსურთ გადახდა",
       cardPayment: "ბარათით გადახდა",

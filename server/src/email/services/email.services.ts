@@ -9,12 +9,12 @@ export class EmailService {
 
   constructor() {
     console.log('🔧 EmailService constructor called');
-    
+
     // Runtime-ში ვკითხულობთ env ცვლადებს
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASS;
     this.emailFrom = process.env.EMAIL_FROM || 'no-reply@example.com';
-    
+
     console.log('📧 Email config (runtime):', {
       host: 'smtp.gmail.com',
       port: 465,

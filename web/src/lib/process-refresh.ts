@@ -107,12 +107,12 @@ export const checkAndRefreshAuth = async (): Promise<boolean> => {
           .join("")
       );
       const { exp } = JSON.parse(jsonPayload);
-      
+
       if (exp) {
         const expirationTime = exp * 1000;
         const currentTime = Date.now();
         const timeUntilExpiration = expirationTime - currentTime;
-        
+
         // If token expires in more than 5 minutes, no need to refresh
         if (timeUntilExpiration > 5 * 60 * 1000) {
           return true; // User is authenticated with valid token

@@ -65,12 +65,23 @@ export function OrderReview() {
     try {
       const lastOrderData = localStorage.getItem("myhunter_last_order");
       if (lastOrderData) {
-        const { totalPrice: lastTotal, timestamp, productIds } = JSON.parse(lastOrderData);
-        const currentProductIds = items.map(i => i.productId).sort().join(",");
+        const {
+          totalPrice: lastTotal,
+          timestamp,
+          productIds,
+        } = JSON.parse(lastOrderData);
+        const currentProductIds = items
+          .map((i) => i.productId)
+          .sort()
+          .join(",");
         const timeDiff = Date.now() - timestamp;
-        
+
         // If same products and total within last 2 minutes, it's likely a duplicate
-        if (lastTotal === totalPrice && productIds === currentProductIds && timeDiff < 2 * 60 * 1000) {
+        if (
+          lastTotal === totalPrice &&
+          productIds === currentProductIds &&
+          timeDiff < 2 * 60 * 1000
+        ) {
           return true;
         }
       }
@@ -82,11 +93,17 @@ export function OrderReview() {
 
   const saveOrderAttempt = () => {
     try {
-      localStorage.setItem("myhunter_last_order", JSON.stringify({
-        totalPrice,
-        timestamp: Date.now(),
-        productIds: items.map(i => i.productId).sort().join(",")
-      }));
+      localStorage.setItem(
+        "myhunter_last_order",
+        JSON.stringify({
+          totalPrice,
+          timestamp: Date.now(),
+          productIds: items
+            .map((i) => i.productId)
+            .sort()
+            .join(","),
+        })
+      );
     } catch (e) {
       console.error("Error saving order attempt:", e);
     }
@@ -108,7 +125,9 @@ export function OrderReview() {
     if (checkDuplicateOrder()) {
       toast({
         title: t("checkout.duplicateOrder") || "შეკვეთა უკვე გაიგზავნა",
-        description: t("checkout.duplicateOrderDescription") || "გთხოვთ დაელოდოთ ან შეამოწმოთ თქვენი შეკვეთები",
+        description:
+          t("checkout.duplicateOrderDescription") ||
+          "გთხოვთ დაელოდოთ ან შეამოწმოთ თქვენი შეკვეთები",
         variant: "destructive",
       });
       router.push("/profile/orders");

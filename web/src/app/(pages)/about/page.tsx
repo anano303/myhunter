@@ -3,13 +3,42 @@
 import "./about.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 import Link from "next/link";
 import Image from "next/image";
 
+// Types for categories and subcategories
+interface SubCategory {
+  id: string;
+  _id?: string;
+  name: string;
+  nameEn?: string;
+  isActive?: boolean;
+}
+
 export default function AboutPage() {
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState("about"); // about, mission, team
+
+  // Fetch all subcategories that have products
+  const { data: subcategories = [] } = useQuery<SubCategory[]>({
+    queryKey: ["about-subcategories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/subcategories?includeInactive=false&withProducts=true"
+        );
+        if (!response.ok) return [];
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch subcategories:", err);
+        return [];
+      }
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   return (
     <div className="about-page">
@@ -101,31 +130,15 @@ export default function AboutPage() {
                   : "At MyHunter, you can find everything you need for hunting and fishing:"}
               </p>
               <ul className="about-categories">
-                <li>
-                  {language === "ge"
-                    ? "ნადირობის იარაღები და აქსესუარები"
-                    : "Hunting weapons and accessories"}
-                </li>
-                <li>
-                  {language === "ge"
-                    ? "სათევზაო აღჭურვილობა"
-                    : "Fishing equipment"}
-                </li>
-                <li>
-                  {language === "ge"
-                    ? "სპეციალიზებული ტანსაცმელი და ფეხსაცმელი"
-                    : "Specialized clothing and footwear"}
-                </li>
-                <li>
-                  {language === "ge"
-                    ? "ნავიგაცია და ელექტრონიკა"
-                    : "Navigation and electronics"}
-                </li>
-                <li>
-                  {language === "ge"
-                    ? "ბანაკის აღჭურვილობა"
-                    : "Camping equipment"}
-                </li>
+                {subcategories.map((subcat) => (
+                  <li key={subcat.id || subcat._id}>
+                    <Link href={`/shop?subCategory=${subcat.id || subcat._id}`}>
+                      {language === "ge" || !subcat.nameEn
+                        ? subcat.name
+                        : subcat.nameEn}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -229,8 +242,15 @@ export default function AboutPage() {
             <div className="team-members">
               <div className="team-member">
                 <div className="team-member-photo">
-                  <div className="photo-placeholder"> <Image src="/irakli.jpg" alt="Irakli Beruchashvili" width={300} height={300}/></div>
-                  
+                  <div className="photo-placeholder">
+                    {" "}
+                    <Image
+                      src="/irakli.jpg"
+                      alt="Irakli Beruchashvili"
+                      width={300}
+                      height={300}
+                    />
+                  </div>
                 </div>
                 <h3 className="team-member-name">
                   {language === "ge"
@@ -246,23 +266,6 @@ export default function AboutPage() {
                     : "Irakli is an experienced hunter with 15+ years of experience. His passion for hunting and fishing became the main reason for creating MyHunter."}
                 </p>
               </div>
-
-              
-            </div>
-
-            <div className="about-join-team">
-              <h3>{language === "ge" ? "შემოგვიერთდით!" : "Join Our Team!"}</h3>
-              <p>
-                {language === "ge"
-                  ? "თუ ხართ ნადირობისა და თევზაობის ენთუზიასტი და გსურთ, იმუშაოთ ჩვენთან ერთად, გამოგვიგზავნეთ თქვენი რეზიუმე."
-                  : "If you are a hunting and fishing enthusiast and would like to work with us, send us your resume."}
-              </p>
-              <Link
-                href="/contact"
-                className="about-button about-seller-button"
-              >
-                {language === "ge" ? "დაგვიკავშირდით" : "Contact Us"}
-              </Link>
             </div>
           </div>
         )}

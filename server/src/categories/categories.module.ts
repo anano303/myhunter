@@ -10,6 +10,7 @@ import { SubCategory, SubCategorySchema } from './schemas/subcategory.schema';
 import { Color, ColorSchema } from './schemas/color.schema';
 import { Size, SizeSchema } from './schemas/size.schema';
 import { AgeGroup, AgeGroupSchema } from './schemas/age-group.schema';
+import { Product, ProductSchema } from '../products/schemas/product.schema';
 import { ColorService } from './services/color.service';
 import { SizeService } from './services/size.service';
 import { AgeGroupService } from './services/age-group.service';
@@ -23,6 +24,7 @@ import { SharedServicesModule } from '../app/shared-services.module';
       { name: Color.name, schema: ColorSchema },
       { name: Size.name, schema: SizeSchema },
       { name: AgeGroup.name, schema: AgeGroupSchema },
+      { name: Product.name, schema: ProductSchema },
     ]),
     SharedServicesModule,
   ],

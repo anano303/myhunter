@@ -16,6 +16,7 @@ import {
   UpdateSubCategoryDto,
 } from '../dto/subcategory.dto';
 import { Category } from '../schemas/category.schema';
+import { Product } from '../../products/schemas/product.schema';
 import { ColorService } from './color.service';
 import { SizeService } from './size.service';
 import { AgeGroupService } from './age-group.service';
@@ -26,6 +27,7 @@ export class SubCategoryService {
     @InjectModel(SubCategory.name)
     private subCategoryModel: Model<SubCategoryDocument>,
     @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
     private readonly colorService: ColorService,
     private readonly sizeService: SizeService,
     private readonly ageGroupService: AgeGroupService,
@@ -34,9 +36,10 @@ export class SubCategoryService {
   async findAll(
     categoryId?: string,
     includeInactive = false,
+    withProducts = false,
   ): Promise<SubCategory[]> {
     console.log(
-      `[SubCategoryService] findAll called. categoryId: "${categoryId}", includeInactive: ${includeInactive}`,
+      `[SubCategoryService] findAll called. categoryId: "${categoryId}", includeInactive: ${includeInactive}, withProducts: ${withProducts}`,
     );
 
     const filter: any = includeInactive ? {} : { isActive: true };
@@ -97,11 +100,35 @@ export class SubCategoryService {
         '[SubCategoryService] Executing find query with filter:',
         JSON.stringify(filter),
       );
-      const subcategories = await this.subCategoryModel
+      let subcategories = await this.subCategoryModel
         .find(filter)
         .populate('categoryId', 'name') // Ensure category name is populated
         .sort({ name: 1 })
         .exec();
+
+      // Filter subcategories that have at least one product
+      if (withProducts) {
+        console.log('[SubCategoryService] Filtering subcategories with products...');
+        const subcategoryIds = subcategories.map(sc => sc._id);
+        
+        // Get subcategory IDs that have products
+        const subcategoriesWithProducts = await this.productModel.aggregate([
+          { $match: { subCategory: { $in: subcategoryIds } } },
+          { $group: { _id: '$subCategory' } },
+        ]);
+        
+        const subcategoryIdsWithProducts = new Set(
+          subcategoriesWithProducts.map(item => item._id.toString())
+        );
+        
+        subcategories = subcategories.filter(sc => 
+          subcategoryIdsWithProducts.has(sc._id.toString())
+        );
+        
+        console.log(
+          `[SubCategoryService] After filtering, ${subcategories.length} subcategories have products.`,
+        );
+      }
 
       console.log(
         `[SubCategoryService] Database query returned ${subcategories.length} subcategories.`,

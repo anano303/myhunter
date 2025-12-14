@@ -12,8 +12,9 @@ const USER_DATA_KEY = "myhunter_user_data";
 let refreshTokenInMemory: string | null = null;
 
 // Check if we're in production
-const isProduction = typeof window !== "undefined" && 
-  window.location.hostname !== "localhost" && 
+const isProduction =
+  typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
   !window.location.hostname.includes("127.0.0.1");
 
 // Store tokens
@@ -30,7 +31,7 @@ export const storeTokens = (accessToken: string, refreshToken: string) => {
     const cookieOptions = isProduction
       ? `path=/; max-age=${30 * 24 * 60 * 60}; Secure; SameSite=Lax`
       : `path=/; max-age=${30 * 24 * 60 * 60}`;
-    
+
     document.cookie = `access_token=${accessToken}; ${cookieOptions}`;
     document.cookie = `refresh_token=${refreshToken}; ${cookieOptions}`;
   } catch (error) {
@@ -121,7 +122,7 @@ export const clearTokens = () => {
     const clearOptions = isProduction
       ? "path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; Secure; SameSite=Lax"
       : "path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-    
+
     document.cookie = `access_token=; ${clearOptions}`;
     document.cookie = `refresh_token=; ${clearOptions}`;
   } catch (error) {
@@ -133,12 +134,12 @@ export const clearTokens = () => {
 export const isLoggedIn = (): boolean => {
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
-  
+
   // If we have a refresh token, user can be logged in (access token can be refreshed)
   if (refreshToken) {
     return true;
   }
-  
+
   // Fallback: check access token
   if (!accessToken) return false;
 

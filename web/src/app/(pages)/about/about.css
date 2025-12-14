@@ -202,6 +202,17 @@
   box-shadow: 0 4px 8px rgba(244, 140, 6, 0.2);
 }
 
+.about-categories li a {
+  color: #e6cd9f;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+.about-categories li a:hover {
+  color: #f48c06;
+}
+
 .about-cta {
   text-align: center;
   margin-top: 3rem;
