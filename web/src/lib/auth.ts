@@ -11,6 +11,11 @@ const USER_DATA_KEY = "myhunter_user_data";
 // We avoid storing refresh token in localStorage for better security
 let refreshTokenInMemory: string | null = null;
 
+// Check if we're in production
+const isProduction = typeof window !== "undefined" && 
+  window.location.hostname !== "localhost" && 
+  !window.location.hostname.includes("127.0.0.1");
+
 // Store tokens
 export const storeTokens = (accessToken: string, refreshToken: string) => {
   if (typeof window === "undefined") return;
@@ -21,12 +26,13 @@ export const storeTokens = (accessToken: string, refreshToken: string) => {
     refreshTokenInMemory = refreshToken;
 
     // Store in cookies for middleware (30 days to match refresh token)
-    document.cookie = `access_token=${accessToken}; path=/; max-age=${
-      30 * 24 * 60 * 60
-    }`; // 30 days
-    document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${
-      30 * 24 * 60 * 60
-    }`; // 30 days
+    // In production, use Secure and SameSite=None for cross-domain
+    const cookieOptions = isProduction
+      ? `path=/; max-age=${30 * 24 * 60 * 60}; Secure; SameSite=Lax`
+      : `path=/; max-age=${30 * 24 * 60 * 60}`;
+    
+    document.cookie = `access_token=${accessToken}; ${cookieOptions}`;
+    document.cookie = `refresh_token=${refreshToken}; ${cookieOptions}`;
   } catch (error) {
     console.error("Failed to store tokens:", error);
   }
@@ -111,22 +117,32 @@ export const clearTokens = () => {
     localStorage.removeItem(USER_DATA_KEY);
     refreshTokenInMemory = null;
 
-    // Clear cookies
-    document.cookie =
-      "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-    document.cookie =
-      "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    // Clear cookies - use same options as when setting for proper removal
+    const clearOptions = isProduction
+      ? "path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; Secure; SameSite=Lax"
+      : "path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    
+    document.cookie = `access_token=; ${clearOptions}`;
+    document.cookie = `refresh_token=; ${clearOptions}`;
   } catch (error) {
     console.error("Failed to clear tokens:", error);
   }
 };
 
-// Check if user is logged in (has a valid, non-expired token)
+// Check if user is logged in (has tokens - either valid access token or refresh token)
 export const isLoggedIn = (): boolean => {
-  const token = getAccessToken();
-  if (!token) return false;
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
+  
+  // If we have a refresh token, user can be logged in (access token can be refreshed)
+  if (refreshToken) {
+    return true;
+  }
+  
+  // Fallback: check access token
+  if (!accessToken) return false;
 
-  // Check if token is expired
+  // Check if access token is expired
   return !isTokenExpired();
 };
 

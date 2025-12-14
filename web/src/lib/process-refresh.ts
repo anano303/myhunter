@@ -88,11 +88,43 @@ export const checkAndRefreshAuth = async (): Promise<boolean> => {
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
 
-  if (!accessToken || !refreshToken) {
+  // If no refresh token, user is not logged in
+  if (!refreshToken) {
     return false;
   }
 
-  // If token is about to expire or we just want to refresh on startup
+  // If we have a valid (non-expired) access token, user is authenticated
+  // No need to refresh unless token is about to expire
+  if (accessToken) {
+    try {
+      // Decode the JWT to check expiration
+      const base64Url = accessToken.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      const { exp } = JSON.parse(jsonPayload);
+      
+      if (exp) {
+        const expirationTime = exp * 1000;
+        const currentTime = Date.now();
+        const timeUntilExpiration = expirationTime - currentTime;
+        
+        // If token expires in more than 5 minutes, no need to refresh
+        if (timeUntilExpiration > 5 * 60 * 1000) {
+          return true; // User is authenticated with valid token
+        }
+      }
+    } catch (error) {
+      console.error("Error checking token expiration:", error);
+      // If we can't decode the token, try to refresh
+    }
+  }
+
+  // Access token is missing or about to expire, try to refresh
   try {
     const success = await refreshAuthToken();
     return success;
