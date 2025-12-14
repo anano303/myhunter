@@ -185,7 +185,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: #5b6c18;
   color: white;
   border: none;
   font-size: 24px;
@@ -197,7 +197,7 @@
 }
 
 .carousel-btn:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: #4a5813;
 }
 
 .prev-btn {

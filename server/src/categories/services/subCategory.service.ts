@@ -108,23 +108,25 @@ export class SubCategoryService {
 
       // Filter subcategories that have at least one product
       if (withProducts) {
-        console.log('[SubCategoryService] Filtering subcategories with products...');
-        const subcategoryIds = subcategories.map(sc => sc._id);
-        
+        console.log(
+          '[SubCategoryService] Filtering subcategories with products...',
+        );
+        const subcategoryIds = subcategories.map((sc) => sc._id);
+
         // Get subcategory IDs that have products
         const subcategoriesWithProducts = await this.productModel.aggregate([
           { $match: { subCategory: { $in: subcategoryIds } } },
           { $group: { _id: '$subCategory' } },
         ]);
-        
+
         const subcategoryIdsWithProducts = new Set(
-          subcategoriesWithProducts.map(item => item._id.toString())
+          subcategoriesWithProducts.map((item) => item._id.toString()),
         );
-        
-        subcategories = subcategories.filter(sc => 
-          subcategoryIdsWithProducts.has(sc._id.toString())
+
+        subcategories = subcategories.filter((sc) =>
+          subcategoryIdsWithProducts.has(sc._id.toString()),
         );
-        
+
         console.log(
           `[SubCategoryService] After filtering, ${subcategories.length} subcategories have products.`,
         );

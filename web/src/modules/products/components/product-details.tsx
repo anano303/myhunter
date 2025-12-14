@@ -457,6 +457,35 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         {/* Center Column - Main Image */}
         <div className="image-section">
           <div className="image-container">
+            {/* Navigation arrows - only show if more than 1 image */}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  className="image-nav-btn prev"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex((prev) =>
+                      prev === 0 ? product.images.length - 1 : prev - 1
+                    );
+                  }}
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+                <button
+                  className="image-nav-btn next"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex((prev) =>
+                      prev === product.images.length - 1 ? 0 : prev + 1
+                    );
+                  }}
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+              </>
+            )}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentImageIndex}
