@@ -1,11 +1,23 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { EmailService } from '../services/email.services';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 
 class ContactDto {
+  @IsString()
+  @IsNotEmpty()
   name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
   subject: string;
+
+  @IsString()
+  @IsNotEmpty()
   message: string;
 }
 
