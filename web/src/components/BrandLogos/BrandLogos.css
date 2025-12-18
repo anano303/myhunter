@@ -86,6 +86,8 @@
   display: flex;
   animation: slideLogos 40s linear infinite;
   width: max-content;
+  padding-top: 15px; /* ადგილი hover ეფექტისთვის */
+  padding-bottom: 15px;
 }
 
 .brand-logos-container.paused .brand-logos-slider {
