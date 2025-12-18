@@ -430,10 +430,12 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                   : `₾${order.shippingPrice.toFixed(2)}`}
               </span>
             </div>
+            {/* დღგ/საკომისიო დროებით გამორთული
             <div className="summary-item">
               <span>{t("adminOrders.tax")}</span>
               <span>₾{order.taxPrice.toFixed(2)}</span>
             </div>
+            */}
             8
             <div className="summary-total">
               <span>{t("adminOrders.total")}</span>

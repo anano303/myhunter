@@ -76,7 +76,8 @@ export function OrderReview() {
     0
   );
   const shippingPrice: number = calculateShippingPrice();
-  const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
+  // const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
+  const taxPrice = 0; // საკომისიო დროებით გამორთული
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   // Helper to check for duplicate order submission
@@ -318,12 +319,14 @@ export function OrderReview() {
               </span>
               <span>{shippingPrice.toFixed(2)} ₾</span>
             </div>
+            {/* დღგ/საკომისიო დროებით გამორთული
             <div className="summary-row flex justify-between">
               <span className="summary-label text-muted-foreground">
                 {t("checkout.tax")}
               </span>
               <span>{taxPrice.toFixed(2)} ₾</span>
             </div>
+            */}
             <div className="separator" />
             <div className="summary-row flex justify-between font-medium">
               <span>{t("checkout.total")}</span>
