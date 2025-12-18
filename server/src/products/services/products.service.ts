@@ -92,10 +92,10 @@ export class ProductsService {
       filter.$or = [
         { name: { $regex: keyword, $options: 'i' } },
         { nameEn: { $regex: keyword, $options: 'i' } },
-        { description: { $regex: keyword, $options: 'i' } },
-        { descriptionEn: { $regex: keyword, $options: 'i' } },
-        { brand: { $regex: keyword, $options: 'i' } },
-        { hashtags: { $in: [new RegExp(keyword, 'i')] } },
+        // { description: { $regex: keyword, $options: 'i' } },
+        // { descriptionEn: { $regex: keyword, $options: 'i' } },
+        // { brand: { $regex: keyword, $options: 'i' } },
+        // { hashtags: { $in: [new RegExp(keyword, 'i')] } },
       ];
     }
 
