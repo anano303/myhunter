@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/api-client";
 import { getUserData } from "@/lib/auth";
 import { Sidebar } from "lucide-react";
+import { apiClient } from "@/lib/api-client";
 
 export default function AdminLayout({
   children,
@@ -25,8 +26,20 @@ export default function AdminLayout({
           return;
         }
 
-        // Get user data from local storage
-        const userData = getUserData();
+        // Get user data from local storage first
+        let userData = getUserData();
+        
+        // If no local data or no role, try to fetch from API
+        if (!userData || !userData.role) {
+          try {
+            const response = await apiClient.get("/auth/profile");
+            userData = response.data;
+            console.log("Fetched user data from API:", userData);
+          } catch (error) {
+            console.log("Failed to fetch user data from API:", error);
+          }
+        }
+        
         if (!userData) {
           console.log("No user data found, redirecting to login");
           router.push("/login?redirect=/admin");

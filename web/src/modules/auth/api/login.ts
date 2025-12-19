@@ -1,4 +1,4 @@
-import { storeTokens, storeUserData } from "@/lib/auth";
+import { storeTokens, storeUserData, clearTokens } from "@/lib/auth";
 
 export type LoginData = {
   email: string;
@@ -8,6 +8,9 @@ export type LoginData = {
 export async function login(data: LoginData) {
   try {
     console.log("🔑 Attempting login...");
+    
+    // Clear any old cached data before login
+    clearTokens();
 
     // Use fetch directly to avoid interceptors during login
     const response = await fetch(
