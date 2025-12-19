@@ -422,7 +422,7 @@ export class OrdersService {
     if (!Types.ObjectId.isValid(id))
       throw new BadRequestException('Invalid order ID.');
 
-    const order = await this.orderModel.findById(id);
+    const order = await this.orderModel.findById(id).populate('user', 'name email');
 
     if (!order) throw new NotFoundException('No order with given ID.');
 
@@ -432,7 +432,43 @@ export class OrdersService {
 
     const updatedOrder = await order.save();
 
+    // Send delivery confirmation email with review request
+    try {
+      await this.sendDeliveryConfirmationEmail(updatedOrder);
+      console.log(`✅ Delivery confirmation email sent for order ${id}`);
+    } catch (emailError) {
+      console.error('❌ Failed to send delivery confirmation email:', emailError.message);
+      // Don't throw - delivery is confirmed, email failure shouldn't block
+    }
+
     return updatedOrder;
+  }
+
+  /**
+   * Send delivery confirmation email with review request to customer
+   */
+  private async sendDeliveryConfirmationEmail(order: any) {
+    const user = order.user;
+    if (!user || !user.email) {
+      console.log('No user email found for delivery confirmation');
+      return;
+    }
+
+    const orderNumber = order.orderNumber || order.externalOrderId || order._id.toString();
+    const customerName = user.name || user.firstName || 'მომხმარებელო';
+
+    const orderItems = order.orderItems.map((item: any) => ({
+      name: item.name,
+      productId: item.product?.toString() || item.productId || '',
+      image: item.image,
+    }));
+
+    await this.emailService.sendDeliveryConfirmationEmail({
+      customerEmail: user.email,
+      customerName,
+      orderNumber,
+      orderItems,
+    });
   }
 
   async findUserOrders(userId: string) {

@@ -544,4 +544,94 @@ export class EmailService {
       throw error;
     }
   }
+
+  /**
+   * Send delivery confirmation email with review request
+   */
+  async sendDeliveryConfirmationEmail(orderData: {
+    customerEmail: string;
+    customerName: string;
+    orderNumber: string;
+    orderItems: Array<{
+      name: string;
+      productId: string;
+      image?: string;
+    }>;
+  }) {
+    const baseUrl = process.env.ALLOWED_ORIGINS?.split(',')[0]?.trim() || 'https://www.myhunter.ge';
+
+    const productLinks = orderData.orderItems.map(item => `
+      <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center;">
+        ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 15px;" />` : ''}
+        <div style="flex: 1;">
+          <h4 style="margin: 0 0 10px 0; color: #333;">${item.name}</h4>
+          <a href="${baseUrl}/products/${item.productId}#reviews" 
+             style="display: inline-block; background: #4b5320; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            ⭐ შეაფასეთ პროდუქტი
+          </a>
+        </div>
+      </div>
+    `).join('');
+
+    const mailOptions = {
+      from: this.getFromEmail(),
+      to: orderData.customerEmail,
+      subject: `შეკვეთა #${orderData.orderNumber} მიტანილია - გთხოვთ შეაფასოთ პროდუქტები`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="margin: 0; padding: 20px; background-color: #1a1a1a; font-family: 'FiraGo', Arial, sans-serif;">
+          <div style="max-width: 600px; margin: 0 auto; background: #2a2a2a; border-radius: 12px; overflow: hidden; border: 1px solid #4b5320;">
+            
+            <div style="background: linear-gradient(135deg, #4b5320 0%, #3a4119 100%); padding: 30px; text-align: center;">
+              <h1 style="color: #f5e9d1; margin: 0; font-size: 24px;">📦 შეკვეთა მიტანილია!</h1>
+              <p style="color: #d4c5a9; margin: 10px 0 0 0;">MyHunter - შეკვეთა #${orderData.orderNumber}</p>
+            </div>
+
+            <div style="padding: 25px;">
+              <p style="color: #e6cd9f; font-size: 16px; margin-bottom: 20px;">
+                გამარჯობა, ${orderData.customerName}!
+              </p>
+              
+              <p style="color: #a99c7a; font-size: 14px; margin-bottom: 25px;">
+                თქვენი შეკვეთა წარმატებით მიტანილია. გთხოვთ, დაუთმოთ რამდენიმე წამი და შეაფასოთ შეძენილი პროდუქტები. თქვენი შეფასება დაეხმარება სხვა მომხმარებლებს სწორი არჩევანის გაკეთებაში.
+              </p>
+
+              <h3 style="color: #e6cd9f; margin-bottom: 15px;">🛒 შეძენილი პროდუქტები:</h3>
+              
+              ${productLinks}
+
+              <div style="background: #fff3cd; border-radius: 8px; padding: 15px; margin-top: 20px; border-left: 4px solid #4b5320;">
+                <p style="margin: 0; color: #856404; font-size: 14px;">
+                  💡 <strong>რატომ არის მნიშვნელოვანი თქვენი შეფასება?</strong><br>
+                  თქვენი გამოხმაურება გვეხმარება სერვისის გაუმჯობესებაში და სხვა მყიდველებს ინფორმირებული გადაწყვეტილების მიღებაში.
+                </p>
+              </div>
+            </div>
+
+            <div style="background: #1a1a1a; padding: 20px; text-align: center;">
+              <p style="color: #888; margin: 0; font-size: 12px;">
+                გმადლობთ რომ აირჩიეთ MyHunter!<br>
+                თუ გაქვთ შეკითხვები, დაგვიკავშირდით: ssbbmarket@gmail.com
+              </p>
+            </div>
+
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(`✅ Delivery confirmation email sent to ${orderData.customerEmail}`);
+    } catch (error) {
+      console.error('❌ Error sending delivery confirmation email:', error);
+      throw error;
+    }
+  }
 }
