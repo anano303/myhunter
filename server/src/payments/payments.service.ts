@@ -276,30 +276,8 @@ export class PaymentsService {
             `Order ${external_order_id} successfully updated with payment status`,
           );
 
-          // Send email notifications
-          try {
-            const order =
-              await this.ordersService.findByExternalOrderId(external_order_id);
-            if (order) {
-              // Send customer confirmation email
-              await this.sendOrderConfirmationEmail(order);
-              console.log(
-                `Order confirmation email sent for order ${external_order_id}`,
-              );
-
-              // Send admin notification email
-              await this.sendAdminNotificationEmail(order);
-              console.log(
-                `Admin notification email sent for order ${external_order_id}`,
-              );
-            }
-          } catch (emailError) {
-            console.error(
-              'Failed to send email notifications:',
-              emailError.message,
-            );
-            // Don't fail the payment processing if email fails
-          }
+          // Email notifications are sent in ordersService.updateOrderByExternalId
+          // No need to send them here again
 
           return {
             success: true,
