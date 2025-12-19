@@ -769,7 +769,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Reviews Section */}
-      <div className="reviews-section">
+      <div id="reviews" className="reviews-section">
         <h2 className="reviews-title">Customer Reviews</h2>
 
         {/* Product Reviews */}
