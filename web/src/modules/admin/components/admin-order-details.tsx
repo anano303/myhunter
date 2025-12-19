@@ -156,8 +156,8 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
           <div className="card">
             <h2>{t("adminOrders.shipping")}</h2>
             <p>
-              <strong>{t("adminOrders.customer")}:</strong> {order.user.name} (
-              {order.user.email})
+              <strong>{t("adminOrders.customer")}:</strong> {order.user?.name || 'უცნობი'} (
+              {order.user?.email || 'წაშლილი მომხმარებელი'})
             </p>
             <p>
               <strong>{t("adminOrders.address")}:</strong>{" "}

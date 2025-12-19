@@ -105,7 +105,7 @@ export function OrdersList() {
                   return (
                     <tr key={order._id}>
                       <td>#{orderDisplayNumber}</td>
-                      <td>{order.user.email}</td>
+                      <td>{order.user?.email || 'წაშლილი მომხმარებელი'}</td>
                       <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                       <td>{order.totalPrice.toFixed(2)}₾</td>
                       {/* <td>
