@@ -14,6 +14,7 @@ interface CheckoutContextType {
 }
 
 interface ShippingAddress {
+  deliveryType?: "pickup" | "delivery";
   address: string;
   city: string;
   postalCode: string;

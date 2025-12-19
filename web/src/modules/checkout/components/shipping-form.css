@@ -352,3 +352,119 @@
     font-size: 15px;
   }
 }
+
+/* Delivery Type Selection */
+.delivery-type-field {
+  margin-bottom: 1.5rem;
+}
+
+.delivery-type-options {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.delivery-type-option {
+  flex: 1;
+  cursor: pointer;
+  position: relative;
+}
+
+.delivery-type-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.delivery-type-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(30, 30, 30, 0.8);
+  border: 2px solid #3a3a3a;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.delivery-type-option:hover .delivery-type-content {
+  border-color: #4b5320;
+  background: rgba(75, 83, 32, 0.1);
+}
+
+.delivery-type-option.selected .delivery-type-content,
+.delivery-type-option input[type="radio"]:checked + .delivery-type-content {
+  border-color: #4b5320;
+  background: rgba(75, 83, 32, 0.2);
+  box-shadow: 0 0 10px rgba(75, 83, 32, 0.3);
+}
+
+.delivery-type-icon {
+  font-size: 2rem;
+}
+
+.delivery-type-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.delivery-type-title {
+  font-weight: 600;
+  color: #e6cd9f;
+  font-size: 1rem;
+}
+
+.delivery-type-desc {
+  font-size: 0.85rem;
+  color: #a99c7a;
+}
+
+/* Pickup Address Info */
+.pickup-address-info {
+  background: rgba(75, 83, 32, 0.15);
+  border: 1px solid #4b5320;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.pickup-address-info h3 {
+  margin: 0 0 1rem 0;
+  color: #e6cd9f;
+  font-size: 1.1rem;
+}
+
+.pickup-address-info p {
+  margin: 0.5rem 0;
+  color: #a99c7a;
+  font-size: 0.95rem;
+}
+
+.pickup-address-info strong {
+  color: #e6cd9f;
+}
+
+/* Mobile responsive for delivery type */
+@media (max-width: 600px) {
+  .delivery-type-options {
+    flex-direction: column;
+  }
+
+  .delivery-type-content {
+    padding: 0.75rem;
+  }
+
+  .delivery-type-icon {
+    font-size: 1.5rem;
+  }
+
+  .delivery-type-title {
+    font-size: 0.9rem;
+  }
+
+  .delivery-type-desc {
+    font-size: 0.8rem;
+  }
+}

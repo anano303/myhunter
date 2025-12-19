@@ -1,6 +1,11 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsIn } from 'class-validator';
 
 export class SaveShippingDetailsDto {
+  @IsString()
+  @IsOptional()
+  @IsIn(['pickup', 'delivery'])
+  deliveryType?: 'pickup' | 'delivery';
+
   @IsString()
   address!: string;
 

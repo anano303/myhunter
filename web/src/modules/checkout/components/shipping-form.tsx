@@ -13,6 +13,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import "./shipping-form.css";
 
 interface ShippingFormData {
+  deliveryType: "pickup" | "delivery";
   address: string;
   city: string;
   postalCode: string;
@@ -45,7 +46,14 @@ export function ShippingForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     control,
-  } = useForm<ShippingFormData>();
+    watch,
+  } = useForm<ShippingFormData>({
+    defaultValues: {
+      deliveryType: "delivery",
+    },
+  });
+
+  const deliveryType = watch("deliveryType");
 
   const onSubmit = async (data: ShippingFormData) => {
     if (isLoading) {
@@ -58,7 +66,18 @@ export function ShippingForm() {
     }
 
     try {
-      const response = await apiClient.post("/cart/shipping", data);
+      // თუ თვითგატანაა, გატანის მისამართი ავტომატურად შეივსება
+      const shippingData =
+        data.deliveryType === "pickup"
+          ? {
+              ...data,
+              address: "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
+              city: "თბილისი",
+              country: "GE",
+            }
+          : data;
+
+      const response = await apiClient.post("/cart/shipping", shippingData);
       const shippingAddress = response.data;
       setShippingAddress(shippingAddress);
 
@@ -105,47 +124,170 @@ export function ShippingForm() {
         <p>{t("checkout.enterShippingDetails")}</p>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="shipping-form">
-        <div className="shipping-form-field">
-          <label htmlFor="address">{t("checkout.streetAddress")}</label>
-          <input
-            id="address"
-            {...register("address", {
-              required: t("checkout.addressRequired"),
-            })}
-            placeholder={t("checkout.addressPlaceholder")}
-          />
-          {errors.address && (
-            <p className="error-text">{errors.address.message}</p>
-          )}
+        {/* მიტანის ტიპის არჩევა */}
+        <div className="shipping-form-field delivery-type-field">
+          <label>
+            {language === "ge" ? "მიტანის მეთოდი" : "Delivery Method"}
+          </label>
+          <div className="delivery-type-options">
+            <label
+              className={`delivery-type-option ${
+                deliveryType === "delivery" ? "selected" : ""
+              }`}
+            >
+              <input
+                type="radio"
+                value="delivery"
+                {...register("deliveryType")}
+              />
+              <div className="delivery-type-content">
+                <span className="delivery-type-icon">🚚</span>
+                <div className="delivery-type-info">
+                  <span className="delivery-type-title">
+                    {language === "ge" ? "მიტანა მისამართზე" : "Home Delivery"}
+                  </span>
+                  <span className="delivery-type-desc">
+                    {language === "ge"
+                      ? "თბილისი - 8₾, რეგიონები - 15₾"
+                      : "Tbilisi - 8₾, Regions - 15₾"}
+                  </span>
+                </div>
+              </div>
+            </label>
+            <label
+              className={`delivery-type-option ${
+                deliveryType === "pickup" ? "selected" : ""
+              }`}
+            >
+              <input
+                type="radio"
+                value="pickup"
+                {...register("deliveryType")}
+              />
+              <div className="delivery-type-content">
+                <span className="delivery-type-icon">🏪</span>
+                <div className="delivery-type-info">
+                  <span className="delivery-type-title">
+                    {language === "ge" ? "თვითგატანა" : "Self Pickup"}
+                  </span>
+                  <span className="delivery-type-desc">
+                    {language === "ge" ? "უფასო" : "Free"}
+                  </span>
+                </div>
+              </div>
+            </label>
+          </div>
         </div>
 
-        <div className="shipping-form-field">
-          <label htmlFor="city">{t("checkout.city")}</label>
-          <input
-            id="city"
-            {...register("city", { required: t("checkout.cityRequired") })}
-            placeholder={t("checkout.cityPlaceholder")}
-          />
-          {errors.city && <p className="error-text">{errors.city.message}</p>}
-          <p className="shipping-info-text">
-            {language === "ge"
-              ? "მიწოდება: თბილისი - 8₾, რეგიონები - 15₾"
-              : "Delivery: Tbilisi - 8₾, Regions - 15₾"}
-          </p>
-        </div>
+        {/* თვითგატანის მისამართი */}
+        {deliveryType === "pickup" && (
+          <div className="pickup-address-info">
+            <h3>
+              {language === "ge" ? "📍 გატანის მისამართი" : "📍 Pickup Address"}
+            </h3>
+            <p>
+              <strong>{language === "ge" ? "მისამართი:" : "Address:"}</strong>{" "}
+             თბილისი, ვასილ კაკაბაძის ქ. N8
+            </p>
+            <p>
+              <strong>
+                {language === "ge" ? "სამუშაო საათები:" : "Working Hours:"}
+              </strong>{" "}
+              სამუშაო დღეებში 20:00 - 22:00
+            </p>
+            <p>
+              <strong>{language === "ge" ? "ტელეფონი:" : "Phone:"}</strong> +995
+              577 02 77 00
+            </p>
+          </div>
+        )}
 
-        <div className="shipping-form-field">
-          <label htmlFor="postalCode">{t("checkout.postalCode")}</label>
-          <input
-            id="postalCode"
-            {...register("postalCode")}
-            placeholder={t("checkout.postalCodePlaceholder")}
-          />
-          {errors.postalCode && (
-            <p className="error-text">{errors.postalCode.message}</p>
-          )}
-        </div>
+        {/* მიტანის ფორმა - მხოლოდ თუ მიტანაა არჩეული */}
+        {deliveryType === "delivery" && (
+          <>
+            <div className="shipping-form-field">
+              <label htmlFor="address">{t("checkout.streetAddress")}</label>
+              <input
+                id="address"
+                {...register("address", {
+                  required:
+                    deliveryType === "delivery"
+                      ? t("checkout.addressRequired")
+                      : false,
+                })}
+                placeholder={t("checkout.addressPlaceholder")}
+              />
+              {errors.address && (
+                <p className="error-text">{errors.address.message}</p>
+              )}
+            </div>
 
+            <div className="shipping-form-field">
+              <label htmlFor="city">{t("checkout.city")}</label>
+              <input
+                id="city"
+                {...register("city", {
+                  required:
+                    deliveryType === "delivery"
+                      ? t("checkout.cityRequired")
+                      : false,
+                })}
+                placeholder={t("checkout.cityPlaceholder")}
+              />
+              {errors.city && (
+                <p className="error-text">{errors.city.message}</p>
+              )}
+              <p className="shipping-info-text">
+                {language === "ge"
+                  ? "მიწოდება: თბილისი - 8₾, რეგიონები - 15₾"
+                  : "Delivery: Tbilisi - 8₾, Regions - 15₾"}
+              </p>
+            </div>
+
+            <div className="shipping-form-field">
+              <label htmlFor="postalCode">{t("checkout.postalCode")}</label>
+              <input
+                id="postalCode"
+                {...register("postalCode")}
+                placeholder={t("checkout.postalCodePlaceholder")}
+              />
+              {errors.postalCode && (
+                <p className="error-text">{errors.postalCode.message}</p>
+              )}
+            </div>
+
+            <div className="shipping-form-field">
+              <label htmlFor="country">{t("checkout.country")}</label>
+              <Controller
+                name="country"
+                control={control}
+                rules={{
+                  required:
+                    deliveryType === "delivery"
+                      ? t("checkout.countryRequired")
+                      : false,
+                }}
+                render={({ field }) => (
+                  <select {...field} defaultValue="">
+                    <option value="" disabled>
+                      {t("checkout.selectCountry")}
+                    </option>
+                    {getCountries().map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.country && (
+                <p className="error-text">{errors.country.message}</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ტელეფონი - ორივე შემთხვევაში საჭიროა */}
         <div className="shipping-form-field">
           <label htmlFor="phoneNumber">{t("checkout.phoneNumber")}</label>
           <input
@@ -162,30 +304,6 @@ export function ShippingForm() {
           />
           {errors.phoneNumber && (
             <p className="error-text">{errors.phoneNumber.message}</p>
-          )}
-        </div>
-
-        <div className="shipping-form-field">
-          <label htmlFor="country">{t("checkout.country")}</label>
-          <Controller
-            name="country"
-            control={control}
-            rules={{ required: t("checkout.countryRequired") }}
-            render={({ field }) => (
-              <select {...field} defaultValue="">
-                <option value="" disabled>
-                  {t("checkout.selectCountry")}
-                </option>
-                {getCountries().map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          />
-          {errors.country && (
-            <p className="error-text">{errors.country.message}</p>
           )}
         </div>
 

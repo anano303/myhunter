@@ -52,8 +52,13 @@ export function OrderReview() {
     }
   }, [shippingDetails, isCheckoutLoaded, isMounted, router]);
 
-  // Calculate shipping price based on city
+  // Calculate shipping price based on city and delivery type
   const calculateShippingPrice = (): number => {
+    // თვითგატანისას მიწოდება უფასოა
+    if (shippingDetails?.deliveryType === "pickup") {
+      return 0;
+    }
+    
     if (!shippingDetails?.city) return 15; // Default to regional price
     const city = shippingDetails.city.toLowerCase().trim();
     // Check if it's Tbilisi (Georgian or English, any case/format)
