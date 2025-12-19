@@ -642,4 +642,99 @@ export class EmailService {
       throw error;
     }
   }
+
+  /**
+   * გაგზავნის ადმინისტრატორს შეტყობინებას პროდუქტის მარაგის ამოწურვის შესახებ
+   */
+  async sendOutOfStockNotificationEmail(productData: {
+    productName: string;
+    productId: string;
+    currentStock: number;
+    variantInfo?: string;
+  }) {
+    const adminEmail = process.env.ADMIN_EMAIL || 'ssbbmarket@gmail.com';
+    const baseUrl =
+      process.env.ALLOWED_ORIGINS?.split(',')[0]?.trim() ||
+      'https://www.myhunter.ge';
+
+    const productLink = `${baseUrl}/admin/products/${productData.productId}`;
+
+    const mailOptions = {
+      from: this.getFromEmail(),
+      to: adminEmail,
+      subject: `⚠️ მარაგი ამოიწურა: ${productData.productName}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="margin: 0; padding: 20px; background-color: #1a1a1a; font-family: 'FiraGo', Arial, sans-serif;">
+          <div style="max-width: 600px; margin: 0 auto; background: #2a2a2a; border-radius: 12px; overflow: hidden; border: 1px solid #dc3545;">
+            
+            <div style="background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%); padding: 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px;">⚠️ მარაგი ამოწურულია!</h1>
+              <p style="color: #f8d7da; margin: 10px 0 0 0;">MyHunter - ადმინ შეტყობინება</p>
+            </div>
+
+            <div style="padding: 25px;">
+              <div style="background: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #dc3545;">
+                <h3 style="margin: 0 0 15px 0; color: #856404;">📦 პროდუქტის ინფორმაცია:</h3>
+                <table style="width: 100%; color: #856404;">
+                  <tr>
+                    <td style="padding: 8px 0; font-weight: bold;">პროდუქტი:</td>
+                    <td style="padding: 8px 0;">${productData.productName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; font-weight: bold;">მიმდინარე მარაგი:</td>
+                    <td style="padding: 8px 0; color: #dc3545; font-weight: bold;">${productData.currentStock}</td>
+                  </tr>
+                  ${
+                    productData.variantInfo
+                      ? `
+                  <tr>
+                    <td style="padding: 8px 0; font-weight: bold;">ვარიანტი:</td>
+                    <td style="padding: 8px 0;">${productData.variantInfo}</td>
+                  </tr>
+                  `
+                      : ''
+                  }
+                </table>
+              </div>
+
+              <div style="text-align: center; margin-top: 20px;">
+                <a href="${productLink}" 
+                   style="display: inline-block; background: #4b5320; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                  🔄 პროდუქტის მარაგის განახლება
+                </a>
+              </div>
+
+              <p style="color: #a99c7a; font-size: 14px; margin-top: 25px; text-align: center;">
+                გთხოვთ, რაც შეიძლება სწრაფად განაახლოთ პროდუქტის მარაგი, რომ თავიდან აიცილოთ გაყიდვების დაკარგვა.
+              </p>
+            </div>
+
+            <div style="background: #1a1a1a; padding: 20px; text-align: center;">
+              <p style="color: #888; margin: 0; font-size: 12px;">
+                ეს ავტომატური შეტყობინებაა MyHunter სისტემიდან
+              </p>
+            </div>
+
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(
+        `✅ Out of stock notification sent to admin for product: ${productData.productName}`,
+      );
+    } catch (error) {
+      console.error('❌ Error sending out of stock notification:', error);
+      // Don't throw - this is a notification, not critical
+    }
+  }
 }

@@ -71,7 +71,8 @@ export function ShippingForm() {
         data.deliveryType === "pickup"
           ? {
               ...data,
-              address: "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
+              address:
+                "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
               city: "თბილისი",
               country: "GE",
             }
@@ -187,7 +188,7 @@ export function ShippingForm() {
             </h3>
             <p>
               <strong>{language === "ge" ? "მისამართი:" : "Address:"}</strong>{" "}
-             თბილისი, ვასილ კაკაბაძის ქ. N8
+              თბილისი, ვასილ კაკაბაძის ქ. N8
             </p>
             <p>
               <strong>

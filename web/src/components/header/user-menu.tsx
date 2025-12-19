@@ -21,11 +21,17 @@ const userMenuStyles = {
 export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
   const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
 
   // Add state to store profile image URL
   const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  // Track client-side mount to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -54,7 +60,7 @@ export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
     };
   }, []);
 
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return <div className="loader"></div>;
   }
 

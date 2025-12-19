@@ -148,6 +148,9 @@ export class OrdersService {
             );
           }
 
+          // Track variant index for stock notification
+          let variantIndex = -1;
+
           // Check and reserve stock atomically
           if (
             product.variants &&
@@ -155,7 +158,7 @@ export class OrdersService {
             (item.size || item.color || item.ageGroup)
           ) {
             // Find the specific variant with flexible matching
-            const variantIndex = product.variants.findIndex((v) => {
+            variantIndex = product.variants.findIndex((v) => {
               // Match size: if no size specified, variant shouldn't have size either
               const sizeMatch = !item.size ? !v.size : v.size === item.size;
               // Match color: if no color specified, variant shouldn't have color either
@@ -212,6 +215,52 @@ export class OrdersService {
 
           // Save the product with updated stock within the transaction
           await product.save({ session });
+
+          // Check if stock is depleted and notify admin
+          if (product.countInStock <= 0) {
+            // Send notification asynchronously (don't block order creation)
+            this.emailService
+              .sendOutOfStockNotificationEmail({
+                productName: product.name,
+                productId: product._id.toString(),
+                currentStock: product.countInStock,
+              })
+              .catch((err) =>
+                console.error('Failed to send out of stock notification:', err),
+              );
+          }
+
+          // Also check individual variant stock
+          if (
+            product.variants &&
+            product.variants.length > 0 &&
+            variantIndex !== -1
+          ) {
+            const variant = product.variants[variantIndex];
+            if (variant.stock <= 0) {
+              const variantInfo = [
+                variant.size ? `ზომა: ${variant.size}` : '',
+                variant.color ? `ფერი: ${variant.color}` : '',
+                variant.ageGroup ? `ასაკი: ${variant.ageGroup}` : '',
+              ]
+                .filter(Boolean)
+                .join(', ');
+
+              this.emailService
+                .sendOutOfStockNotificationEmail({
+                  productName: product.name,
+                  productId: product._id.toString(),
+                  currentStock: variant.stock,
+                  variantInfo,
+                })
+                .catch((err) =>
+                  console.error(
+                    'Failed to send out of stock notification for variant:',
+                    err,
+                  ),
+                );
+            }
+          }
         }
 
         // Now create the order (stock is already reserved)

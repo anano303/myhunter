@@ -58,7 +58,7 @@ export function OrderReview() {
     if (shippingDetails?.deliveryType === "pickup") {
       return 0;
     }
-    
+
     if (!shippingDetails?.city) return 15; // Default to regional price
     const city = shippingDetails.city.toLowerCase().trim();
     // Check if it's Tbilisi (Georgian or English, any case/format)
