@@ -8,7 +8,7 @@ export type LoginData = {
 export async function login(data: LoginData) {
   try {
     console.log("🔑 Attempting login...");
-    
+
     // Clear any old cached data before login
     clearTokens();
 

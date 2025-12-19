@@ -422,7 +422,9 @@ export class OrdersService {
     if (!Types.ObjectId.isValid(id))
       throw new BadRequestException('Invalid order ID.');
 
-    const order = await this.orderModel.findById(id).populate('user', 'name email');
+    const order = await this.orderModel
+      .findById(id)
+      .populate('user', 'name email');
 
     if (!order) throw new NotFoundException('No order with given ID.');
 
@@ -437,7 +439,10 @@ export class OrdersService {
       await this.sendDeliveryConfirmationEmail(updatedOrder);
       console.log(`✅ Delivery confirmation email sent for order ${id}`);
     } catch (emailError) {
-      console.error('❌ Failed to send delivery confirmation email:', emailError.message);
+      console.error(
+        '❌ Failed to send delivery confirmation email:',
+        emailError.message,
+      );
       // Don't throw - delivery is confirmed, email failure shouldn't block
     }
 
@@ -454,7 +459,8 @@ export class OrdersService {
       return;
     }
 
-    const orderNumber = order.orderNumber || order.externalOrderId || order._id.toString();
+    const orderNumber =
+      order.orderNumber || order.externalOrderId || order._id.toString();
     const customerName = user.name || user.firstName || 'მომხმარებელო';
 
     const orderItems = order.orderItems.map((item: any) => ({

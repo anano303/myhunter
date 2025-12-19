@@ -28,7 +28,7 @@ export default function AdminLayout({
 
         // Get user data from local storage first
         let userData = getUserData();
-        
+
         // If no local data or no role, try to fetch from API
         if (!userData || !userData.role) {
           try {
@@ -39,7 +39,7 @@ export default function AdminLayout({
             console.log("Failed to fetch user data from API:", error);
           }
         }
-        
+
         if (!userData) {
           console.log("No user data found, redirecting to login");
           router.push("/login?redirect=/admin");

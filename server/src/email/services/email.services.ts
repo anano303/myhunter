@@ -558,9 +558,13 @@ export class EmailService {
       image?: string;
     }>;
   }) {
-    const baseUrl = process.env.ALLOWED_ORIGINS?.split(',')[0]?.trim() || 'https://www.myhunter.ge';
+    const baseUrl =
+      process.env.ALLOWED_ORIGINS?.split(',')[0]?.trim() ||
+      'https://www.myhunter.ge';
 
-    const productLinks = orderData.orderItems.map(item => `
+    const productLinks = orderData.orderItems
+      .map(
+        (item) => `
       <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center;">
         ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 15px;" />` : ''}
         <div style="flex: 1;">
@@ -571,7 +575,9 @@ export class EmailService {
           </a>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join('');
 
     const mailOptions = {
       from: this.getFromEmail(),
@@ -598,7 +604,7 @@ export class EmailService {
               </p>
               
               <p style="color: #a99c7a; font-size: 14px; margin-bottom: 25px;">
-                თქვენი შეკვეთა წარმატებით მიტანილია. გთხოვთ, დაუთმოთ რამდენიმე წამი და შეაფასოთ შეძენილი პროდუქტები. თქვენი შეფასება დაეხმარება სხვა მომხმარებლებს სწორი არჩევანის გაკეთებაში.
+                თქვენი შეკვეთა მიტანილია წარმატებით . გთხოვთ, დაუთმოთ რამდენიმე წამი და შეაფასოთ შეძენილი პროდუქტები. თქვენი შეფასება დაეხმარება სხვა მომხმარებლებს სწორი არჩევანის გაკეთებაში.
               </p>
 
               <h3 style="color: #e6cd9f; margin-bottom: 15px;">🛒 შეძენილი პროდუქტები:</h3>
@@ -628,7 +634,9 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail(mailOptions);
-      console.log(`✅ Delivery confirmation email sent to ${orderData.customerEmail}`);
+      console.log(
+        `✅ Delivery confirmation email sent to ${orderData.customerEmail}`,
+      );
     } catch (error) {
       console.error('❌ Error sending delivery confirmation email:', error);
       throw error;
