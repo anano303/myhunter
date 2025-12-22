@@ -27,6 +27,7 @@ interface ProductWithCategories extends Product {
 
 export function ProductsList() {
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const { user } = useUser();
   const { language } = useLanguage();
   const [refreshKey, setRefreshKey] = useState(Date.now());
@@ -46,7 +47,7 @@ export function ProductsList() {
     queryKey: ["products", page, refreshKey],
     queryFn: async () => {
       const response = await fetchWithAuth(
-        `/products/user?page=${page}&limit=8`
+        `/products/user?page=${page}&limit=20`
       );
       return response.json();
     },
@@ -57,7 +58,7 @@ export function ProductsList() {
     try {
       console.log("Manually refreshing product data...");
       const response = await fetchWithAuth(
-        `/products/user?page=${page}&limit=8`
+        `/products/user?page=${page}&limit=20`
       );
       const freshData = await response.json();
       return freshData;
@@ -287,9 +288,39 @@ export function ProductsList() {
   const products = data?.items || [];
   const totalPages = data?.pages || 1;
 
+  // Filter products based on search query
+  const filteredProducts = products.filter((product: Product) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    const productName = getDisplayName(product).toLowerCase();
+    const productId = product._id?.toString().toLowerCase() || "";
+    return productName.includes(query) || productId.includes(query);
+  });
+
   // Modify the table rows to use these functions correctly
   return (
     <div className="prd-card">
+      {/* Search Bar */}
+      <div className="search-bar" style={{ marginBottom: "15px" }}>
+        <input
+          type="text"
+          placeholder={language === "ge" ? "ძებნა სახელით..." : "Search by name..."}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: "250px",
+            padding: "8px 12px",
+            fontSize: "14px",
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+            outline: "none",
+            transition: "border-color 0.2s",
+          }}
+          onFocus={(e) => (e.target.style.borderColor = "#4b5320")}
+          onBlur={(e) => (e.target.style.borderColor = "#ccc")}
+        />
+      </div>
+
       {isAdmin && pendingProducts?.length > 0 && (
         <div className="pending-products mb-4">
           <h2 className="text-xl font-bold mb-4">Pending Approvals</h2>
@@ -327,36 +358,36 @@ export function ProductsList() {
                   <td className="prd-td">{getDisplayName(product)}</td>
                   <td className="prd-td">
                     {hasActiveDiscount(product) ? (
-                      <div className="price-display">
+                      <div className="price-display" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span
+                            className="discounted-price"
+                            style={{ color: "#e74c3c", fontWeight: "bold" }}
+                          >
+                            {calculateDiscountedPrice(product).toFixed(2)} ₾
+                          </span>
+                          <span
+                            className="discount-badge"
+                            style={{
+                              backgroundColor: "#e74c3c",
+                              color: "white",
+                              padding: "1px 4px",
+                              borderRadius: "3px",
+                              fontSize: "0.75em",
+                            }}
+                          >
+                            -{product.discountPercentage}%
+                          </span>
+                        </span>
                         <span
                           className="original-price"
                           style={{
                             textDecoration: "line-through",
                             color: "#999",
-                            fontSize: "0.9em",
+                            fontSize: "0.8em",
                           }}
                         >
                           {product.price} ₾
-                        </span>
-                        <br />
-                        <span
-                          className="discounted-price"
-                          style={{ color: "#e74c3c", fontWeight: "bold" }}
-                        >
-                          {calculateDiscountedPrice(product).toFixed(2)} ₾
-                        </span>
-                        <span
-                          className="discount-badge"
-                          style={{
-                            backgroundColor: "#e74c3c",
-                            color: "white",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            fontSize: "0.8em",
-                            marginLeft: "8px",
-                          }}
-                        >
-                          -{product.discountPercentage}%
                         </span>
                       </div>
                     ) : (
@@ -413,7 +444,7 @@ export function ProductsList() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product: ProductWithCategories & { user?: User }) => (
+          {filteredProducts.map((product: ProductWithCategories & { user?: User }) => (
             <tr key={product._id} className="prd-tr">
               <td className="prd-td prd-td-bold">
                 {" "}
@@ -445,36 +476,36 @@ export function ProductsList() {
               <td className="prd-td">{getDisplayName(product)}</td>
               <td className="prd-td">
                 {hasActiveDiscount(product) ? (
-                  <div className="price-display">
+                  <div className="price-display" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span
+                        className="discounted-price"
+                        style={{ color: "#e74c3c", fontWeight: "bold" }}
+                      >
+                        {calculateDiscountedPrice(product).toFixed(2)} ₾
+                      </span>
+                      <span
+                        className="discount-badge"
+                        style={{
+                          backgroundColor: "#e74c3c",
+                          color: "white",
+                          padding: "1px 4px",
+                          borderRadius: "3px",
+                          fontSize: "0.75em",
+                        }}
+                      >
+                        -{product.discountPercentage}%
+                      </span>
+                    </span>
                     <span
                       className="original-price"
                       style={{
                         textDecoration: "line-through",
                         color: "#999",
-                        fontSize: "0.9em",
+                        fontSize: "0.8em",
                       }}
                     >
                       {product.price} ₾
-                    </span>
-                    <br />
-                    <span
-                      className="discounted-price"
-                      style={{ color: "#e74c3c", fontWeight: "bold" }}
-                    >
-                      {calculateDiscountedPrice(product).toFixed(2)} ₾
-                    </span>
-                    <span
-                      className="discount-badge"
-                      style={{
-                        backgroundColor: "#e74c3c",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        fontSize: "0.8em",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      -{product.discountPercentage}%
                     </span>
                   </div>
                 ) : (
