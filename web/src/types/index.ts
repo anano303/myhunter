@@ -133,6 +133,17 @@ export interface PaginatedProducts {
   pages: number;
 }
 
+export interface SavedAddress {
+  id: string;
+  label: string;
+  address: string;
+  city: string;
+  postalCode?: string;
+  country: string;
+  phoneNumber: string;
+  isDefault: boolean;
+}
+
 export interface User {
   _id: string;
   name: string;
@@ -142,6 +153,7 @@ export interface User {
   role: Role;
   storeName?: string;
   storeLogo?: string;
+  savedAddresses?: SavedAddress[];
   seller?: {
     storeName: string;
     storeLogo?: string;

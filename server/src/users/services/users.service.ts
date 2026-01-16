@@ -8,14 +8,16 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
-import { User, UserDocument } from '../schemas/user.schema';
+import { User, UserDocument, SavedAddress } from '../schemas/user.schema';
 import { hashPassword } from '@/utils/password';
 import { generateUsers } from '@/utils/seed-users';
 import { PaginatedResponse } from '@/types';
 import { Role } from '@/types/role.enum';
 
 import { AdminProfileDto } from '../dtos/admin.profile.dto';
+import { CreateAddressDto } from '../dtos/address.dto';
 import { AwsS3Service } from '@/aws-s3/aws-s3.service';
 
 @Injectable()
@@ -372,5 +374,136 @@ export class UsersService {
 
     await this.userModel.findByIdAndDelete(id);
     return { message: 'User deleted successfully' };
+  }
+
+  // ============ Address Management Methods ============
+
+  async getAddresses(userId: string): Promise<SavedAddress[]> {
+    const user = await this.findById(userId);
+    return user.savedAddresses || [];
+  }
+
+  async addAddress(
+    userId: string,
+    addressDto: CreateAddressDto,
+  ): Promise<SavedAddress[]> {
+    const user = await this.findById(userId);
+
+    const newAddress: SavedAddress = {
+      id: uuidv4(),
+      ...addressDto,
+      isDefault: addressDto.isDefault || false,
+    };
+
+    // If this is the first address or set as default, make it default
+    if (!user.savedAddresses || user.savedAddresses.length === 0) {
+      newAddress.isDefault = true;
+    } else if (newAddress.isDefault) {
+      // Remove default from other addresses
+      user.savedAddresses = user.savedAddresses.map((addr) => ({
+        ...addr,
+        isDefault: false,
+      }));
+    }
+
+    user.savedAddresses = [...(user.savedAddresses || []), newAddress];
+    await user.save();
+
+    return user.savedAddresses;
+  }
+
+  async updateAddress(
+    userId: string,
+    addressId: string,
+    addressDto: CreateAddressDto,
+  ): Promise<SavedAddress[]> {
+    const user = await this.findById(userId);
+
+    if (!user.savedAddresses) {
+      throw new NotFoundException('No addresses found');
+    }
+
+    const addressIndex = user.savedAddresses.findIndex(
+      (addr) => addr.id === addressId,
+    );
+
+    if (addressIndex === -1) {
+      throw new NotFoundException('Address not found');
+    }
+
+    // If setting as default, remove default from others
+    if (addressDto.isDefault) {
+      user.savedAddresses = user.savedAddresses.map((addr) => ({
+        ...addr,
+        isDefault: false,
+      }));
+    }
+
+    user.savedAddresses[addressIndex] = {
+      ...user.savedAddresses[addressIndex],
+      ...addressDto,
+      id: addressId,
+    };
+
+    await user.save();
+    return user.savedAddresses;
+  }
+
+  async deleteAddress(
+    userId: string,
+    addressId: string,
+  ): Promise<SavedAddress[]> {
+    const user = await this.findById(userId);
+
+    if (!user.savedAddresses) {
+      throw new NotFoundException('No addresses found');
+    }
+
+    const deletedAddress = user.savedAddresses.find(
+      (addr) => addr.id === addressId,
+    );
+
+    if (!deletedAddress) {
+      throw new NotFoundException('Address not found');
+    }
+
+    user.savedAddresses = user.savedAddresses.filter(
+      (addr) => addr.id !== addressId,
+    );
+
+    // If deleted address was default and there are other addresses, make first one default
+    if (deletedAddress.isDefault && user.savedAddresses.length > 0) {
+      user.savedAddresses[0].isDefault = true;
+    }
+
+    await user.save();
+    return user.savedAddresses;
+  }
+
+  async setDefaultAddress(
+    userId: string,
+    addressId: string,
+  ): Promise<SavedAddress[]> {
+    const user = await this.findById(userId);
+
+    if (!user.savedAddresses) {
+      throw new NotFoundException('No addresses found');
+    }
+
+    const addressExists = user.savedAddresses.some(
+      (addr) => addr.id === addressId,
+    );
+
+    if (!addressExists) {
+      throw new NotFoundException('Address not found');
+    }
+
+    user.savedAddresses = user.savedAddresses.map((addr) => ({
+      ...addr,
+      isDefault: addr.id === addressId,
+    }));
+
+    await user.save();
+    return user.savedAddresses;
   }
 }

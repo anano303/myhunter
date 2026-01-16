@@ -24,7 +24,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '@/decorators/current-user.decorator';
-import { User } from '../schemas/user.schema';
+import { User, UserDocument } from '../schemas/user.schema';
+import { CreateAddressDto, UpdateAddressDto } from '../dtos/address.dto';
 
 @Controller('users')
 export class UsersController {
@@ -194,5 +195,54 @@ export class UsersController {
       message: 'Logo uploaded successfully',
       logoUrl: logoUrl,
     };
+  }
+
+  // ============ Address Management Endpoints ============
+
+  @Get('addresses/my')
+  @UseGuards(JwtAuthGuard)
+  async getMyAddresses(@CurrentUser() user: UserDocument) {
+    return this.usersService.getAddresses(user['_id'] as string);
+  }
+
+  @Post('addresses')
+  @UseGuards(JwtAuthGuard)
+  async addAddress(
+    @CurrentUser() user: UserDocument,
+    @Body() addressDto: CreateAddressDto,
+  ) {
+    return this.usersService.addAddress(user['_id'] as string, addressDto);
+  }
+
+  @Put('addresses/:addressId')
+  @UseGuards(JwtAuthGuard)
+  async updateAddress(
+    @CurrentUser() user: UserDocument,
+    @Param('addressId') addressId: string,
+    @Body() addressDto: CreateAddressDto,
+  ) {
+    return this.usersService.updateAddress(
+      user['_id'] as string,
+      addressId,
+      addressDto,
+    );
+  }
+
+  @Delete('addresses/:addressId')
+  @UseGuards(JwtAuthGuard)
+  async deleteAddress(
+    @CurrentUser() user: UserDocument,
+    @Param('addressId') addressId: string,
+  ) {
+    return this.usersService.deleteAddress(user['_id'] as string, addressId);
+  }
+
+  @Put('addresses/:addressId/default')
+  @UseGuards(JwtAuthGuard)
+  async setDefaultAddress(
+    @CurrentUser() user: UserDocument,
+    @Param('addressId') addressId: string,
+  ) {
+    return this.usersService.setDefaultAddress(user['_id'] as string, addressId);
   }
 }

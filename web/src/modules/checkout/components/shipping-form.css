@@ -198,6 +198,75 @@
   color: #ff6b6b;
 }
 
+/* Saved Address Dropdown */
+.saved-address-field {
+  background: rgba(75, 83, 32, 0.15);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px dashed #4b5320;
+  margin-bottom: 1.5rem;
+}
+
+.saved-address-field label {
+  font-size: 0.9rem;
+  color: #f48c06;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.saved-address-field label::before {
+  content: "📍";
+}
+
+.saved-address-select {
+  margin-top: 0.5rem;
+}
+
+/* Save Address Checkbox */
+.save-address-field {
+  margin-top: 1rem;
+}
+
+.save-address-field .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: #e6cd9f;
+  font-size: 0.95rem;
+}
+
+.save-address-field .checkbox-label::before {
+  content: none;
+}
+
+.save-address-field input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #f48c06;
+  cursor: pointer;
+}
+
+/* Selected Address Summary */
+.selected-address-summary {
+  background: rgba(75, 83, 32, 0.2);
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border-left: 3px solid #f48c06;
+  margin-top: 0.5rem;
+}
+
+.selected-address-summary p {
+  margin: 0.25rem 0;
+  color: #e6cd9f;
+  font-size: 0.95rem;
+}
+
+.selected-address-summary p strong {
+  color: #f48c06;
+}
+
 .shipping-info-text {
   font-size: 0.85rem;
   color: #a0a0a0;

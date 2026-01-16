@@ -12,6 +12,7 @@ import "./ProfileForm.css";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { AddressManager } from "./AddressManager";
 
 // Helper function to check if image is from Cloudinary
 const isCloudinaryImage = (src: string) =>
@@ -399,6 +400,9 @@ export function ProfileForm() {
           {t("profile.updateSuccess")}
         </motion.div>
       )}
+
+      {/* Address Management Section */}
+      <AddressManager />
     </div>
   );
 }

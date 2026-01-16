@@ -2,6 +2,33 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from '@/types/role.enum';
 
+// Saved address sub-schema
+export class SavedAddress {
+  @Prop({ required: true })
+  id: string;
+
+  @Prop({ required: true })
+  label: string; // e.g., "სახლი", "ოფისი"
+
+  @Prop({ required: true })
+  address: string;
+
+  @Prop({ required: true })
+  city: string;
+
+  @Prop()
+  postalCode?: string;
+
+  @Prop({ required: true })
+  country: string;
+
+  @Prop({ required: true })
+  phoneNumber: string;
+
+  @Prop({ default: false })
+  isDefault: boolean;
+}
+
 @Schema({
   timestamps: true,
   toJSON: {
@@ -42,6 +69,9 @@ export class User {
 
   @Prop({ type: String, default: null })
   profileImagePath: string;
+
+  @Prop({ type: [Object], default: [] })
+  savedAddresses: SavedAddress[];
 }
 
 export type UserDocument = User & Document;

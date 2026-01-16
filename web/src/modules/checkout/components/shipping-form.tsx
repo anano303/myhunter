@@ -9,6 +9,8 @@ import { getCountries } from "@/lib/countries";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { SavedAddress } from "@/types";
 
 import "./shipping-form.css";
 
@@ -19,6 +21,8 @@ interface ShippingFormData {
   postalCode: string;
   country: string;
   phoneNumber: string;
+  saveAddress?: boolean;
+  addressLabel?: string;
 }
 
 export function ShippingForm() {
@@ -28,6 +32,41 @@ export function ShippingForm() {
   const { user, isLoading } = useUser();
   const { t, language } = useLanguage();
   const [isMounted, setIsMounted] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
+  const [isNewAddress, setIsNewAddress] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Fetch saved addresses
+  const { data: savedAddresses = [] } = useQuery<SavedAddress[]>({
+    queryKey: ["userAddresses"],
+    queryFn: async () => {
+      const response = await apiClient.get("/users/addresses/my");
+      return response.data;
+    },
+    enabled: !!user,
+  });
+
+  // Mutation for saving new address
+  const saveAddressMutation = useMutation({
+    mutationFn: async (addressData: {
+      label: string;
+      address: string;
+      city: string;
+      postalCode?: string;
+      country: string;
+      phoneNumber: string;
+    }) => {
+      const response = await apiClient.post("/users/addresses", addressData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userAddresses"] });
+      toast({
+        title: language === "ge" ? "მისამართი შენახულია" : "Address saved",
+        description: language === "ge" ? "მისამართი დაემატა თქვენს პროფილში" : "Address has been added to your profile",
+      });
+    },
+  });
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,6 +86,7 @@ export function ShippingForm() {
     formState: { errors, isSubmitting },
     control,
     watch,
+    setValue,
   } = useForm<ShippingFormData>({
     defaultValues: {
       deliveryType: "delivery",
@@ -54,6 +94,48 @@ export function ShippingForm() {
   });
 
   const deliveryType = watch("deliveryType");
+  const saveAddress = watch("saveAddress");
+
+  // Handle saved address selection
+  const handleSavedAddressSelect = (addressId: string) => {
+    if (addressId === "new") {
+      setIsNewAddress(true);
+      setSelectedAddressId("");
+      // Clear form for new address
+      setValue("address", "");
+      setValue("city", "");
+      setValue("postalCode", "");
+      setValue("country", "");
+      setValue("phoneNumber", "");
+      setValue("saveAddress", true);
+      return;
+    }
+    
+    setIsNewAddress(false);
+    setSelectedAddressId(addressId);
+    setValue("saveAddress", false);
+    
+    if (addressId === "") return;
+    
+    const address = savedAddresses.find((a) => a.id === addressId);
+    if (address) {
+      setValue("address", address.address);
+      setValue("city", address.city);
+      setValue("postalCode", address.postalCode || "");
+      setValue("country", address.country);
+      setValue("phoneNumber", address.phoneNumber);
+    }
+  };
+
+  // Auto-select default address on load
+  useEffect(() => {
+    if (savedAddresses.length > 0 && !selectedAddressId) {
+      const defaultAddress = savedAddresses.find((a) => a.isDefault);
+      if (defaultAddress) {
+        handleSavedAddressSelect(defaultAddress.id);
+      }
+    }
+  }, [savedAddresses]);
 
   const onSubmit = async (data: ShippingFormData) => {
     if (isLoading) {
@@ -66,17 +148,56 @@ export function ShippingForm() {
     }
 
     try {
-      // თუ თვითგატანაა, გატანის მისამართი ავტომატურად შეივსება
-      const shippingData =
-        data.deliveryType === "pickup"
-          ? {
-              ...data,
-              address:
-                "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
-              city: "თბილისი",
-              country: "GE",
-            }
-          : data;
+      // Save new address to profile if checkbox is checked
+      if (data.saveAddress && isNewAddress && data.deliveryType === "delivery") {
+        await saveAddressMutation.mutateAsync({
+          label: data.addressLabel || (language === "ge" ? "ახალი მისამართი" : "New Address"),
+          address: data.address,
+          city: data.city,
+          postalCode: data.postalCode,
+          country: data.country,
+          phoneNumber: data.phoneNumber,
+        });
+      }
+
+      // Get shipping data based on selection
+      let shippingData;
+      
+      if (data.deliveryType === "pickup") {
+        // თვითგატანა
+        shippingData = {
+          deliveryType: "pickup",
+          address: "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
+          city: "თბილისი",
+          country: "GE",
+          phoneNumber: data.phoneNumber,
+        };
+      } else if (!isNewAddress && selectedAddressId) {
+        // შენახული მისამართი
+        const selectedAddr = savedAddresses.find((a) => a.id === selectedAddressId);
+        if (selectedAddr) {
+          shippingData = {
+            deliveryType: "delivery",
+            address: selectedAddr.address,
+            city: selectedAddr.city,
+            postalCode: selectedAddr.postalCode || "",
+            country: selectedAddr.country,
+            phoneNumber: selectedAddr.phoneNumber,
+          };
+        } else {
+          throw new Error("Selected address not found");
+        }
+      } else {
+        // ახალი მისამართი
+        shippingData = {
+          deliveryType: "delivery",
+          address: data.address,
+          city: data.city,
+          postalCode: data.postalCode || "",
+          country: data.country,
+          phoneNumber: data.phoneNumber,
+        };
+      }
 
       const response = await apiClient.post("/cart/shipping", shippingData);
       const shippingAddress = response.data;
@@ -206,107 +327,192 @@ export function ShippingForm() {
         {/* მიტანის ფორმა - მხოლოდ თუ მიტანაა არჩეული */}
         {deliveryType === "delivery" && (
           <>
-            <div className="shipping-form-field">
-              <label htmlFor="address">{t("checkout.streetAddress")}</label>
-              <input
-                id="address"
-                {...register("address", {
-                  required:
-                    deliveryType === "delivery"
-                      ? t("checkout.addressRequired")
-                      : false,
-                })}
-                placeholder={t("checkout.addressPlaceholder")}
-              />
-              {errors.address && (
-                <p className="error-text">{errors.address.message}</p>
-              )}
-            </div>
-
-            <div className="shipping-form-field">
-              <label htmlFor="city">{t("checkout.city")}</label>
-              <input
-                id="city"
-                {...register("city", {
-                  required:
-                    deliveryType === "delivery"
-                      ? t("checkout.cityRequired")
-                      : false,
-                })}
-                placeholder={t("checkout.cityPlaceholder")}
-              />
-              {errors.city && (
-                <p className="error-text">{errors.city.message}</p>
-              )}
-              <p className="shipping-info-text">
-                {language === "ge"
-                  ? "მიწოდება: თბილისი - 8₾, რეგიონები - 15₾"
-                  : "Delivery: Tbilisi - 8₾, Regions - 15₾"}
-              </p>
-            </div>
-
-            <div className="shipping-form-field">
-              <label htmlFor="postalCode">{t("checkout.postalCode")}</label>
-              <input
-                id="postalCode"
-                {...register("postalCode")}
-                placeholder={t("checkout.postalCodePlaceholder")}
-              />
-              {errors.postalCode && (
-                <p className="error-text">{errors.postalCode.message}</p>
-              )}
-            </div>
-
-            <div className="shipping-form-field">
-              <label htmlFor="country">{t("checkout.country")}</label>
-              <Controller
-                name="country"
-                control={control}
-                rules={{
-                  required:
-                    deliveryType === "delivery"
-                      ? t("checkout.countryRequired")
-                      : false,
-                }}
-                render={({ field }) => (
-                  <select {...field} defaultValue="">
-                    <option value="" disabled>
-                      {t("checkout.selectCountry")}
-                    </option>
-                    {getCountries().map((country) => (
-                      <option key={country.code} value={country.code}>
-                        {country.name}
-                      </option>
-                    ))}
-                  </select>
+            {/* Saved Addresses Dropdown */}
+            <div className="shipping-form-field saved-address-field">
+              <label htmlFor="savedAddress">
+                {language === "ge" ? "მისამართი" : "Address"}
+              </label>
+              <select
+                id="savedAddress"
+                value={isNewAddress ? "new" : selectedAddressId}
+                onChange={(e) => handleSavedAddressSelect(e.target.value)}
+                className="saved-address-select"
+              >
+                {savedAddresses.length > 0 && (
+                  <option value="">
+                    {language === "ge" ? "აირჩიეთ შენახული მისამართი..." : "Select a saved address..."}
+                  </option>
                 )}
-              />
-              {errors.country && (
-                <p className="error-text">{errors.country.message}</p>
-              )}
+                {savedAddresses.map((addr) => (
+                  <option key={addr.id} value={addr.id}>
+                    {addr.label} - {addr.address}, {addr.city}
+                    {addr.isDefault ? (language === "ge" ? " (ძირითადი)" : " (Default)") : ""}
+                  </option>
+                ))}
+                <option value="new">
+                  ➕ {language === "ge" ? "ახალი მისამართის დამატება" : "Add new address"}
+                </option>
+              </select>
             </div>
+
+            {/* Show form fields only for new address or if no address selected */}
+            {(isNewAddress || savedAddresses.length === 0 || !selectedAddressId) && (
+              <>
+                {/* Address Label - only for new address */}
+                {isNewAddress && (
+                  <div className="shipping-form-field">
+                    <label htmlFor="addressLabel">
+                      {language === "ge" ? "მისამართის სახელი" : "Address Label"}
+                    </label>
+                    <input
+                      id="addressLabel"
+                      {...register("addressLabel")}
+                      placeholder={language === "ge" ? "მაგ: სახლი, ოფისი..." : "e.g: Home, Office..."}
+                    />
+                  </div>
+                )}
+
+                <div className="shipping-form-field">
+                  <label htmlFor="address">{t("checkout.streetAddress")}</label>
+                  <input
+                    id="address"
+                    {...register("address", {
+                      required:
+                        deliveryType === "delivery"
+                          ? t("checkout.addressRequired")
+                          : false,
+                    })}
+                    placeholder={t("checkout.addressPlaceholder")}
+                  />
+                  {errors.address && (
+                    <p className="error-text">{errors.address.message}</p>
+                  )}
+                </div>
+
+                <div className="shipping-form-field">
+                  <label htmlFor="city">{t("checkout.city")}</label>
+                  <input
+                    id="city"
+                    {...register("city", {
+                      required:
+                        deliveryType === "delivery"
+                          ? t("checkout.cityRequired")
+                          : false,
+                    })}
+                    placeholder={t("checkout.cityPlaceholder")}
+                  />
+                  {errors.city && (
+                    <p className="error-text">{errors.city.message}</p>
+                  )}
+                  <p className="shipping-info-text">
+                    {language === "ge"
+                      ? "მიწოდება: თბილისი - 8₾, რეგიონები - 15₾"
+                      : "Delivery: Tbilisi - 8₾, Regions - 15₾"}
+                  </p>
+                </div>
+
+                <div className="shipping-form-field">
+                  <label htmlFor="postalCode">{t("checkout.postalCode")}</label>
+                  <input
+                    id="postalCode"
+                    {...register("postalCode")}
+                    placeholder={t("checkout.postalCodePlaceholder")}
+                  />
+                  {errors.postalCode && (
+                    <p className="error-text">{errors.postalCode.message}</p>
+                  )}
+                </div>
+
+                <div className="shipping-form-field">
+                  <label htmlFor="country">{t("checkout.country")}</label>
+                  <Controller
+                    name="country"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required:
+                        deliveryType === "delivery"
+                          ? t("checkout.countryRequired")
+                          : false,
+                    }}
+                    render={({ field }) => (
+                      <select {...field}>
+                        <option value="" disabled>
+                          {t("checkout.selectCountry")}
+                        </option>
+                        {getCountries().map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  />
+                  {errors.country && (
+                    <p className="error-text">{errors.country.message}</p>
+                  )}
+                </div>
+
+                {/* Save Address Checkbox - only for new address */}
+                {isNewAddress && (
+                  <div className="shipping-form-field save-address-field">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        {...register("saveAddress")}
+                      />
+                      <span>
+                        {language === "ge" 
+                          ? "შევინახო ეს მისამართი მომავალი შეკვეთებისთვის" 
+                          : "Save this address for future orders"}
+                      </span>
+                    </label>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Show selected address summary if not new */}
+            {!isNewAddress && selectedAddressId && savedAddresses.length > 0 && (
+              <div className="selected-address-summary">
+                {(() => {
+                  const addr = savedAddresses.find(a => a.id === selectedAddressId);
+                  if (!addr) return null;
+                  return (
+                    <>
+                      <p><strong>{addr.label}</strong></p>
+                      <p>{addr.address}</p>
+                      <p>{addr.city}, {addr.country}</p>
+                      <p>{addr.phoneNumber}</p>
+                    </>
+                  );
+                })()}
+              </div>
+            )}
           </>
         )}
 
         {/* ტელეფონი - ორივე შემთხვევაში საჭიროა */}
-        <div className="shipping-form-field">
-          <label htmlFor="phoneNumber">{t("checkout.phoneNumber")}</label>
-          <input
-            id="phoneNumber"
-            type="tel"
-            {...register("phoneNumber", {
-              required: t("checkout.phoneNumberRequired"),
-              pattern: {
-                value: /^[\+]?[1-9][\d]{0,15}$/,
-                message: t("checkout.validPhoneNumber"),
-              },
-            })}
-            placeholder={t("checkout.phoneNumberPlaceholder")}
-          />
-          {errors.phoneNumber && (
-            <p className="error-text">{errors.phoneNumber.message}</p>
-          )}
-        </div>
+        {(deliveryType === "pickup" || isNewAddress || savedAddresses.length === 0 || !selectedAddressId) && (
+          <div className="shipping-form-field">
+            <label htmlFor="phoneNumber">{t("checkout.phoneNumber")}</label>
+            <input
+              id="phoneNumber"
+              type="tel"
+              {...register("phoneNumber", {
+                required: t("checkout.phoneNumberRequired"),
+                pattern: {
+                  value: /^[\+]?[1-9][\d]{0,15}$/,
+                  message: t("checkout.validPhoneNumber"),
+                },
+              })}
+              placeholder={t("checkout.phoneNumberPlaceholder")}
+            />
+            {errors.phoneNumber && (
+              <p className="error-text">{errors.phoneNumber.message}</p>
+            )}
+          </div>
+        )}
 
         <button
           type="submit"
