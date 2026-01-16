@@ -297,8 +297,6 @@ export class EmailService {
     };
     paymentMethod: string;
     orderDate: string;
-  }) {ymentMethod: string;
-    orderDate: string;
   }) {
     const orderIdentifier = orderData.displayOrderId || orderData.orderId;
 

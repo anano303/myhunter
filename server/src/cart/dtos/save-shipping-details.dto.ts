@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsIn } from 'class-validator';
+import { IsString, IsOptional, IsIn, IsBoolean } from 'class-validator';
 
 export class SaveShippingDetailsDto {
   @IsString()
@@ -21,4 +21,13 @@ export class SaveShippingDetailsDto {
 
   @IsString()
   phoneNumber!: string;
+
+  // These are optional frontend fields that should be ignored
+  @IsBoolean()
+  @IsOptional()
+  saveAddress?: boolean;
+
+  @IsString()
+  @IsOptional()
+  addressLabel?: string;
 }
