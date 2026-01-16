@@ -177,6 +177,7 @@ export function ProductCard({
           productId={product._id}
           countInStock={product.countInStock}
           className="cart-icon-button"
+          price={discountedPrice}
         />
         <Link href={`/products/${product._id}`} className="buy-link">
           <button className="buyBtn">

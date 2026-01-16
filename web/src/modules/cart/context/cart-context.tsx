@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 interface CartContextType {
   items: CartItem[];
   loading: boolean;
-  addItem: (productId: string, qty: number) => Promise<void>;
+  addItem: (productId: string, qty: number, price?: number) => Promise<void>;
   removeItem: (
     productId: string,
     size?: string,
@@ -137,8 +137,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addItem = useCallback(
-    async (productId: string, qty: number) => {
-      console.log("addItem called", { productId, qty, hasUser: !!user });
+    async (productId: string, qty: number, price?: number) => {
+      console.log("addItem called", { productId, qty, price, hasUser: !!user });
       setLoading(true);
 
       // თუ მომხმარებელი არაა ავტორიზებული, localStorage-ში ვინახავთ
@@ -218,10 +218,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
 
       try {
-        const { data } = await apiClient.post("/cart/items", {
+        const requestData: { productId: string; qty: number; price?: number } = {
           productId,
           qty,
-        });
+        };
+        if (price !== undefined) {
+          requestData.price = price;
+        }
+        const { data } = await apiClient.post("/cart/items", requestData);
         setItems(data.items);
 
         toast({

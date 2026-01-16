@@ -11,12 +11,14 @@ interface AddToCartButtonProps {
   productId: string;
   countInStock: number;
   className?: string;
+  price?: number;
 }
 
 export function AddToCartButton({
   productId,
   countInStock,
   className,
+  price,
 }: AddToCartButtonProps) {
   const { t } = useLanguage();
   const { addItem } = useCart();
@@ -34,7 +36,7 @@ export function AddToCartButton({
     });
 
     try {
-      await addItem(productId, quantity);
+      await addItem(productId, quantity, price);
     } catch (error) {
       console.log(error);
       toast({
