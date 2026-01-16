@@ -28,9 +28,18 @@ interface ProductWithCategories extends Product {
 export function ProductsList() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const { user } = useUser();
   const { language } = useLanguage();
   const [refreshKey, setRefreshKey] = useState(Date.now());
+
+  // Debounce search query - 500ms delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const isAdmin = user?.role === Role.Admin;
 
@@ -44,10 +53,13 @@ export function ProductsList() {
 
   // Add refetch capability to the query with a key to force updates
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["products", page, refreshKey],
+    queryKey: ["products", page, refreshKey, debouncedSearch],
     queryFn: async () => {
+      // თუ ძებნაა, ყველა შედეგი წამოვიღოთ (limit=1000)
+      const limit = debouncedSearch.trim() ? 1000 : 20;
+      const keyword = debouncedSearch.trim() ? `&keyword=${encodeURIComponent(debouncedSearch.trim())}` : "";
       const response = await fetchWithAuth(
-        `/products/user?page=${page}&limit=20`
+        `/products/user?page=${debouncedSearch.trim() ? 1 : page}&limit=${limit}${keyword}`
       );
       return response.json();
     },
@@ -57,8 +69,10 @@ export function ProductsList() {
   const refreshProductData = useCallback(async () => {
     try {
       console.log("Manually refreshing product data...");
+      const limit = debouncedSearch.trim() ? 1000 : 20;
+      const keyword = debouncedSearch.trim() ? `&keyword=${encodeURIComponent(debouncedSearch.trim())}` : "";
       const response = await fetchWithAuth(
-        `/products/user?page=${page}&limit=20`
+        `/products/user?page=${debouncedSearch.trim() ? 1 : page}&limit=${limit}${keyword}`
       );
       const freshData = await response.json();
       return freshData;
@@ -66,7 +80,7 @@ export function ProductsList() {
       console.error("Error refreshing product data:", error);
       return null;
     }
-  }, [page]);
+  }, [page, debouncedSearch]);
 
   // Check if we just returned from the edit page
   useEffect(() => {
@@ -286,16 +300,7 @@ export function ProductsList() {
   if (isLoading) return <HeartLoading size="medium" />;
 
   const products = data?.items || [];
-  const totalPages = data?.pages || 1;
-
-  // Filter products based on search query
-  const filteredProducts = products.filter((product: Product) => {
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    const productName = getDisplayName(product).toLowerCase();
-    const productId = product._id?.toString().toLowerCase() || "";
-    return productName.includes(query) || productId.includes(query);
-  });
+  const totalPages = debouncedSearch.trim() ? 1 : (data?.pages || 1);
 
   // Modify the table rows to use these functions correctly
   return (
@@ -444,7 +449,7 @@ export function ProductsList() {
           </tr>
         </thead>
         <tbody>
-          {filteredProducts.map((product: ProductWithCategories & { user?: User }) => (
+          {products.map((product: ProductWithCategories & { user?: User }) => (
             <tr key={product._id} className="prd-tr">
               <td className="prd-td prd-td-bold">
                 {" "}
