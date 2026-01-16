@@ -130,6 +130,13 @@ export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
               {t("navigation.profile")}
             </Link>
             <Link
+              href="/profile/addresses"
+              className="dropdown-item"
+              onClick={handleLinkClick}
+            >
+              {t("navigation.addresses")}
+            </Link>
+            <Link
               href="/profile/orders"
               className="dropdown-item"
               onClick={handleLinkClick}

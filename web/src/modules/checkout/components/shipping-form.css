@@ -536,4 +536,48 @@
   .delivery-type-desc {
     font-size: 0.8rem;
   }
+
+  /* Saved Address Dropdown Mobile */
+  .saved-address-field {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .saved-address-field label {
+    font-size: 0.85rem;
+  }
+
+  .saved-address-select {
+    font-size: 14px;
+  }
+
+  /* Selected Address Summary Mobile */
+  .selected-address-summary {
+    padding: 0.75rem 1rem;
+  }
+
+  .selected-address-summary p {
+    font-size: 0.85rem;
+  }
+
+  /* Save Address Checkbox Mobile */
+  .save-address-field .checkbox-label {
+    font-size: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .save-address-field input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .saved-address-field label::before {
+    display: none;
+  }
+
+  .selected-address-summary {
+    padding: 0.6rem 0.8rem;
+  }
 }

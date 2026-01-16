@@ -10,6 +10,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
 .address-header h2 {
@@ -251,18 +252,122 @@
   color: #888;
 }
 
+/* Tablet */
+@media (max-width: 768px) {
+  .address-manager {
+    padding: 16px;
+    margin-top: 20px;
+  }
+
+  .address-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .add-address-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .address-form-container {
+    padding: 16px;
+  }
+
+  .form-field input,
+  .form-field select {
+    padding: 10px;
+  }
+}
+
+/* Mobile */
 @media (max-width: 600px) {
+  .address-manager {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .address-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .address-header h2 {
+    font-size: 1rem;
+  }
+
+  .add-address-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
+  .form-header h3 {
+    font-size: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .cancel-btn,
+  .save-btn {
+    width: 100%;
+    text-align: center;
+  }
+
   .address-card {
     flex-direction: column;
     gap: 16px;
+    padding: 14px;
   }
-  
+
+  .address-label {
+    font-size: 14px;
+  }
+
+  .address-text,
+  .address-city,
+  .address-phone {
+    font-size: 13px;
+  }
+
   .address-actions {
     width: 100%;
-    justify-content: flex-end;
+    justify-content: flex-start;
+  }
+
+  .action-btn {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .no-addresses {
+    padding: 30px 16px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 400px) {
+  .address-manager {
+    padding: 10px;
+  }
+
+  .address-form-container {
+    padding: 12px;
+  }
+
+  .form-field label {
+    font-size: 13px;
+  }
+
+  .form-field input,
+  .form-field select {
+    padding: 8px 10px;
+    font-size: 13px;
   }
 }

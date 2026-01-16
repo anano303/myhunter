@@ -1,0 +1,71 @@
+.addresses-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.addresses-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.addresses-header h1 {
+  font-size: 2rem;
+  color: #f48c06;
+  margin-bottom: 0.5rem;
+  font-family: "FiraGo-Enhanced", "FiraGo", "Noto Sans Georgian", sans-serif;
+}
+
+.addresses-header p {
+  color: #a0a0a0;
+  font-size: 1rem;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .addresses-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .addresses-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .addresses-header p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .addresses-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .addresses-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .addresses-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .addresses-header p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 400px) {
+  .addresses-page {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .addresses-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .addresses-header p {
+    font-size: 0.85rem;
+  }
+}
