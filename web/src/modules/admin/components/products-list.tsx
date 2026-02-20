@@ -52,7 +52,7 @@ export function ProductsList() {
   const queryClient = useQueryClient();
 
   // Add refetch capability to the query with a key to force updates
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["products", page, refreshKey, debouncedSearch],
     queryFn: async () => {
       // თუ ძებნაა, ყველა შედეგი წამოვიღოთ (limit=1000)
@@ -63,6 +63,7 @@ export function ProductsList() {
       );
       return response.json();
     },
+    placeholderData: (previousData) => previousData,
   });
 
   // Add a function to directly fetch the updated product data after returning from an edit
@@ -297,7 +298,7 @@ export function ProductsList() {
     return "";
   }
 
-  if (isLoading) return <HeartLoading size="medium" />;
+  if (isLoading && !data) return <HeartLoading size="medium" />;
 
   const products = data?.items || [];
   const totalPages = debouncedSearch.trim() ? 1 : (data?.pages || 1);
@@ -306,7 +307,7 @@ export function ProductsList() {
   return (
     <div className="prd-card">
       {/* Search Bar */}
-      <div className="search-bar" style={{ marginBottom: "15px" }}>
+      <div className="search-bar" style={{ marginBottom: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
         <input
           type="text"
           placeholder={language === "ge" ? "ძებნა სახელით..." : "Search by name..."}
@@ -324,6 +325,11 @@ export function ProductsList() {
           onFocus={(e) => (e.target.style.borderColor = "#4b5320")}
           onBlur={(e) => (e.target.style.borderColor = "#ccc")}
         />
+        {isFetching && (
+          <span style={{ fontSize: "12px", color: "#888" }}>
+            {language === "ge" ? "იტვირთება..." : "Loading..."}
+          </span>
+        )}
       </div>
 
       {isAdmin && pendingProducts?.length > 0 && (

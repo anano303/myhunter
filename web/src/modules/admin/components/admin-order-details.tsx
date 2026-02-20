@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, XCircle, Store, Truck } from "lucide-react";
+import { CheckCircle2, XCircle, Store, Truck, Printer } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Order, OrderItem } from "@/types/order";
@@ -119,8 +119,12 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="admin-order-details">
+    <div className="admin-order-details" id="admin-order-print">
       <div className="headerOrders">
         {" "}
         <h1>{t("adminOrders.orderNumber", { id: displayOrderNumber })}</h1>
@@ -147,6 +151,32 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 {t("adminOrders.markAsDelivered")}
               </button>
             )}
+          <button className="print-btn no-print" onClick={handlePrint}>
+            <Printer size={18} />
+            {t("adminOrders.print")}
+          </button>
+        </div>
+      </div>
+
+      {/* Buyer Info Section */}
+      <div className="buyer-info-card">
+        <div className="buyer-info-grid">
+          <div className="buyer-info-item">
+            <span className="buyer-info-label">{t("adminOrders.buyerName")}</span>
+            <span className="buyer-info-value">{order.user?.name || "უცნობი"}</span>
+          </div>
+          <div className="buyer-info-item">
+            <span className="buyer-info-label">{t("adminOrders.buyerEmail")}</span>
+            <span className="buyer-info-value">{order.user?.email || "წაშლილი მომხმარებელი"}</span>
+          </div>
+          <div className="buyer-info-item">
+            <span className="buyer-info-label">{t("adminOrders.phone")}</span>
+            <span className="buyer-info-value">{order.shippingDetails.phoneNumber}</span>
+          </div>
+          <div className="buyer-info-item">
+            <span className="buyer-info-label">{t("adminOrders.orderDate")}</span>
+            <span className="buyer-info-value">{new Date(order.createdAt).toLocaleDateString()}</span>
+          </div>
         </div>
       </div>
 
@@ -155,11 +185,6 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
           {/* Shipping Info */}{" "}
           <div className="card">
             <h2>{t("adminOrders.shipping")}</h2>
-            <p>
-              <strong>{t("adminOrders.customer")}:</strong>{" "}
-              {order.user?.name || "უცნობი"} (
-              {order.user?.email || "წაშლილი მომხმარებელი"})
-            </p>
             <p>
               <strong>{t("adminOrders.address")}:</strong>{" "}
               {order.shippingDetails.address}, {order.shippingDetails.city},{" "}
@@ -437,7 +462,6 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               <span>₾{order.taxPrice.toFixed(2)}</span>
             </div>
             */}
-            8
             <div className="summary-total">
               <span>{t("adminOrders.total")}</span>
               <span>₾{order.totalPrice.toFixed(2)}</span>

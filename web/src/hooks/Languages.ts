@@ -710,6 +710,11 @@ export const TRANSLATIONS: Translations = {
       stockReservationExpired:
         "სტოქის რეზერვაცია ვადაგასულია. გთხოვთ, შექმნათ ახალი შეკვეთა.",
       stockReservedUntil: "სტოქი დარეზერვებულია:",
+      print: "ამობეჭდვა",
+      buyerName: "მყიდველის სახელი",
+      buyerEmail: "ელ-ფოსტა",
+      orderDate: "შეკვეთის თარიღი",
+      phone: "ტელეფონი",
     },
 
     adminProducts: {
@@ -1415,6 +1420,11 @@ export const TRANSLATIONS: Translations = {
       stockReservationExpired:
         "Stock reservation has expired. Please create a new order.",
       stockReservedUntil: "Stock reserved until:",
+      print: "Print",
+      buyerName: "Buyer Name",
+      buyerEmail: "Email",
+      orderDate: "Order Date",
+      phone: "Phone",
     }, // Admin Products
     adminProducts: {
       products: "Products",
