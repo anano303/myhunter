@@ -126,22 +126,13 @@ export class StockReservationService {
 
         if (variantIndex >= 0) {
           product.variants[variantIndex].stock += item.qty;
-        } else {
-          product.variants.push({
-            size: item.size,
-            color: item.color,
-            ageGroup: item.ageGroup,
-            stock: item.qty,
-          });
         }
-        product.countInStock += item.qty;
+        // Update countInStock to match total variant stock
+        product.countInStock = product.variants.reduce(
+          (total, variant) => total + variant.stock,
+          0,
+        );
       } else {
-        product.variants.push({
-          size: item.size,
-          color: item.color,
-          ageGroup: item.ageGroup,
-          stock: item.qty,
-        });
         product.countInStock += item.qty;
       }
 

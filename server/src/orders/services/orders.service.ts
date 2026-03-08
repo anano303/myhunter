@@ -635,6 +635,11 @@ export class OrdersService {
                   );
                 }
                 product.variants[variantIndex].stock -= item.qty;
+                // Sync countInStock with variant sum
+                product.countInStock = product.variants.reduce(
+                  (total, variant) => total + variant.stock,
+                  0,
+                );
               }
             } else {
               if (product.countInStock < item.qty) {
@@ -781,10 +786,12 @@ export class OrdersService {
 
             if (variantIndex >= 0) {
               product.variants[variantIndex].stock += item.qty;
-            } else {
-              // Fallback to general stock if variant not found
-              product.countInStock += item.qty;
             }
+            // Update countInStock to match total variant stock
+            product.countInStock = product.variants.reduce(
+              (total, variant) => total + variant.stock,
+              0,
+            );
           } else {
             product.countInStock += item.qty;
           }
@@ -887,10 +894,12 @@ export class OrdersService {
 
         if (variantIndex >= 0) {
           product.variants[variantIndex].stock += item.qty;
-        } else {
-          // Fallback to general stock if variant not found
-          product.countInStock += item.qty;
         }
+        // Update countInStock to match total variant stock
+        product.countInStock = product.variants.reduce(
+          (total, variant) => total + variant.stock,
+          0,
+        );
       } else {
         product.countInStock += item.qty;
       }
