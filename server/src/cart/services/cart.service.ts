@@ -121,11 +121,7 @@ export class CartService {
 
     // Check stock availability before adding to cart
     let availableStock = product.countInStock;
-    if (
-      (size || color || ageGroup) &&
-      product.variants &&
-      product.variants.length > 0
-    ) {
+    if (product.variants && product.variants.length > 0) {
       const variant = product.variants.find((v) => {
         const sizeMatch = !size ? !v.size : v.size === size;
         const colorMatch = !color ? !v.color : v.color === color;
@@ -151,8 +147,6 @@ export class CartService {
         item.color === color &&
         item.ageGroup === ageGroup,
     );
-
-    console.log('Existing item:', product.variants, size, color, ageGroup);
 
     const currentQty = existingItem ? existingItem.qty : 0;
     if (currentQty + qty > availableStock) {

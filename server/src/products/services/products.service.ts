@@ -915,12 +915,8 @@ export class ProductsService {
       return;
     }
 
-    // Check if the product has variants and the ordered item has variant specifications
-    if (
-      product.variants &&
-      product.variants.length > 0 &&
-      (size || color || ageGroup)
-    ) {
+    // Check if the product has variants (including variants without attributes)
+    if (product.variants && product.variants.length > 0) {
       // Find the specific variant with flexible matching
       const variantIndex = product.variants.findIndex((v) => {
         // Match size: if no size specified, variant shouldn't have size either
