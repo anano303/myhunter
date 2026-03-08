@@ -116,17 +116,13 @@ export class StockReservationService {
       }
 
       // Refund stock
-      if (
-        product.variants &&
-        product.variants.length > 0 &&
-        (item.size || item.color || item.ageGroup)
-      ) {
-        const variantIndex = product.variants.findIndex(
-          (v) =>
-            v.size === item.size &&
-            v.color === item.color &&
-            v.ageGroup === item.ageGroup,
-        );
+      if (product.variants && product.variants.length > 0) {
+        const variantIndex = product.variants.findIndex((v) => {
+          const sizeMatch = !item.size ? !v.size : v.size === item.size;
+          const colorMatch = !item.color ? !v.color : v.color === item.color;
+          const ageGroupMatch = !item.ageGroup ? !v.ageGroup : v.ageGroup === item.ageGroup;
+          return sizeMatch && colorMatch && ageGroupMatch;
+        });
 
         if (variantIndex >= 0) {
           product.variants[variantIndex].stock += item.qty;

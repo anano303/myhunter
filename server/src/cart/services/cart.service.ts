@@ -169,10 +169,14 @@ export class CartService {
         image: product.images[0],
         price: price ?? product.price, // Use provided price (discounted) or fallback to product price
         countInStock:
-          product.variants?.find(
-            (v) =>
-              v.size === size && v.color === color && v.ageGroup === ageGroup,
-          )?.stock || product.countInStock,
+          product.variants?.find((v) => {
+            const sizeMatch = !size ? !v.size : v.size === size;
+            const colorMatch = !color ? !v.color : v.color === color;
+            const ageGroupMatch = !ageGroup
+              ? !v.ageGroup
+              : v.ageGroup === ageGroup;
+            return sizeMatch && colorMatch && ageGroupMatch;
+          })?.stock ?? product.countInStock,
         qty,
         size,
         color,

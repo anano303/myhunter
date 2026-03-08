@@ -152,11 +152,7 @@ export class OrdersService {
           let variantIndex = -1;
 
           // Check and reserve stock atomically
-          if (
-            product.variants &&
-            product.variants.length > 0 &&
-            (item.size || item.color || item.ageGroup)
-          ) {
+          if (product.variants && product.variants.length > 0) {
             // Find the specific variant with flexible matching
             variantIndex = product.variants.findIndex((v) => {
               // Match size: if no size specified, variant shouldn't have size either
@@ -421,18 +417,14 @@ export class OrdersService {
         // Check stock availability
         let stockAvailable = false;
 
-        if (
-          product.variants &&
-          product.variants.length > 0 &&
-          (item.size || item.color || item.ageGroup)
-        ) {
-          // Check variant stock
-          const variant = product.variants.find(
-            (v) =>
-              v.size === item.size &&
-              v.color === item.color &&
-              v.ageGroup === item.ageGroup,
-          );
+        if (product.variants && product.variants.length > 0) {
+          // Check variant stock with flexible matching
+          const variant = product.variants.find((v) => {
+            const sizeMatch = !item.size ? !v.size : v.size === item.size;
+            const colorMatch = !item.color ? !v.color : v.color === item.color;
+            const ageGroupMatch = !item.ageGroup ? !v.ageGroup : v.ageGroup === item.ageGroup;
+            return sizeMatch && colorMatch && ageGroupMatch;
+          });
 
           if (variant && variant.stock >= 0) {
             stockAvailable = true;
@@ -620,17 +612,13 @@ export class OrdersService {
             }
 
             // Re-deduct stock
-            if (
-              product.variants &&
-              product.variants.length > 0 &&
-              (item.size || item.color || item.ageGroup)
-            ) {
-              const variantIndex = product.variants.findIndex(
-                (v) =>
-                  v.size === item.size &&
-                  v.color === item.color &&
-                  v.ageGroup === item.ageGroup,
-              );
+            if (product.variants && product.variants.length > 0) {
+              const variantIndex = product.variants.findIndex((v) => {
+                const sizeMatch = !item.size ? !v.size : v.size === item.size;
+                const colorMatch = !item.color ? !v.color : v.color === item.color;
+                const ageGroupMatch = !item.ageGroup ? !v.ageGroup : v.ageGroup === item.ageGroup;
+                return sizeMatch && colorMatch && ageGroupMatch;
+              });
 
               if (variantIndex === -1) {
                 // No variant found, use general stock
@@ -683,17 +671,13 @@ export class OrdersService {
         // Check if stock went negative (shouldn't happen with our system, but safety check)
         let stockValid = false;
 
-        if (
-          product.variants &&
-          product.variants.length > 0 &&
-          (item.size || item.color || item.ageGroup)
-        ) {
-          const variant = product.variants.find(
-            (v) =>
-              v.size === item.size &&
-              v.color === item.color &&
-              v.ageGroup === item.ageGroup,
-          );
+        if (product.variants && product.variants.length > 0) {
+          const variant = product.variants.find((v) => {
+            const sizeMatch = !item.size ? !v.size : v.size === item.size;
+            const colorMatch = !item.color ? !v.color : v.color === item.color;
+            const ageGroupMatch = !item.ageGroup ? !v.ageGroup : v.ageGroup === item.ageGroup;
+            return sizeMatch && colorMatch && ageGroupMatch;
+          });
 
           if (variant && variant.stock >= 0) {
             stockValid = true;
@@ -787,17 +771,13 @@ export class OrdersService {
           }
 
           // Refund stock
-          if (
-            product.variants &&
-            product.variants.length > 0 &&
-            (item.size || item.color || item.ageGroup)
-          ) {
-            const variantIndex = product.variants.findIndex(
-              (v) =>
-                v.size === item.size &&
-                v.color === item.color &&
-                v.ageGroup === item.ageGroup,
-            );
+          if (product.variants && product.variants.length > 0) {
+            const variantIndex = product.variants.findIndex((v) => {
+              const sizeMatch = !item.size ? !v.size : v.size === item.size;
+              const colorMatch = !item.color ? !v.color : v.color === item.color;
+              const ageGroupMatch = !item.ageGroup ? !v.ageGroup : v.ageGroup === item.ageGroup;
+              return sizeMatch && colorMatch && ageGroupMatch;
+            });
 
             if (variantIndex >= 0) {
               product.variants[variantIndex].stock += item.qty;
@@ -897,17 +877,13 @@ export class OrdersService {
       }
 
       // Refund stock
-      if (
-        product.variants &&
-        product.variants.length > 0 &&
-        (item.size || item.color || item.ageGroup)
-      ) {
-        const variantIndex = product.variants.findIndex(
-          (v) =>
-            v.size === item.size &&
-            v.color === item.color &&
-            v.ageGroup === item.ageGroup,
-        );
+      if (product.variants && product.variants.length > 0) {
+        const variantIndex = product.variants.findIndex((v) => {
+          const sizeMatch = !item.size ? !v.size : v.size === item.size;
+          const colorMatch = !item.color ? !v.color : v.color === item.color;
+          const ageGroupMatch = !item.ageGroup ? !v.ageGroup : v.ageGroup === item.ageGroup;
+          return sizeMatch && colorMatch && ageGroupMatch;
+        });
 
         if (variantIndex >= 0) {
           product.variants[variantIndex].stock += item.qty;

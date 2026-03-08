@@ -38,12 +38,14 @@ async function restoreStock() {
         continue;
       }
 
-      if (size || color || ageGroup) {
-        // Restore variant stock
-        const variantIndex = product.variants?.findIndex(
-          (v) =>
-            v.size === size && v.color === color && v.ageGroup === ageGroup,
-        );
+      if (product.variants && product.variants.length > 0) {
+        // Restore variant stock with flexible matching
+        const variantIndex = product.variants?.findIndex((v) => {
+          const sizeMatch = !size ? !v.size : v.size === size;
+          const colorMatch = !color ? !v.color : v.color === color;
+          const ageGroupMatch = !ageGroup ? !v.ageGroup : v.ageGroup === ageGroup;
+          return sizeMatch && colorMatch && ageGroupMatch;
+        });
 
         if (variantIndex >= 0) {
           await productsCollection.updateOne(
