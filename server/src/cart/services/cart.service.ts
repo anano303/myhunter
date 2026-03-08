@@ -119,6 +119,28 @@ export class CartService {
     const product = await this.productsService.findById(productId);
     if (!product) throw new NotFoundException('Product not found');
 
+    // Check stock availability before adding to cart
+    let availableStock = product.countInStock;
+    if (
+      (size || color || ageGroup) &&
+      product.variants &&
+      product.variants.length > 0
+    ) {
+      const variant = product.variants.find((v) => {
+        const sizeMatch = !size ? !v.size : v.size === size;
+        const colorMatch = !color ? !v.color : v.color === color;
+        const ageGroupMatch = !ageGroup ? !v.ageGroup : v.ageGroup === ageGroup;
+        return sizeMatch && colorMatch && ageGroupMatch;
+      });
+      if (variant) {
+        availableStock = variant.stock;
+      }
+    }
+
+    if (availableStock <= 0) {
+      throw new BadRequestException('პროდუქტი არ არის მარაგში');
+    }
+
     const cart = await this.getCart(user);
 
     // Check if we have this exact variant in the cart
@@ -132,8 +154,15 @@ export class CartService {
 
     console.log('Existing item:', product.variants, size, color, ageGroup);
 
+    const currentQty = existingItem ? existingItem.qty : 0;
+    if (currentQty + qty > availableStock) {
+      throw new BadRequestException(
+        `მარაგში არის მხოლოდ ${availableStock} ცალი`,
+      );
+    }
+
     if (existingItem) {
-      existingItem.qty = qty;
+      existingItem.qty = currentQty + qty;
       // Update price if provided (to handle discount changes)
       if (price !== undefined) {
         existingItem.price = price;

@@ -20,14 +20,14 @@ interface CartContextType {
     productId: string,
     size?: string,
     color?: string,
-    ageGroup?: string
+    ageGroup?: string,
   ) => Promise<void>;
   updateQuantity: (
     productId: string,
     qty: number,
     size?: string,
     color?: string,
-    ageGroup?: string
+    ageGroup?: string,
   ) => Promise<void>;
   clearCart: () => Promise<void>;
   addToCart: (
@@ -36,7 +36,7 @@ interface CartContextType {
     size?: string,
     color?: string,
     ageGroup?: string,
-    price?: number
+    price?: number,
   ) => Promise<void>;
   totalItems: number;
 }
@@ -59,7 +59,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       size?: string;
       color?: string;
       ageGroup?: string;
-    }>
+    }>,
   ) => {
     try {
       localStorage.setItem("guestCart", JSON.stringify(cartItems));
@@ -93,7 +93,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       size?: string;
       color?: string;
       ageGroup?: string;
-    }>
+    }>,
   ): Promise<CartItem[]> => {
     try {
       const enrichedItems: CartItem[] = [];
@@ -147,7 +147,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         try {
           // Fetch product to check stock
           const { data: product } = await apiClient.get(
-            `/products/${productId}`
+            `/products/${productId}`,
           );
           console.log("Product fetched", {
             countInStock: product.countInStock,
@@ -156,7 +156,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           // Save minimal info to localStorage
           const currentMinimalItems = loadFromLocalStorage();
           const existingItem = currentMinimalItems.find(
-            (item) => item.productId === productId
+            (item) => item.productId === productId,
           );
 
           const currentQty = existingItem ? existingItem.qty : 0;
@@ -185,7 +185,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             updatedMinimalItems = currentMinimalItems.map((item) =>
               item.productId === productId
                 ? { ...item, qty: item.qty + qty }
-                : item
+                : item,
             );
           } else {
             updatedMinimalItems = [
@@ -205,7 +205,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             description:
               "პროდუქტი დაემატა კალათაში. დარეგისტრირდით რომ შეინახოთ.",
           });
-        } catch (error) {
+        } catch {
           toast({
             title: "შეცდომა",
             description: "პროდუქტის დამატება ვერ მოხერხდა",
@@ -218,10 +218,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
 
       try {
-        const requestData: { productId: string; qty: number; price?: number } = {
-          productId,
-          qty,
-        };
+        const requestData: { productId: string; qty: number; price?: number } =
+          {
+            productId,
+            qty,
+          };
         if (price !== undefined) {
           requestData.price = price;
         }
@@ -253,7 +254,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const addToCart = useCallback(
@@ -263,7 +264,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       size = "",
       color = "",
       ageGroup = "",
-      price?: number
+      price?: number,
     ) => {
       console.log("addToCart called", {
         productId,
@@ -281,7 +282,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         try {
           // Fetch product to check stock
           const { data: product } = await apiClient.get(
-            `/products/${productId}`
+            `/products/${productId}`,
           );
           console.log("Product fetched for addToCart", {
             countInStock: product.countInStock,
@@ -301,7 +302,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               item.productId === productId &&
               (item.size || undefined) === normalizedSize &&
               (item.color || undefined) === normalizedColor &&
-              (item.ageGroup || undefined) === normalizedAgeGroup
+              (item.ageGroup || undefined) === normalizedAgeGroup,
           );
 
           const currentQty = existingItem ? existingItem.qty : 0;
@@ -317,18 +318,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
           if (product.variants && product.variants.length > 0) {
             // Find matching variant
-            const variant = product.variants.find((v: any) => {
-              const sizeMatch = !normalizedSize
-                ? !v.size
-                : v.size === normalizedSize;
-              const colorMatch = !normalizedColor
-                ? !v.color
-                : v.color === normalizedColor;
-              const ageGroupMatch = !normalizedAgeGroup
-                ? !v.ageGroup
-                : v.ageGroup === normalizedAgeGroup;
-              return sizeMatch && colorMatch && ageGroupMatch;
-            });
+            const variant = product.variants.find(
+              (v: {
+                size?: string;
+                color?: string;
+                ageGroup?: string;
+                stock: number;
+              }) => {
+                const sizeMatch = !normalizedSize
+                  ? !v.size
+                  : v.size === normalizedSize;
+                const colorMatch = !normalizedColor
+                  ? !v.color
+                  : v.color === normalizedColor;
+                const ageGroupMatch = !normalizedAgeGroup
+                  ? !v.ageGroup
+                  : v.ageGroup === normalizedAgeGroup;
+                return sizeMatch && colorMatch && ageGroupMatch;
+              },
+            );
 
             if (variant) {
               availableStock = variant.stock;
@@ -354,7 +362,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               (item.color || undefined) === normalizedColor &&
               (item.ageGroup || undefined) === normalizedAgeGroup
                 ? { ...item, qty: item.qty + quantity }
-                : item
+                : item,
             );
           } else {
             updatedMinimalItems = [
@@ -379,7 +387,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             title: "პროდუქტი დაემატა კალათაში",
             description: "დარეგისტრირდით რომ შეინახოთ კალათა.",
           });
-        } catch (error) {
+        } catch {
           toast({
             title: "შეცდომა",
             description: "პროდუქტის დამატება ვერ მოხერხდა",
@@ -433,6 +441,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
+        // Handle stock-related errors from backend (400 Bad Request)
+        const errorResponse = (
+          error as {
+            response?: { data?: { message?: string }; status?: number };
+          }
+        )?.response;
+        if (errorResponse?.status === 400 && errorResponse?.data?.message) {
+          toast({
+            title: "არასაკმარისი მარაგი",
+            description: errorResponse.data.message,
+            variant: "destructive",
+          });
+          throw error;
+        }
+
         toast({
           title: "Error",
           description: "პროდუქტის დამატება ვერ მოხერხდა",
@@ -444,7 +467,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const updateQuantity = useCallback(
@@ -453,7 +476,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       qty: number,
       size?: string,
       color?: string,
-      ageGroup?: string
+      ageGroup?: string,
     ) => {
       console.log("updateQuantity called", {
         productId,
@@ -471,7 +494,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         try {
           // Fetch product to check stock
           const { data: product } = await apiClient.get(
-            `/products/${productId}`
+            `/products/${productId}`,
           );
           console.log("Product fetched for stock check", {
             countInStock: product.countInStock,
@@ -488,18 +511,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
           if (product.variants && product.variants.length > 0) {
             // Find matching variant
-            const variant = product.variants.find((v: any) => {
-              const sizeMatch = !normalizedSize
-                ? !v.size
-                : v.size === normalizedSize;
-              const colorMatch = !normalizedColor
-                ? !v.color
-                : v.color === normalizedColor;
-              const ageGroupMatch = !normalizedAgeGroup
-                ? !v.ageGroup
-                : v.ageGroup === normalizedAgeGroup;
-              return sizeMatch && colorMatch && ageGroupMatch;
-            });
+            const variant = product.variants.find(
+              (v: {
+                size?: string;
+                color?: string;
+                ageGroup?: string;
+                stock: number;
+              }) => {
+                const sizeMatch = !normalizedSize
+                  ? !v.size
+                  : v.size === normalizedSize;
+                const colorMatch = !normalizedColor
+                  ? !v.color
+                  : v.color === normalizedColor;
+                const ageGroupMatch = !normalizedAgeGroup
+                  ? !v.ageGroup
+                  : v.ageGroup === normalizedAgeGroup;
+                return sizeMatch && colorMatch && ageGroupMatch;
+              },
+            );
 
             if (variant) {
               availableStock = variant.stock;
@@ -532,7 +562,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             (item.color || undefined) === normalizedColor &&
             (item.ageGroup || undefined) === normalizedAgeGroup
               ? { ...item, qty }
-              : item
+              : item,
           );
           setItems(updatedStateItems);
 
@@ -592,7 +622,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast, items]
+    [user, toast, items],
   );
 
   const removeItem = useCallback(
@@ -600,7 +630,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       productId: string,
       size?: string,
       color?: string,
-      ageGroup?: string
+      ageGroup?: string,
     ) => {
       // არაავტორიზებული მომხმარებლებისთვის localStorage-დან წაშლა
       if (!user) {
@@ -617,7 +647,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               (item.size || undefined) === normalizedSize &&
               (item.color || undefined) === normalizedColor &&
               (item.ageGroup || undefined) === normalizedAgeGroup
-            )
+            ),
         );
         setItems(updatedStateItems);
 
@@ -666,7 +696,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [user, toast, items]
+    [user, toast, items],
   );
 
   const clearCart = useCallback(async () => {

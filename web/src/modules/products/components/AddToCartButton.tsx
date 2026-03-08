@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart, Plus, Minus } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ProductCard.css";
@@ -24,7 +24,7 @@ export function AddToCartButton({
   const { addItem } = useCart();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const quantity = 1;
 
   const isOutOfStock = countInStock === 0;
 
@@ -49,13 +49,13 @@ export function AddToCartButton({
     }
   };
 
-  const increaseQuantity = () => {
-    if (quantity < countInStock) setQuantity(quantity + 1);
-  };
+  // const increaseQuantity = () => {
+  //   if (quantity < countInStock) setQuantity(quantity + 1);
+  // };
 
-  const decreaseQuantity = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
-  };
+  // const decreaseQuantity = () => {
+  //   if (quantity > 1) setQuantity(quantity - 1);
+  // };
 
   return (
     <div className="cart-actions">
