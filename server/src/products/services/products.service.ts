@@ -406,8 +406,35 @@ export class ProductsService {
     if (data.variants) {
       // Ensure variants is an array
       if (Array.isArray(data.variants)) {
-        // Validate each variant object
-        updateFields.variants = data.variants;
+        // Clean up variant attributes (remove empty strings) and merge duplicates
+        const cleaned = data.variants
+          .map((variant: any) => {
+            const v: any = { stock: variant.stock || 0 };
+            if (variant.size && String(variant.size).trim() !== '' && variant.size !== 'undefined' && variant.size !== 'null') {
+              v.size = String(variant.size).trim();
+            }
+            if (variant.color && String(variant.color).trim() !== '' && variant.color !== 'undefined' && variant.color !== 'null') {
+              v.color = String(variant.color).trim();
+            }
+            if (variant.ageGroup && String(variant.ageGroup).trim() !== '' && variant.ageGroup !== 'undefined' && variant.ageGroup !== 'null') {
+              v.ageGroup = String(variant.ageGroup).trim();
+            }
+            if (variant._id) v._id = variant._id;
+            return v;
+          })
+          .filter((v: any) => v.size || v.color || v.ageGroup || v.stock > 0);
+
+        // Merge duplicates
+        const merged: Record<string, any> = {};
+        for (const v of cleaned) {
+          const key = `${v.size || ''}|${v.color || ''}|${v.ageGroup || ''}`;
+          if (!merged[key]) {
+            merged[key] = { ...v };
+          } else {
+            merged[key].stock += v.stock;
+          }
+        }
+        updateFields.variants = Object.values(merged);
       } else {
         throw new BadRequestException('Variants must be an array');
       }
@@ -570,38 +597,62 @@ export class ProductsService {
         throw new BadRequestException('Variants must be an array');
       }
 
-      // Filter out empty/invalid variants - only keep variants that have meaningful attributes
+      // Filter out empty/invalid variants but keep attribute-less variants with stock
       if (data.variants && Array.isArray(data.variants)) {
-        data.variants = data.variants.filter((variant: any) => {
-          // Check for valid, non-empty string attributes
-          const hasValidSize =
-            variant.size &&
-            typeof variant.size === 'string' &&
-            variant.size.trim() !== '' &&
-            variant.size !== 'undefined' &&
-            variant.size !== 'null';
+        data.variants = data.variants
+          .map((variant: any) => {
+            // Clean up empty string attributes
+            const cleaned: any = { stock: variant.stock || 0 };
+            if (
+              variant.size &&
+              typeof variant.size === 'string' &&
+              variant.size.trim() !== '' &&
+              variant.size !== 'undefined' &&
+              variant.size !== 'null'
+            ) {
+              cleaned.size = variant.size.trim();
+            }
+            if (
+              variant.color &&
+              typeof variant.color === 'string' &&
+              variant.color.trim() !== '' &&
+              variant.color !== 'undefined' &&
+              variant.color !== 'null'
+            ) {
+              cleaned.color = variant.color.trim();
+            }
+            if (
+              variant.ageGroup &&
+              typeof variant.ageGroup === 'string' &&
+              variant.ageGroup.trim() !== '' &&
+              variant.ageGroup !== 'undefined' &&
+              variant.ageGroup !== 'null'
+            ) {
+              cleaned.ageGroup = variant.ageGroup.trim();
+            }
+            return cleaned;
+          })
+          .filter((variant: any) => {
+            // Keep variant if it has any valid attribute OR has stock > 0
+            const hasAttribute = variant.size || variant.color || variant.ageGroup;
+            return hasAttribute || variant.stock > 0;
+          });
 
-          const hasValidColor =
-            variant.color &&
-            typeof variant.color === 'string' &&
-            variant.color.trim() !== '' &&
-            variant.color !== 'undefined' &&
-            variant.color !== 'null';
+        // Merge duplicate variants (same attributes)
+        const merged: Record<string, any> = {};
+        for (const v of data.variants) {
+          const key = `${v.size || ''}|${v.color || ''}|${v.ageGroup || ''}`;
+          if (!merged[key]) {
+            merged[key] = { ...v };
+          } else {
+            merged[key].stock += v.stock;
+          }
+        }
+        data.variants = Object.values(merged);
 
-          const hasValidAgeGroup =
-            variant.ageGroup &&
-            typeof variant.ageGroup === 'string' &&
-            variant.ageGroup.trim() !== '' &&
-            variant.ageGroup !== 'undefined' &&
-            variant.ageGroup !== 'null';
-
-          // A variant must have at least one meaningful attribute
-          return hasValidSize || hasValidColor || hasValidAgeGroup;
-        });
-
-        // If no valid variants remain, remove the variants field
+        // If no valid variants remain, set empty array
         if (data.variants.length === 0) {
-          delete data.variants;
+          data.variants = [];
         }
       }
 
