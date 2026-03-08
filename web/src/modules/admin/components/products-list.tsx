@@ -15,10 +15,6 @@ import { Role } from "@/types/role";
 import { useLanguage } from "@/hooks/LanguageContext";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
-// Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) =>
-  src.includes("cloudinary") || src.includes("res.cloudinary.com");
-
 // Extended Product type to include mainCategory and subCategory properties
 interface ProductWithCategories extends Product {
   mainCategory?: { name: string; id?: string; _id?: string } | string;
@@ -57,9 +53,11 @@ export function ProductsList() {
     queryFn: async () => {
       // თუ ძებნაა, ყველა შედეგი წამოვიღოთ (limit=1000)
       const limit = debouncedSearch.trim() ? 1000 : 20;
-      const keyword = debouncedSearch.trim() ? `&keyword=${encodeURIComponent(debouncedSearch.trim())}` : "";
+      const keyword = debouncedSearch.trim()
+        ? `&keyword=${encodeURIComponent(debouncedSearch.trim())}`
+        : "";
       const response = await fetchWithAuth(
-        `/products/user?page=${debouncedSearch.trim() ? 1 : page}&limit=${limit}${keyword}`
+        `/products/user?page=${debouncedSearch.trim() ? 1 : page}&limit=${limit}${keyword}`,
       );
       return response.json();
     },
@@ -71,9 +69,11 @@ export function ProductsList() {
     try {
       console.log("Manually refreshing product data...");
       const limit = debouncedSearch.trim() ? 1000 : 20;
-      const keyword = debouncedSearch.trim() ? `&keyword=${encodeURIComponent(debouncedSearch.trim())}` : "";
+      const keyword = debouncedSearch.trim()
+        ? `&keyword=${encodeURIComponent(debouncedSearch.trim())}`
+        : "";
       const response = await fetchWithAuth(
-        `/products/user?page=${debouncedSearch.trim() ? 1 : page}&limit=${limit}${keyword}`
+        `/products/user?page=${debouncedSearch.trim() ? 1 : page}&limit=${limit}${keyword}`,
       );
       const freshData = await response.json();
       return freshData;
@@ -179,7 +179,7 @@ export function ProductsList() {
     queryKey: ["all-subcategories", refreshKey], // Add refreshKey to force re-fetch
     queryFn: async () => {
       const response = await fetchWithAuth(
-        `/subcategories?includeInactive=false`
+        `/subcategories?includeInactive=false`,
       );
       return response.json();
     },
@@ -191,7 +191,7 @@ export function ProductsList() {
 
     const category = categoriesData.find(
       (cat: { id?: string; _id?: string; name: string; nameEn?: string }) =>
-        cat.id === categoryId || cat._id === categoryId
+        cat.id === categoryId || cat._id === categoryId,
     );
 
     if (!category) return "Unknown Category";
@@ -208,7 +208,7 @@ export function ProductsList() {
 
     const subcategory = subcategoriesData?.find(
       (subcat: { id?: string; _id?: string; name: string; nameEn?: string }) =>
-        subcat.id === subcategoryId || subcat._id === subcategoryId
+        subcat.id === subcategoryId || subcat._id === subcategoryId,
     );
 
     if (!subcategory) return "Unknown Subcategory";
@@ -301,16 +301,26 @@ export function ProductsList() {
   if (isLoading && !data) return <HeartLoading size="medium" />;
 
   const products = data?.items || [];
-  const totalPages = debouncedSearch.trim() ? 1 : (data?.pages || 1);
+  const totalPages = debouncedSearch.trim() ? 1 : data?.pages || 1;
 
   // Modify the table rows to use these functions correctly
   return (
     <div className="prd-card">
       {/* Search Bar */}
-      <div className="search-bar" style={{ marginBottom: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
+      <div
+        className="search-bar"
+        style={{
+          marginBottom: "15px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+        }}
+      >
         <input
           type="text"
-          placeholder={language === "ge" ? "ძებნა სახელით..." : "Search by name..."}
+          placeholder={
+            language === "ge" ? "ძებნა სახელით..." : "Search by name..."
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
@@ -345,32 +355,32 @@ export function ProductsList() {
                   </td>
                   <td className="prd-td">
                     <div className="prd-img-wrapper">
-                      {isCloudinaryImage(product.images[0]) ? (
-                        <img
-                          src={product.images[0]}
-                          alt={getDisplayName(product)}
-                          className="prd-img"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <Image
-                          src={product.images[0]}
-                          alt={getDisplayName(product)}
-                          fill
-                          className="prd-img"
-                        />
-                      )}
+                      <Image
+                        src={product.images[0]}
+                        alt={getDisplayName(product)}
+                        fill
+                        className="prd-img"
+                      />
                     </div>
                   </td>
                   <td className="prd-td">{getDisplayName(product)}</td>
                   <td className="prd-td">
                     {hasActiveDiscount(product) ? (
-                      <div className="price-display" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <div
+                        className="price-display"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "2px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
                           <span
                             className="discounted-price"
                             style={{ color: "#e74c3c", fontWeight: "bold" }}
@@ -463,32 +473,32 @@ export function ProductsList() {
               </td>
               <td className="prd-td">
                 <div className="prd-img-wrapper">
-                  {isCloudinaryImage(product.images[0]) ? (
-                    <img
-                      src={product.images[0]}
-                      alt={getDisplayName(product)}
-                      className="prd-img"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      src={product.images[0]}
-                      alt={getDisplayName(product)}
-                      fill
-                      className="prd-img"
-                    />
-                  )}
+                  <Image
+                    src={product.images[0]}
+                    alt={getDisplayName(product)}
+                    fill
+                    className="prd-img"
+                  />
                 </div>
               </td>
               <td className="prd-td">{getDisplayName(product)}</td>
               <td className="prd-td">
                 {hasActiveDiscount(product) ? (
-                  <div className="price-display" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <div
+                    className="price-display"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "2px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
                       <span
                         className="discounted-price"
                         style={{ color: "#e74c3c", fontWeight: "bold" }}

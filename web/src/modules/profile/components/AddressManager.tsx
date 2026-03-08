@@ -24,7 +24,9 @@ export function AddressManager() {
   const queryClient = useQueryClient();
   const { language } = useLanguage();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<SavedAddress | null>(null);
+  const [editingAddress, setEditingAddress] = useState<SavedAddress | null>(
+    null,
+  );
   const [formData, setFormData] = useState<AddressFormData>({
     label: "",
     address: "",
@@ -54,13 +56,19 @@ export function AddressManager() {
       resetForm();
       toast({
         title: language === "ge" ? "მისამართი დაემატა" : "Address added",
-        description: language === "ge" ? "მისამართი წარმატებით დაემატა" : "Address successfully added",
+        description:
+          language === "ge"
+            ? "მისამართი წარმატებით დაემატა"
+            : "Address successfully added",
       });
     },
     onError: () => {
       toast({
         title: language === "ge" ? "შეცდომა" : "Error",
-        description: language === "ge" ? "მისამართის დამატება ვერ მოხერხდა" : "Failed to add address",
+        description:
+          language === "ge"
+            ? "მისამართის დამატება ვერ მოხერხდა"
+            : "Failed to add address",
         variant: "destructive",
       });
     },
@@ -77,13 +85,19 @@ export function AddressManager() {
       resetForm();
       toast({
         title: language === "ge" ? "მისამართი განახლდა" : "Address updated",
-        description: language === "ge" ? "მისამართი წარმატებით განახლდა" : "Address successfully updated",
+        description:
+          language === "ge"
+            ? "მისამართი წარმატებით განახლდა"
+            : "Address successfully updated",
       });
     },
     onError: () => {
       toast({
         title: language === "ge" ? "შეცდომა" : "Error",
-        description: language === "ge" ? "მისამართის განახლება ვერ მოხერხდა" : "Failed to update address",
+        description:
+          language === "ge"
+            ? "მისამართის განახლება ვერ მოხერხდა"
+            : "Failed to update address",
         variant: "destructive",
       });
     },
@@ -99,13 +113,19 @@ export function AddressManager() {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast({
         title: language === "ge" ? "მისამართი წაიშალა" : "Address deleted",
-        description: language === "ge" ? "მისამართი წარმატებით წაიშალა" : "Address successfully deleted",
+        description:
+          language === "ge"
+            ? "მისამართი წარმატებით წაიშალა"
+            : "Address successfully deleted",
       });
     },
     onError: () => {
       toast({
         title: language === "ge" ? "შეცდომა" : "Error",
-        description: language === "ge" ? "მისამართის წაშლა ვერ მოხერხდა" : "Failed to delete address",
+        description:
+          language === "ge"
+            ? "მისამართის წაშლა ვერ მოხერხდა"
+            : "Failed to delete address",
         variant: "destructive",
       });
     },
@@ -121,7 +141,10 @@ export function AddressManager() {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast({
         title: language === "ge" ? "ძირითადი მისამართი" : "Default address",
-        description: language === "ge" ? "ძირითადი მისამართი განახლდა" : "Default address updated",
+        description:
+          language === "ge"
+            ? "ძირითადი მისამართი განახლდა"
+            : "Default address updated",
       });
     },
   });
@@ -163,16 +186,23 @@ export function AddressManager() {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
   if (isLoading) {
-    return <div className="address-loading">{language === "ge" ? "იტვირთება..." : "Loading..."}</div>;
+    return (
+      <div className="address-loading">
+        {language === "ge" ? "იტვირთება..." : "Loading..."}
+      </div>
+    );
   }
 
   return (
@@ -183,7 +213,10 @@ export function AddressManager() {
           {language === "ge" ? "ჩემი მისამართები" : "My Addresses"}
         </h2>
         {!isFormOpen && (
-          <button className="add-address-btn" onClick={() => setIsFormOpen(true)}>
+          <button
+            className="add-address-btn"
+            onClick={() => setIsFormOpen(true)}
+          >
             <Plus size={18} />
             {language === "ge" ? "დამატება" : "Add"}
           </button>
@@ -193,7 +226,15 @@ export function AddressManager() {
       {isFormOpen && (
         <div className="address-form-container">
           <div className="form-header">
-            <h3>{editingAddress ? (language === "ge" ? "მისამართის რედაქტირება" : "Edit Address") : (language === "ge" ? "ახალი მისამართი" : "New Address")}</h3>
+            <h3>
+              {editingAddress
+                ? language === "ge"
+                  ? "მისამართის რედაქტირება"
+                  : "Edit Address"
+                : language === "ge"
+                  ? "ახალი მისამართი"
+                  : "New Address"}
+            </h3>
             <button className="close-btn" onClick={resetForm}>
               <X size={20} />
             </button>
@@ -207,7 +248,11 @@ export function AddressManager() {
                   name="label"
                   value={formData.label}
                   onChange={handleInputChange}
-                  placeholder={language === "ge" ? "მაგ: სახლი, ოფისი" : "e.g., Home, Office"}
+                  placeholder={
+                    language === "ge"
+                      ? "მაგ: სახლი, ოფისი"
+                      : "e.g., Home, Office"
+                  }
                   required
                 />
               </div>
@@ -219,7 +264,11 @@ export function AddressManager() {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
-                placeholder={language === "ge" ? "ქუჩა, სახლი, ბინა" : "Street, building, apartment"}
+                placeholder={
+                  language === "ge"
+                    ? "ქუჩა, სახლი, ბინა"
+                    : "Street, building, apartment"
+                }
                 required
               />
             </div>
@@ -235,7 +284,9 @@ export function AddressManager() {
                 />
               </div>
               <div className="form-field">
-                <label>{language === "ge" ? "საფოსტო კოდი" : "Postal Code"}</label>
+                <label>
+                  {language === "ge" ? "საფოსტო კოდი" : "Postal Code"}
+                </label>
                 <input
                   type="text"
                   name="postalCode"
@@ -262,11 +313,18 @@ export function AddressManager() {
               <button
                 type="submit"
                 className="save-btn"
-                disabled={addAddressMutation.isPending || updateAddressMutation.isPending}
+                disabled={
+                  addAddressMutation.isPending ||
+                  updateAddressMutation.isPending
+                }
               >
                 {addAddressMutation.isPending || updateAddressMutation.isPending
-                  ? (language === "ge" ? "შენახვა..." : "Saving...")
-                  : (language === "ge" ? "შენახვა" : "Save")}
+                  ? language === "ge"
+                    ? "შენახვა..."
+                    : "Saving..."
+                  : language === "ge"
+                    ? "შენახვა"
+                    : "Save"}
               </button>
             </div>
           </form>
@@ -277,18 +335,29 @@ export function AddressManager() {
         {addresses.length === 0 ? (
           <div className="no-addresses">
             <MapPin size={48} />
-            <p>{language === "ge" ? "მისამართები არ არის დამატებული" : "No addresses added"}</p>
+            <p>
+              {language === "ge"
+                ? "მისამართები არ არის დამატებული"
+                : "No addresses added"}
+            </p>
           </div>
         ) : (
           addresses.map((address) => (
-            <div key={address.id} className={`address-card ${address.isDefault ? "default" : ""}`}>
+            <div
+              key={address.id}
+              className={`address-card ${address.isDefault ? "default" : ""}`}
+            >
               <div className="address-info">
                 <div className="address-label">
-                  {address.isDefault && <Star size={16} className="default-star" />}
+                  {address.isDefault && (
+                    <Star size={16} className="default-star" />
+                  )}
                   <span>{address.label}</span>
                 </div>
                 <p className="address-text">{address.address}</p>
-                <p className="address-city">{address.city}, {address.country}</p>
+                <p className="address-city">
+                  {address.city}, {address.country}
+                </p>
                 <p className="address-phone">{address.phoneNumber}</p>
               </div>
               <div className="address-actions">
@@ -296,7 +365,11 @@ export function AddressManager() {
                   <button
                     className="action-btn default-btn"
                     onClick={() => setDefaultMutation.mutate(address.id)}
-                    title={language === "ge" ? "ძირითადად დაყენება" : "Set as default"}
+                    title={
+                      language === "ge"
+                        ? "ძირითადად დაყენება"
+                        : "Set as default"
+                    }
                   >
                     <Star size={16} />
                   </button>

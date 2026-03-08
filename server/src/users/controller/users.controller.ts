@@ -243,6 +243,9 @@ export class UsersController {
     @CurrentUser() user: UserDocument,
     @Param('addressId') addressId: string,
   ) {
-    return this.usersService.setDefaultAddress(user['_id'] as string, addressId);
+    return this.usersService.setDefaultAddress(
+      user['_id'] as string,
+      addressId,
+    );
   }
 }

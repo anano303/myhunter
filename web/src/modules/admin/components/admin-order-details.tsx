@@ -13,10 +13,6 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Color, AgeGroupItem } from "@/types";
 import "./AdminOrderDetails.css";
 
-// Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) =>
-  src.includes("cloudinary") || src.includes("res.cloudinary.com");
-
 interface AdminOrderDetailsProps {
   order: Order;
 }
@@ -52,7 +48,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
     queryFn: async () => {
       try {
         const response = await fetchWithAuth(
-          "/categories/attributes/age-groups"
+          "/categories/attributes/age-groups",
         );
         if (!response.ok) {
           return [];
@@ -71,7 +67,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
     if (language === "en") {
       // Find the color in availableColors to get its English name
       const colorObj = availableColors.find(
-        (color) => color.name === colorName
+        (color) => color.name === colorName,
       );
       return colorObj?.nameEn || colorName;
     }
@@ -83,7 +79,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
     if (language === "en") {
       // Find the age group in availableAgeGroups to get its English name
       const ageGroupObj = availableAgeGroups.find(
-        (ageGroup) => ageGroup.name === ageGroupName
+        (ageGroup) => ageGroup.name === ageGroupName,
       );
       return ageGroupObj?.nameEn || ageGroupName;
     }
@@ -97,11 +93,11 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
 
   // Group order items by delivery type with fixed logic for string comparison
   const sellerDeliveryItems = order.orderItems.filter(
-    (item) => item.product && String(item.product.deliveryType) === "SELLER"
+    (item) => item.product && String(item.product.deliveryType) === "SELLER",
   );
 
   const myhunterDeliveryItems = order.orderItems.filter(
-    (item) => !item.product || String(item.product.deliveryType) !== "SELLER"
+    (item) => !item.product || String(item.product.deliveryType) !== "SELLER",
   );
 
   const markAsDelivered = async () => {
@@ -134,15 +130,15 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               order.status === "cancelled"
                 ? "cancelled"
                 : order.status === "paid" || order.isPaid
-                ? "paid"
-                : "pending"
+                  ? "paid"
+                  : "pending"
             }`}
           >
             {order.status === "cancelled"
               ? t("adminOrders.cancelled")
               : order.status === "paid" || order.isPaid
-              ? t("adminOrders.paid")
-              : t("adminOrders.pendingPayment")}
+                ? t("adminOrders.paid")
+                : t("adminOrders.pendingPayment")}
           </span>
           {(order.status === "paid" || order.isPaid) &&
             !order.isDelivered &&
@@ -162,20 +158,34 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
       <div className="buyer-info-card">
         <div className="buyer-info-grid">
           <div className="buyer-info-item">
-            <span className="buyer-info-label">{t("adminOrders.buyerName")}</span>
-            <span className="buyer-info-value">{order.user?.name || "უცნობი"}</span>
+            <span className="buyer-info-label">
+              {t("adminOrders.buyerName")}
+            </span>
+            <span className="buyer-info-value">
+              {order.user?.name || "უცნობი"}
+            </span>
           </div>
           <div className="buyer-info-item">
-            <span className="buyer-info-label">{t("adminOrders.buyerEmail")}</span>
-            <span className="buyer-info-value">{order.user?.email || "წაშლილი მომხმარებელი"}</span>
+            <span className="buyer-info-label">
+              {t("adminOrders.buyerEmail")}
+            </span>
+            <span className="buyer-info-value">
+              {order.user?.email || "წაშლილი მომხმარებელი"}
+            </span>
           </div>
           <div className="buyer-info-item">
             <span className="buyer-info-label">{t("adminOrders.phone")}</span>
-            <span className="buyer-info-value">{order.shippingDetails.phoneNumber}</span>
+            <span className="buyer-info-value">
+              {order.shippingDetails.phoneNumber}
+            </span>
           </div>
           <div className="buyer-info-item">
-            <span className="buyer-info-label">{t("adminOrders.orderDate")}</span>
-            <span className="buyer-info-value">{new Date(order.createdAt).toLocaleDateString()}</span>
+            <span className="buyer-info-label">
+              {t("adminOrders.orderDate")}
+            </span>
+            <span className="buyer-info-value">
+              {new Date(order.createdAt).toLocaleDateString()}
+            </span>
           </div>
         </div>
       </div>
@@ -217,8 +227,8 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 order.status === "cancelled"
                   ? "cancelled"
                   : order.status === "paid" || order.isPaid
-                  ? "success"
-                  : "error"
+                    ? "success"
+                    : "error"
               }`}
             >
               {order.status === "cancelled" ? (
@@ -234,10 +244,10 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                       reason: order.statusReason || "Unknown reason",
                     })
                   : order.status === "paid" || order.isPaid
-                  ? t("adminOrders.paidOn", {
-                      date: new Date(order.paidAt!).toLocaleDateString(),
-                    })
-                  : t("adminOrders.notPaid")}
+                    ? t("adminOrders.paidOn", {
+                        date: new Date(order.paidAt!).toLocaleDateString(),
+                      })
+                    : t("adminOrders.notPaid")}
               </span>
             </div>
           </div>
@@ -252,26 +262,13 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 </div>
                 {sellerDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
-                    {isCloudinaryImage(item.image) ? (
-                      <img
-                        src={item.image}
-                        alt={getDisplayName(item)}
-                        className="item-image"
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        src={item.image}
-                        alt={getDisplayName(item)}
-                        width={80}
-                        height={80}
-                        className="item-image"
-                      />
-                    )}
+                    <Image
+                      src={item.image}
+                      alt={getDisplayName(item)}
+                      width={80}
+                      height={80}
+                      className="item-image"
+                    />
                     <div>
                       <Link
                         href={`/products/${item.productId}`}
@@ -329,26 +326,13 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 </div>{" "}
                 {myhunterDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
-                    {isCloudinaryImage(item.image) ? (
-                      <img
-                        src={item.image}
-                        alt={getDisplayName(item)}
-                        className="item-image"
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        src={item.image}
-                        alt={getDisplayName(item)}
-                        width={80}
-                        height={80}
-                        className="item-image"
-                      />
-                    )}
+                    <Image
+                      src={item.image}
+                      alt={getDisplayName(item)}
+                      width={80}
+                      height={80}
+                      className="item-image"
+                    />
                     <div>
                       <Link
                         href={`/products/${item.productId}`}

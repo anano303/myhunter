@@ -63,7 +63,10 @@ export function ShippingForm() {
       queryClient.invalidateQueries({ queryKey: ["userAddresses"] });
       toast({
         title: language === "ge" ? "მისამართი შენახულია" : "Address saved",
-        description: language === "ge" ? "მისამართი დაემატა თქვენს პროფილში" : "Address has been added to your profile",
+        description:
+          language === "ge"
+            ? "მისამართი დაემატა თქვენს პროფილში"
+            : "Address has been added to your profile",
       });
     },
   });
@@ -94,7 +97,7 @@ export function ShippingForm() {
   });
 
   const deliveryType = watch("deliveryType");
-  const saveAddress = watch("saveAddress");
+  // const saveAddress = watch("saveAddress");
 
   // Handle saved address selection
   const handleSavedAddressSelect = (addressId: string) => {
@@ -110,13 +113,13 @@ export function ShippingForm() {
       setValue("saveAddress", true);
       return;
     }
-    
+
     setIsNewAddress(false);
     setSelectedAddressId(addressId);
     setValue("saveAddress", false);
-    
+
     if (addressId === "") return;
-    
+
     const address = savedAddresses.find((a) => a.id === addressId);
     if (address) {
       setValue("address", address.address);
@@ -135,6 +138,7 @@ export function ShippingForm() {
         handleSavedAddressSelect(defaultAddress.id);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedAddresses]);
 
   const onSubmit = async (data: ShippingFormData) => {
@@ -149,9 +153,15 @@ export function ShippingForm() {
 
     try {
       // Save new address to profile if checkbox is checked
-      if (data.saveAddress && isNewAddress && data.deliveryType === "delivery") {
+      if (
+        data.saveAddress &&
+        isNewAddress &&
+        data.deliveryType === "delivery"
+      ) {
         await saveAddressMutation.mutateAsync({
-          label: data.addressLabel || (language === "ge" ? "ახალი მისამართი" : "New Address"),
+          label:
+            data.addressLabel ||
+            (language === "ge" ? "ახალი მისამართი" : "New Address"),
           address: data.address,
           city: data.city,
           postalCode: data.postalCode,
@@ -162,19 +172,22 @@ export function ShippingForm() {
 
       // Get shipping data based on selection
       let shippingData;
-      
+
       if (data.deliveryType === "pickup") {
         // თვითგატანა
         shippingData = {
           deliveryType: "pickup",
-          address: "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
+          address:
+            "თვითგატანა - თბილისი,ვასილ კაკაბაძის ქ. N8, სამუშაო დღეებში 20:00-დან 22:00-მდე",
           city: "თბილისი",
           country: "GE",
           phoneNumber: data.phoneNumber,
         };
       } else if (!isNewAddress && selectedAddressId) {
         // შენახული მისამართი
-        const selectedAddr = savedAddresses.find((a) => a.id === selectedAddressId);
+        const selectedAddr = savedAddresses.find(
+          (a) => a.id === selectedAddressId,
+        );
         if (selectedAddr) {
           shippingData = {
             deliveryType: "delivery",
@@ -212,7 +225,7 @@ export function ShippingForm() {
       console.log(error);
 
       // Check if it's a 401 authentication error
-      if ((error as any)?.response?.status === 401) {
+      if ((error as { response?: { status?: number } })?.response?.status === 401) {
         toast({
           title: t("auth.authenticationRequired"),
           description: t("auth.pleaseLogin"),
@@ -340,34 +353,51 @@ export function ShippingForm() {
               >
                 {savedAddresses.length > 0 && (
                   <option value="">
-                    {language === "ge" ? "აირჩიეთ შენახული მისამართი..." : "Select a saved address..."}
+                    {language === "ge"
+                      ? "აირჩიეთ შენახული მისამართი..."
+                      : "Select a saved address..."}
                   </option>
                 )}
                 {savedAddresses.map((addr) => (
                   <option key={addr.id} value={addr.id}>
                     {addr.label} - {addr.address}, {addr.city}
-                    {addr.isDefault ? (language === "ge" ? " (ძირითადი)" : " (Default)") : ""}
+                    {addr.isDefault
+                      ? language === "ge"
+                        ? " (ძირითადი)"
+                        : " (Default)"
+                      : ""}
                   </option>
                 ))}
                 <option value="new">
-                  ➕ {language === "ge" ? "ახალი მისამართის დამატება" : "Add new address"}
+                  ➕{" "}
+                  {language === "ge"
+                    ? "ახალი მისამართის დამატება"
+                    : "Add new address"}
                 </option>
               </select>
             </div>
 
             {/* Show form fields only for new address or if no address selected */}
-            {(isNewAddress || savedAddresses.length === 0 || !selectedAddressId) && (
+            {(isNewAddress ||
+              savedAddresses.length === 0 ||
+              !selectedAddressId) && (
               <>
                 {/* Address Label - only for new address */}
                 {isNewAddress && (
                   <div className="shipping-form-field">
                     <label htmlFor="addressLabel">
-                      {language === "ge" ? "მისამართის სახელი" : "Address Label"}
+                      {language === "ge"
+                        ? "მისამართის სახელი"
+                        : "Address Label"}
                     </label>
                     <input
                       id="addressLabel"
                       {...register("addressLabel")}
-                      placeholder={language === "ge" ? "მაგ: სახლი, ოფისი..." : "e.g: Home, Office..."}
+                      placeholder={
+                        language === "ge"
+                          ? "მაგ: სახლი, ოფისი..."
+                          : "e.g: Home, Office..."
+                      }
                     />
                   </div>
                 )}
@@ -457,13 +487,10 @@ export function ShippingForm() {
                 {isNewAddress && (
                   <div className="shipping-form-field save-address-field">
                     <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        {...register("saveAddress")}
-                      />
+                      <input type="checkbox" {...register("saveAddress")} />
                       <span>
-                        {language === "ge" 
-                          ? "შევინახო ეს მისამართი მომავალი შეკვეთებისთვის" 
+                        {language === "ge"
+                          ? "შევინახო ეს მისამართი მომავალი შეკვეთებისთვის"
                           : "Save this address for future orders"}
                       </span>
                     </label>
@@ -473,27 +500,38 @@ export function ShippingForm() {
             )}
 
             {/* Show selected address summary if not new */}
-            {!isNewAddress && selectedAddressId && savedAddresses.length > 0 && (
-              <div className="selected-address-summary">
-                {(() => {
-                  const addr = savedAddresses.find(a => a.id === selectedAddressId);
-                  if (!addr) return null;
-                  return (
-                    <>
-                      <p><strong>{addr.label}</strong></p>
-                      <p>{addr.address}</p>
-                      <p>{addr.city}, {addr.country}</p>
-                      <p>{addr.phoneNumber}</p>
-                    </>
-                  );
-                })()}
-              </div>
-            )}
+            {!isNewAddress &&
+              selectedAddressId &&
+              savedAddresses.length > 0 && (
+                <div className="selected-address-summary">
+                  {(() => {
+                    const addr = savedAddresses.find(
+                      (a) => a.id === selectedAddressId,
+                    );
+                    if (!addr) return null;
+                    return (
+                      <>
+                        <p>
+                          <strong>{addr.label}</strong>
+                        </p>
+                        <p>{addr.address}</p>
+                        <p>
+                          {addr.city}, {addr.country}
+                        </p>
+                        <p>{addr.phoneNumber}</p>
+                      </>
+                    );
+                  })()}
+                </div>
+              )}
           </>
         )}
 
         {/* ტელეფონი - ორივე შემთხვევაში საჭიროა */}
-        {(deliveryType === "pickup" || isNewAddress || savedAddresses.length === 0 || !selectedAddressId) && (
+        {(deliveryType === "pickup" ||
+          isNewAddress ||
+          savedAddresses.length === 0 ||
+          !selectedAddressId) && (
           <div className="shipping-form-field">
             <label htmlFor="phoneNumber">{t("checkout.phoneNumber")}</label>
             <input

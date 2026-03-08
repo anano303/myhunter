@@ -22,10 +22,6 @@ import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
 import ProductSchema from "@/components/ProductSchema";
 
-// Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) =>
-  src.includes("cloudinary") || src.includes("res.cloudinary.com");
-
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
   productId,
@@ -62,7 +58,7 @@ function AddToCartButton({
         selectedSize,
         selectedColor,
         selectedAgeGroup,
-        price // Pass the discounted price
+        price, // Pass the discounted price
       );
 
       // მხოლოდ წარმატებული დამატების შემდეგ ვაჩვენოთ success message
@@ -180,7 +176,7 @@ function SimilarProducts({
         });
 
         const response = await fetchWithAuth(
-          `/products?${searchParams.toString()}`
+          `/products?${searchParams.toString()}`,
         );
 
         if (!response.ok) {
@@ -281,7 +277,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     queryFn: async () => {
       try {
         const response = await fetchWithAuth(
-          "/categories/attributes/age-groups"
+          "/categories/attributes/age-groups",
         );
         if (!response.ok) {
           return [];
@@ -299,7 +295,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     if (language === "en") {
       // Find the color in availableColors to get its English name
       const colorObj = availableColors.find(
-        (color) => color.name === colorName
+        (color) => color.name === colorName,
       );
       return colorObj?.nameEn || colorName;
     }
@@ -311,7 +307,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     if (language === "en") {
       // Find the age group in availableAgeGroups to get its English name
       const ageGroupObj = availableAgeGroups.find(
-        (ageGroup) => ageGroup.name === ageGroupName
+        (ageGroup) => ageGroup.name === ageGroupName,
       );
       return ageGroupObj?.nameEn || ageGroupName;
     }
@@ -369,7 +365,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         (v) =>
           (!v.size || v.size === selectedSize) &&
           (!v.color || v.color === selectedColor) &&
-          (!v.ageGroup || v.ageGroup === selectedAgeGroup)
+          (!v.ageGroup || v.ageGroup === selectedAgeGroup),
       );
       stock = variant ? variant.stock : 0;
     }
@@ -435,21 +431,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {isCloudinaryImage(image) ? (
-                <img
-                  src={image}
-                  alt={`${displayName} view ${index + 1}`}
-                  className="object-cover"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <Image
-                  src={image}
-                  alt={`${displayName} view ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              )}
+              <Image
+                src={image}
+                alt={`${displayName} view ${index + 1}`}
+                fill
+                className="object-cover"
+              />
             </motion.button>
           ))}
         </div>
@@ -465,7 +452,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentImageIndex((prev) =>
-                      prev === 0 ? product.images.length - 1 : prev - 1
+                      prev === 0 ? product.images.length - 1 : prev - 1,
                     );
                   }}
                   aria-label="Previous image"
@@ -477,7 +464,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentImageIndex((prev) =>
-                      prev === product.images.length - 1 ? 0 : prev + 1
+                      prev === product.images.length - 1 ? 0 : prev + 1,
                     );
                   }}
                   aria-label="Next image"
@@ -496,27 +483,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 className="image-wrapper"
                 onClick={openFullscreen} // Add click handler to open fullscreen
               >
-                {isCloudinaryImage(product.images[currentImageIndex]) ? (
-                  <img
-                    src={product.images[currentImageIndex]}
-                    alt={displayName}
-                    className="details-image"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <Image
-                    src={product.images[currentImageIndex]}
-                    alt={displayName}
-                    fill
-                    quality={90}
-                    priority
-                    className="details-image"
-                  />
-                )}
+                <Image
+                  src={product.images[currentImageIndex]}
+                  alt={displayName}
+                  fill
+                  quality={90}
+                  priority
+                  className="details-image"
+                />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -624,7 +598,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   >
                     {Array.from(
                       { length: availableQuantity },
-                      (_, i) => i + 1
+                      (_, i) => i + 1,
                     ).map((num) => (
                       <option key={num} value={num}>
                         {num}

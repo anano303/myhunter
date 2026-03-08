@@ -41,28 +41,6 @@ const saveToStorage = (data: CheckoutStorageData) => {
   }
 };
 
-const loadFromStorage = (): CheckoutStorageData | null => {
-  if (typeof window !== "undefined") {
-    try {
-      const stored = localStorage.getItem(CHECKOUT_STORAGE_KEY);
-      if (stored) {
-        const data = JSON.parse(stored) as CheckoutStorageData;
-        // Check if data is not older than 24 hours
-        const ONE_DAY = 24 * 60 * 60 * 1000;
-        if (Date.now() - data.timestamp < ONE_DAY) {
-          return data;
-        } else {
-          // Clear expired data
-          localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        }
-      }
-    } catch (error) {
-      console.error("Error loading checkout data from localStorage:", error);
-    }
-  }
-  return null;
-};
-
 const clearStorage = () => {
   if (typeof window !== "undefined") {
     try {

@@ -5,7 +5,7 @@ import { useCheckout } from "../context/checkout-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
-import { TAX_RATE } from "@/config/constants";
+// import { TAX_RATE } from "@/config/constants";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect, useState } from "react";
@@ -13,10 +13,6 @@ import Image from "next/image";
 import Link from "next/link";
 import "./order-review.css";
 import { useCart } from "@/modules/cart/context/cart-context";
-
-// Helper function to check if image is from Cloudinary
-const isCloudinaryImage = (src: string) =>
-  src.includes("cloudinary") || src.includes("res.cloudinary.com");
 
 export function OrderReview() {
   const {
@@ -78,7 +74,7 @@ export function OrderReview() {
 
   const itemsPrice = items.reduce(
     (acc, item) => acc + item.price * item.qty,
-    0
+    0,
   );
   const shippingPrice: number = calculateShippingPrice();
   // const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
@@ -127,7 +123,7 @@ export function OrderReview() {
             .map((i) => i.productId)
             .sort()
             .join(","),
-        })
+        }),
       );
     } catch (e) {
       console.error("Error saving order attempt:", e);
@@ -193,7 +189,9 @@ export function OrderReview() {
       console.log(error);
 
       // Check if it's a 401 authentication error
-      if ((error as any)?.response?.status === 401) {
+      if (
+        (error as { response?: { status?: number } })?.response?.status === 401
+      ) {
         toast({
           title: t("auth.authenticationRequired"),
           description: t("auth.pleaseLogin"),
@@ -269,25 +267,12 @@ export function OrderReview() {
                   className="order-item flex items-center space-x-4"
                 >
                   <div className="image-container relative h-20 w-20">
-                    {isCloudinaryImage(item.image) ? (
-                      <img
-                        src={item.image}
-                        alt={displayName}
-                        className="object-cover rounded-md"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        src={item.image}
-                        alt={displayName}
-                        fill
-                        className="object-cover rounded-md"
-                      />
-                    )}
+                    <Image
+                      src={item.image}
+                      alt={displayName}
+                      fill
+                      className="object-cover rounded-md"
+                    />
                   </div>
                   <div className="order-item-details flex-1">
                     <Link
