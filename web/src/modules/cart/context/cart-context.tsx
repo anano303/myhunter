@@ -161,19 +161,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
           const currentQty = existingItem ? existingItem.qty : 0;
           const newTotalQty = currentQty + qty;
+
+          // Check stock - with variant support
+          let availableStock = product.countInStock;
+          if (product.variants && product.variants.length > 0) {
+            const totalVariantStock = product.variants.reduce(
+              (sum: number, v: { stock: number }) => sum + (v.stock || 0),
+              0,
+            );
+            availableStock = totalVariantStock;
+          }
+
           console.log("Stock check for addItem", {
             currentQty,
             addingQty: qty,
             newTotalQty,
-            availableStock: product.countInStock,
+            availableStock,
           });
 
           // Check stock availability
-          if (newTotalQty > product.countInStock) {
+          if (newTotalQty > availableStock) {
             console.log("Stock exceeded in addItem");
             toast({
               title: "არასაკმარისი მარაგი",
-              description: `მარაგში არის მხოლოდ ${product.countInStock} ცალი`,
+              description: `მარაგში არის მხოლოდ ${availableStock} ცალი`,
               variant: "destructive",
             });
             setLoading(false);

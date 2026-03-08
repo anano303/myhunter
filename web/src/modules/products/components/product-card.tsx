@@ -164,7 +164,11 @@ export function ProductCard({
       <div className="product-card-actions">
         <AddToCartButton
           productId={product._id}
-          countInStock={product.countInStock}
+          countInStock={
+            product.variants && product.variants.length > 0
+              ? product.variants.reduce((sum: number, v: { stock: number }) => sum + v.stock, 0)
+              : product.countInStock
+          }
           className="cart-icon-button"
           price={discountedPrice}
         />

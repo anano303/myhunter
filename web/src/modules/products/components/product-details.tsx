@@ -383,7 +383,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     language === "en" && product.descriptionEn
       ? product.descriptionEn
       : product.description;
-  const isOutOfStock = product.countInStock === 0;
+  const isOutOfStock = availableQuantity === 0;
 
   // Initialize default selections based on product data
   useEffect(() => {
