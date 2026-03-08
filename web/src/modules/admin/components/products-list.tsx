@@ -420,7 +420,11 @@ export function ProductsList() {
                       ? product.category.name
                       : product.category}
                   </td>
-                  <td className="prd-td">{product.countInStock}</td>
+                  <td className="prd-td">
+                    {product.variants && product.variants.length > 0
+                      ? product.variants.reduce((sum: number, v: { stock: number }) => sum + (v.stock || 0), 0)
+                      : product.countInStock}
+                  </td>
                   <td className="prd-td">
                     <StatusBadge status={product.status} />
                   </td>
@@ -535,7 +539,11 @@ export function ProductsList() {
               </td>
               <td className="prd-td">{getCategoryDisplayName(product)}</td>
               <td className="prd-td">{getSubcategoryDisplayName(product)}</td>
-              <td className="prd-td">{product.countInStock}</td>
+              <td className="prd-td">
+                {product.variants && product.variants.length > 0
+                  ? product.variants.reduce((sum: number, v: { stock: number }) => sum + (v.stock || 0), 0)
+                  : product.countInStock}
+              </td>
               {/* <td className="prd-td">
                 <StatusBadge status={product.status} />
               </td> */}
