@@ -132,7 +132,7 @@ export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
   // Function to update stock count by combination fields
   const setStockCount = useCallback(
     (
-      combo: { ageGroup?: string; size?: string; color?: string },
+      combo: { ageGroup?: string; size?: string; color?: string; _id?: string },
       stock: number
     ) => {
       const key = JSON.stringify({
@@ -153,7 +153,7 @@ export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
               size: combo.size,
               color: combo.color,
               stock,
-              _id: (combo as any)._id, // Preserve the ID if it exists
+              _id: combo._id, // Preserve the ID if it exists
             },
           };
         }
