@@ -87,11 +87,12 @@
 }
 
 .product-name {
-  font-size: 16px;
+  font-size: 14px;
+  line-height: 1.35;
   margin-bottom: 6px;
   margin-top: 0;
   height: auto;
-  max-height: 40px;
+  max-height: 38px;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -101,6 +102,8 @@
   color: #ffffff;
   text-align: center;
   width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Product price styling */
@@ -254,7 +257,8 @@
   }
 
   .product-name {
-    font-size: 14px;
+    font-size: 13px;
+    max-height: 36px;
   }
 
   .product-price {
@@ -289,8 +293,8 @@
   }
 
   .product-name {
-    font-size: 13px;
-    max-height: 36px;
+    font-size: 12px;
+    max-height: 33px;
     padding: 0 5px;
   }
 
