@@ -33,7 +33,7 @@ const TopItems: React.FC = () => {
         sortDirection: "desc",
       });
       const response = await fetchWithAuth(
-        `/products?${searchParams.toString()}`
+        `/products?${searchParams.toString()}`,
       );
       const data = await response.json();
       const products = data.items || data.products || [];
@@ -44,11 +44,17 @@ const TopItems: React.FC = () => {
 
   // Arrow click handlers
   const scrollLeft = useCallback(() => {
-    gridRef.current?.scrollBy({ left: -ARROW_SCROLL_AMOUNT, behavior: "smooth" });
+    gridRef.current?.scrollBy({
+      left: -ARROW_SCROLL_AMOUNT,
+      behavior: "smooth",
+    });
   }, []);
 
   const scrollRight = useCallback(() => {
-    gridRef.current?.scrollBy({ left: ARROW_SCROLL_AMOUNT, behavior: "smooth" });
+    gridRef.current?.scrollBy({
+      left: ARROW_SCROLL_AMOUNT,
+      behavior: "smooth",
+    });
   }, []);
 
   // Auto-scroll logic
@@ -105,8 +111,12 @@ const TopItems: React.FC = () => {
 
     if (gridElement) {
       gridElement.addEventListener("scroll", handleScroll);
-      gridElement.addEventListener("wheel", handleUserScrollStart, { passive: true });
-      gridElement.addEventListener("touchstart", handleUserScrollStart, { passive: true });
+      gridElement.addEventListener("wheel", handleUserScrollStart, {
+        passive: true,
+      });
+      gridElement.addEventListener("touchstart", handleUserScrollStart, {
+        passive: true,
+      });
     }
 
     return () => {

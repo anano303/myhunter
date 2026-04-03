@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -73,7 +74,7 @@ const BannerEditModal: React.FC<{
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="banner-edit-overlay" onClick={onClose}>
       <div className="banner-edit-modal" onClick={(e) => e.stopPropagation()}>
         <h3>
@@ -206,7 +207,8 @@ const BannerEditModal: React.FC<{
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
