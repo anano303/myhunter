@@ -22,6 +22,7 @@ import {
   ProductsModule,
 } from '@/products/products.module';
 import { CategoriesModule } from '@/categories/categories.module';
+import { BackupModule } from '@/backup/backup.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CategoriesModule } from '@/categories/categories.module';
 
     // SeedsModule,
     AwsS3Module,
+    BackupModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy, IndexCleanupService],
