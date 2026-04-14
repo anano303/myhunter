@@ -23,6 +23,7 @@ import {
 } from '@/products/products.module';
 import { CategoriesModule } from '@/categories/categories.module';
 import { BackupModule } from '@/backup/backup.module';
+import { AnalyticsModule } from '@/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { BackupModule } from '@/backup/backup.module';
     // SeedsModule,
     AwsS3Module,
     BackupModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy, IndexCleanupService],

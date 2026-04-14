@@ -1,0 +1,111 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Ga4AnalyticsService } from './ga4-analytics.service';
+import { VisitorTrackingService } from './visitor-tracking.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../types/role.enum';
+import { Request } from 'express';
+
+@Controller('analytics')
+export class AnalyticsController {
+  constructor(
+    private readonly ga4Service: Ga4AnalyticsService,
+    private readonly visitorService: VisitorTrackingService,
+  ) {}
+
+  @Get('ga4')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getGA4Analytics(@Query('days') days?: string) {
+    const daysAgo = days ? parseInt(days) : 7;
+    return this.ga4Service.getAnalyticsData(daysAgo);
+  }
+
+  @Get('ga4/errors')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getGA4Errors(
+    @Query('days') days?: string,
+    @Query('errorType') errorType?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const daysAgo = days ? parseInt(days) : 7;
+    const pageNum = page ? parseInt(page) : 1;
+    const limitNum = limit ? parseInt(limit) : 30;
+    return this.ga4Service.getDetailedErrors(
+      daysAgo,
+      errorType,
+      pageNum,
+      limitNum,
+    );
+  }
+
+  @Get('ga4/realtime')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getRealtimeUsers() {
+    return this.ga4Service.getRealtimeUsers();
+  }
+
+  @Post('track-visitor')
+  async trackVisitor(@Req() req: Request, @Body() body: any) {
+    let ip = req.ip || req.socket.remoteAddress || 'Unknown';
+
+    const forwardedFor = req.headers['x-forwarded-for'] as string;
+    if (forwardedFor) {
+      ip = forwardedFor.split(',')[0].trim();
+    }
+
+    const cfConnectingIp = req.headers['cf-connecting-ip'] as string;
+    if (cfConnectingIp) {
+      ip = cfConnectingIp;
+    }
+
+    const realIp = req.headers['x-real-ip'] as string;
+    if (realIp) {
+      ip = realIp;
+    }
+
+    const userAgent = req.headers['user-agent'] || 'Unknown';
+
+    return this.visitorService.trackVisitor({
+      ip,
+      userAgent,
+      page: body.page || '/',
+      referrer: body.referrer,
+      sessionId: body.sessionId,
+      userId: body.userId,
+    });
+  }
+
+  @Get('live-visitors')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getLiveVisitors() {
+    return this.visitorService.getActiveVisitors();
+  }
+
+  @Get('daily-active-users')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getDailyActiveUsers(@Query('days') days?: string) {
+    const daysNum = days
+      ? Math.min(90, Math.max(1, parseInt(days, 10) || 30))
+      : 30;
+    try {
+      return await this.ga4Service.getDailyActiveUsers(daysNum);
+    } catch {
+      return this.visitorService.getDailyActiveUsers(daysNum);
+    }
+  }
+}

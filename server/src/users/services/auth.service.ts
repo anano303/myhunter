@@ -102,6 +102,12 @@ export class AuthService {
       throw new UnauthorizedException('არასწორი მეილი ან პაროლი.');
     }
 
+    if (!user.password) {
+      throw new UnauthorizedException(
+        'ეს ანგარიში Google-ით არის შექმნილი. გთხოვთ გამოიყენოთ Google-ით შესვლა.',
+      );
+    }
+
     const isPasswordValid = await verifyPassword(user.password, password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('არასწორი მეილი ან პაროლი.');

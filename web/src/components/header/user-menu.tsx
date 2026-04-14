@@ -180,6 +180,13 @@ export default function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
                 >
                   {t("navigation.orders")}
                 </Link>
+                <Link
+                  href="/admin/analytics"
+                  className="dropdown-item"
+                  onClick={handleLinkClick}
+                >
+                  ანალიტიკა
+                </Link>
               </>
             )}
 

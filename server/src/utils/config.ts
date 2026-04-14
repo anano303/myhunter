@@ -4,10 +4,16 @@ import { MongooseModuleOptions } from '@nestjs/mongoose';
 
 export const connectDB = (
   configService: ConfigService,
-): MongooseModuleOptions => ({
-  uri: configService.get<string>('MONGODB_URI'),
-  autoIndex: true,
-});
+): MongooseModuleOptions => {
+  const uri = configService.get<string>('MONGODB_URI');
+  const dbName = configService.get<string>('MONGODB_DB_NAME') || 'test';
+
+  return {
+    uri,
+    dbName,
+    autoIndex: true,
+  };
+};
 
 export const corsConfig = (): CorsOptions => ({
   origin: process.env.CLIENT_URL,
