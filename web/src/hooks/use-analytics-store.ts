@@ -93,10 +93,12 @@ export const useAnalytics = () => {
       });
 
       setIsLoading(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Analytics fetch error:", err);
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       const msg =
-        err?.response?.data?.message || "ანალიტიკის მონაცემები ვერ ჩაიტვირთა";
+        axiosErr?.response?.data?.message ||
+        "ანალიტიკის მონაცემები ვერ ჩაიტვირთა";
       setError(msg);
       setIsLoading(false);
     }
