@@ -3,8 +3,13 @@ import { ProductsService } from './services/products.service';
 import { ProductsController } from './controller/products.controller';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './schemas/product.schema';
+import {
+  StockSubscription,
+  StockSubscriptionSchema,
+} from './schemas/stock-subscription.schema';
 import { AppService } from '@/app/services/app.service';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
+import { EmailModule } from '@/email/email.module';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order, OrderSchema } from '@/orders/schemas/order.schema';
 import { Logger } from '@nestjs/common';
@@ -87,8 +92,13 @@ export class IndexCleanupService implements OnModuleInit {
         name: Order.name,
         useFactory: () => OrderSchema,
       },
+      {
+        name: StockSubscription.name,
+        useFactory: () => StockSubscriptionSchema,
+      },
     ]),
     CloudinaryModule,
+    EmailModule,
   ],
   providers: [ProductsService, AppService, IndexCleanupService],
   controllers: [ProductsController],

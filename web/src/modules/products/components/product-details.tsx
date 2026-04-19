@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { X } from "lucide-react"; // Added X icon for close button
+import { X, Bell } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
 import "./productDetails.css";
 import "./videoTabs.css"; // Import new tabs styles
@@ -234,6 +234,118 @@ function SimilarProducts({
 
 interface ProductDetailsProps {
   product: Product;
+}
+
+// Stock subscription form for out-of-stock products
+function StockSubscriptionForm({
+  productId,
+  selectedSize,
+  selectedColor,
+  selectedAgeGroup,
+}: {
+  productId: string;
+  selectedSize?: string;
+  selectedColor?: string;
+  selectedAgeGroup?: string;
+}) {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const { language } = useLanguage();
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/subscribe-stock`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            productId,
+            variantSize: selectedSize || undefined,
+            variantColor: selectedColor || undefined,
+            variantAgeGroup: selectedAgeGroup || undefined,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to subscribe");
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError(
+        language === "en"
+          ? "Failed to subscribe. Please try again."
+          : "გამოწერა ვერ მოხერხდა. სცადეთ თავიდან.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="stock-subscription-success">
+        <Bell size={20} />
+        <p>
+          {language === "en"
+            ? "You'll be notified when this product is back in stock!"
+            : "შეგატყობინებთ, როდესაც ეს პროდუქტი მარაგში დაბრუნდება!"}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="stock-subscription-form">
+      <div className="stock-subscription-header">
+        <Bell size={18} />
+        <span>
+          {language === "en"
+            ? "Want to know when it's back in stock?"
+            : "გსურთ შეიტყოთ, როდის დაბრუნდება მარაგში?"}
+        </span>
+      </div>
+      <form onSubmit={handleSubscribe} className="stock-subscription-inputs">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={
+            language === "en"
+              ? "Enter your email"
+              : "შეიყვანეთ ელ-ფოსტა"
+          }
+          required
+          className="stock-subscription-email"
+        />
+        <button
+          type="submit"
+          disabled={submitting || !email}
+          className="stock-subscription-btn"
+        >
+          {submitting
+            ? language === "en"
+              ? "Subscribing..."
+              : "მიმდინარეობს..."
+            : language === "en"
+              ? "Notify me"
+              : "შემატყობინე"}
+        </button>
+      </form>
+      {error && <p className="stock-subscription-error">{error}</p>}
+    </div>
+  );
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
@@ -613,6 +725,20 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   {t("shop.outOfStock") || "არ არის მარაგში"}
                 </div>
               )}
+            </div>
+          )}
+          {/* Out of stock notification subscription */}
+          {isOutOfStock && (
+            <div className="out-of-stock-section">
+              <div className="out-of-stock-message">
+                {t("shop.outOfStock") || "არ არის მარაგში"}
+              </div>
+              <StockSubscriptionForm
+                productId={product._id}
+                selectedSize={selectedSize}
+                selectedColor={selectedColor}
+                selectedAgeGroup={selectedAgeGroup}
+              />
             </div>
           )}
           {/* New Tabs UI with Description, Delivery Terms, and Video */}

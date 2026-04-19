@@ -87,6 +87,12 @@ export function ProductCard({
   const isDiscounted = hasActiveDiscount();
   const discountedPrice = calculateDiscountedPrice();
 
+  // Calculate total stock
+  const totalStock =
+    product.variants && product.variants.length > 0
+      ? product.variants.reduce((sum: number, v: { stock: number }) => sum + v.stock, 0)
+      : product.countInStock;
+
   devLog("Final values:", {
     isDiscounted,
     discountedPrice,
@@ -101,6 +107,12 @@ export function ProductCard({
         {isDiscounted && (
           <div className="discount-badge">-{product.discountPercentage}%</div>
         )}
+        {/* Stock badge - visible on hover */}
+        <div className={`stock-badge ${totalStock > 0 ? "in-stock" : "out-of-stock"}`}>
+          {totalStock > 0
+            ? language === "en" ? "In Stock" : "მარაგშია"
+            : language === "en" ? "Out of Stock" : "არ არის მარაგში"}
+        </div>
         <div className="product-image">
           <Image
             src={productImage}
@@ -164,11 +176,7 @@ export function ProductCard({
       <div className="product-card-actions">
         <AddToCartButton
           productId={product._id}
-          countInStock={
-            product.variants && product.variants.length > 0
-              ? product.variants.reduce((sum: number, v: { stock: number }) => sum + v.stock, 0)
-              : product.countInStock
-          }
+          countInStock={totalStock}
           className="cart-icon-button"
           price={discountedPrice}
         />

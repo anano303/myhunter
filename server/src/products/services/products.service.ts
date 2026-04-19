@@ -14,6 +14,10 @@ import {
   AgeGroup,
   CategoryStructure,
 } from '../schemas/product.schema';
+import {
+  StockSubscription,
+  StockSubscriptionDocument,
+} from '../schemas/stock-subscription.schema';
 import { PaginatedResponse } from '@/types';
 import { Order } from '../../orders/schemas/order.schema';
 import { sampleProduct } from '@/utils/data/product';
@@ -52,6 +56,8 @@ export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Order.name) private orderModel: Model<Order>,
+    @InjectModel(StockSubscription.name)
+    private stockSubscriptionModel: Model<StockSubscriptionDocument>,
   ) {}
 
   async findTopRated(): Promise<ProductDocument[]> {
@@ -1012,5 +1018,77 @@ export class ProductsService {
     }
 
     await product.save();
+  }
+
+  /**
+   * Subscribe an email to get notified when a product is back in stock
+   */
+  async subscribeToStock(data: {
+    email: string;
+    productId: string;
+    variantSize?: string;
+    variantColor?: string;
+    variantAgeGroup?: string;
+  }): Promise<{ success: boolean; message: string }> {
+    const product = await this.productModel.findById(data.productId).exec();
+    if (!product) {
+      throw new NotFoundException('პროდუქტი ვერ მოიძებნა');
+    }
+
+    // Check if already subscribed
+    const existing = await this.stockSubscriptionModel.findOne({
+      email: data.email,
+      productId: data.productId,
+      variantSize: data.variantSize || undefined,
+      variantColor: data.variantColor || undefined,
+      variantAgeGroup: data.variantAgeGroup || undefined,
+      notified: false,
+    });
+
+    if (existing) {
+      return { success: true, message: 'უკვე გამოწერილი ხართ ამ პროდუქტზე' };
+    }
+
+    await this.stockSubscriptionModel.create({
+      email: data.email,
+      productId: data.productId,
+      variantSize: data.variantSize || undefined,
+      variantColor: data.variantColor || undefined,
+      variantAgeGroup: data.variantAgeGroup || undefined,
+      notified: false,
+    });
+
+    return { success: true, message: 'წარმატებით გამოიწერეთ! შეგატყობინებთ მარაგის განახლებისას.' };
+  }
+
+  /**
+   * Get pending subscriptions for a product (to notify when stock is updated)
+   */
+  async getPendingSubscriptions(
+    productId: string,
+    variantSize?: string,
+    variantColor?: string,
+    variantAgeGroup?: string,
+  ): Promise<StockSubscriptionDocument[]> {
+    const query: Record<string, unknown> = {
+      productId,
+      notified: false,
+    };
+
+    if (variantSize) query.variantSize = variantSize;
+    if (variantColor) query.variantColor = variantColor;
+    if (variantAgeGroup) query.variantAgeGroup = variantAgeGroup;
+
+    return this.stockSubscriptionModel.find(query).exec();
+  }
+
+  /**
+   * Mark subscriptions as notified
+   */
+  async markSubscriptionsNotified(subscriptionIds: string[]): Promise<void> {
+    await this.stockSubscriptionModel.updateMany(
+      { _id: { $in: subscriptionIds } },
+      { notified: true },
+    );
   }
 }

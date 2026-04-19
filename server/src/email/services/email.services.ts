@@ -737,4 +737,83 @@ export class EmailService {
       // Don't throw - this is a notification, not critical
     }
   }
+
+  /**
+   * მომხმარებელს ეგზავნება შეტყობინება, რომ პროდუქტი მარაგში დაბრუნდა
+   */
+  async sendBackInStockEmail(data: {
+    customerEmail: string;
+    productName: string;
+    productId: string;
+    variantInfo?: string;
+  }) {
+    const baseUrl =
+      process.env.ALLOWED_ORIGINS?.split(',')[0]?.trim() ||
+      'https://www.myhunter.ge';
+
+    const productLink = `${baseUrl}/products/${data.productId}`;
+
+    const mailOptions = {
+      from: this.getFromEmail(),
+      to: data.customerEmail,
+      subject: `✅ ${data.productName} - მარაგში დაბრუნდა!`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="margin: 0; padding: 20px; background-color: #1a1a1a; font-family: 'FiraGo', Arial, sans-serif;">
+          <div style="max-width: 600px; margin: 0 auto; background: #2a2a2a; border-radius: 12px; overflow: hidden; border: 1px solid #4b5320;">
+            
+            <div style="background: linear-gradient(135deg, #4b5320 0%, #6b7428 100%); padding: 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px;">✅ პროდუქტი მარაგში დაბრუნდა!</h1>
+              <p style="color: #e6cd9f; margin: 10px 0 0 0;">MyHunter</p>
+            </div>
+
+            <div style="padding: 25px;">
+              <p style="color: #e6cd9f; font-size: 16px; margin-bottom: 20px;">
+                გამარჯობა!
+              </p>
+              
+              <p style="color: #a99c7a; font-size: 14px; margin-bottom: 25px;">
+                გახსოვთ, გამოიწერეთ შეტყობინება პროდუქტზე <strong style="color: #e6cd9f;">${data.productName}</strong>? 
+                სიხარულით გაცნობებთ, რომ ეს პროდუქტი უკვე მარაგშია!${data.variantInfo ? `<br><br>ვარიანტი: <strong style="color: #e6cd9f;">${data.variantInfo}</strong>` : ''}
+              </p>
+
+              <div style="text-align: center; margin-top: 20px;">
+                <a href="${productLink}" 
+                   style="display: inline-block; background: linear-gradient(135deg, #4b5320 0%, #6b7428 100%); color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                  🛒 პროდუქტის ნახვა
+                </a>
+              </div>
+
+              <p style="color: #a99c7a; font-size: 13px; margin-top: 25px; text-align: center;">
+                ნუ გადაავადებთ — პოპულარული პროდუქტები სწრაფად იწურება!
+              </p>
+            </div>
+
+            <div style="background: #1a1a1a; padding: 20px; text-align: center;">
+              <p style="color: #888; margin: 0; font-size: 12px;">
+                ეს შეტყობინება გამოგეგზავნათ, რადგან გამოიწერეთ მარაგის განახლება MyHunter-ზე.<br>
+                თუ გაქვთ შეკითხვები, დაგვიკავშირდით: ssbbmarket@gmail.com
+              </p>
+            </div>
+
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(
+        `✅ Back in stock email sent to ${data.customerEmail} for product: ${data.productName}`,
+      );
+    } catch (error) {
+      console.error('❌ Error sending back in stock email:', error);
+    }
+  }
 }

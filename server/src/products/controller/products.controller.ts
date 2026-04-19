@@ -17,6 +17,7 @@ import {
 import { RolesGuard } from '@/guards/roles.guard';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
+import { StockSubscriptionDto } from '../dtos/stock-subscription.dto';
 import { ReviewDto } from '../dtos/review.dto';
 import { ProductsService } from '../services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
@@ -28,6 +29,7 @@ import { Role } from '@/types/role.enum';
 import { ProductStatus } from '../schemas/product.schema';
 import { AgeGroup } from '@/types';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { EmailService } from '@/email/services/email.services';
 
 @ApiTags('products')
 @Controller('products')
@@ -35,6 +37,7 @@ export class ProductsController {
   constructor(
     private productsService: ProductsService,
     private appService: AppService,
+    private emailService: EmailService,
   ) {}
 
   @Get()
@@ -463,6 +466,11 @@ export class ProductsController {
       const updatedProduct = await this.productsService.update(id, updateData);
       console.log('Updated product:', updatedProduct);
 
+      // Check if stock was replenished and notify subscribers
+      this.notifyStockSubscribers(updatedProduct).catch((err) =>
+        console.error('Error notifying stock subscribers:', err),
+      );
+
       return updatedProduct;
     } catch (error) {
       console.error('Update error:', error);
@@ -543,5 +551,96 @@ export class ProductsController {
   })
   getAllAgeGroups() {
     return this.productsService.getAllAgeGroups();
+  }
+
+  @Post(':id/subscribe-stock')
+  @ApiOperation({ summary: 'Subscribe to stock notifications for a product' })
+  @ApiParam({ name: 'id', description: 'Product ID' })
+  async subscribeToStock(
+    @Param('id') id: string,
+    @Body() dto: StockSubscriptionDto,
+  ) {
+    return this.productsService.subscribeToStock({
+      email: dto.email,
+      productId: id,
+      variantSize: dto.variantSize,
+      variantColor: dto.variantColor,
+      variantAgeGroup: dto.variantAgeGroup,
+    });
+  }
+
+  /**
+   * Notify subscribers when product stock is updated
+   */
+  private async notifyStockSubscribers(product: any): Promise<void> {
+    if (!product) return;
+
+    const productId = product._id?.toString() || product.id;
+    if (!productId) return;
+
+    // Check if product now has stock
+    const hasGeneralStock = product.countInStock > 0;
+    const variants = product.variants || [];
+
+    if (!hasGeneralStock && variants.every((v: any) => v.stock <= 0)) {
+      return; // No stock to notify about
+    }
+
+    // Get pending subscriptions for this product
+    const subscriptions =
+      await this.productsService.getPendingSubscriptions(productId);
+
+    if (subscriptions.length === 0) return;
+
+    const notifiedIds: string[] = [];
+
+    for (const sub of subscriptions) {
+      // Check if the specific variant the user subscribed for is in stock
+      let isInStock = false;
+
+      if (sub.variantSize || sub.variantColor || sub.variantAgeGroup) {
+        // Check specific variant stock
+        const matchingVariant = variants.find((v: any) => {
+          const sizeMatch = !sub.variantSize
+            ? !v.size
+            : v.size === sub.variantSize;
+          const colorMatch = !sub.variantColor
+            ? !v.color
+            : v.color === sub.variantColor;
+          const ageGroupMatch = !sub.variantAgeGroup
+            ? !v.ageGroup
+            : v.ageGroup === sub.variantAgeGroup;
+          return sizeMatch && colorMatch && ageGroupMatch;
+        });
+        isInStock = matchingVariant ? matchingVariant.stock > 0 : false;
+      } else {
+        isInStock = hasGeneralStock;
+      }
+
+      if (isInStock) {
+        const variantParts: string[] = [];
+        if (sub.variantSize) variantParts.push(`ზომა: ${sub.variantSize}`);
+        if (sub.variantColor) variantParts.push(`ფერი: ${sub.variantColor}`);
+        if (sub.variantAgeGroup)
+          variantParts.push(`ასაკი: ${sub.variantAgeGroup}`);
+
+        await this.emailService.sendBackInStockEmail({
+          customerEmail: sub.email,
+          productName: product.name,
+          productId: productId,
+          variantInfo:
+            variantParts.length > 0 ? variantParts.join(', ') : undefined,
+        });
+
+        notifiedIds.push(sub._id.toString());
+      }
+    }
+
+    if (notifiedIds.length > 0) {
+      await this.productsService.markSubscriptionsNotified(notifiedIds);
+      console.log(
+        `✅ Notified ${notifiedIds.length} subscribers about stock update for product: ${product.name}`,
+      );
+    }
   }
 }
