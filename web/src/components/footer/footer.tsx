@@ -64,7 +64,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="footer-logo">
-            <img
+            <Image
               src={logo}
               alt="MyHunter Logo"
               width={160}
