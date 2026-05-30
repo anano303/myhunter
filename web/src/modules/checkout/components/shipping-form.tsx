@@ -26,7 +26,7 @@ interface ShippingFormData {
 }
 
 export function ShippingForm() {
-  const { setShippingAddress, setPaymentMethod } = useCheckout();
+  const { setShippingAddress, setPaymentMethod, paymentMethod } = useCheckout();
   const router = useRouter();
   const { toast } = useToast();
   const { user, isLoading } = useUser();
@@ -216,8 +216,7 @@ export function ShippingForm() {
       const shippingAddress = response.data;
       setShippingAddress(shippingAddress);
 
-      // Auto-set payment method to BOG
-      setPaymentMethod("BOG");
+      setPaymentMethod(paymentMethod || "BOG");
 
       // Go directly to review
       router.push("/checkout/review");

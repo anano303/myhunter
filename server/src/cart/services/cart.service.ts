@@ -288,7 +288,7 @@ export class CartService {
     console.log('Received payment method:', paymentMethod);
     console.log('Type of payment method:', typeof paymentMethod);
 
-    const validMethods = ['PayPal', 'Stripe', 'BOG'];
+    const validMethods = ['PayPal', 'Stripe', 'BOG', 'CredoInstallment'];
     console.log('Valid methods:', validMethods);
     console.log(
       'Is payment method in valid methods?',

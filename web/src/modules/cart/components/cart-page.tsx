@@ -10,14 +10,17 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect } from "react";
+import Image from "next/image";
 import "./cart-page.css";
 import { Color } from "@/types";
+import { useCheckout } from "@/modules/checkout/context/checkout-context";
 
 export function CartPage() {
   const { items, loading } = useCart();
   const router = useRouter();
   const { t, language } = useLanguage(); // Added language here
   const { user } = useUser();
+  const { setPaymentMethod } = useCheckout();
 
   // Fetch all colors for proper nameEn support
   const { data: availableColors = [] } = useQuery<Color[]>({
@@ -58,8 +61,18 @@ export function CartPage() {
   const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
 
   const handleCheckout = () => {
+    setPaymentMethod("BOG");
     if (!user) {
       // თუ მომხმარებელი არაა ავტორიზებული, გადავიყვანოთ ლოგინზე
+      router.push("/login?redirect=/checkout/shipping");
+      return;
+    }
+    router.push("/checkout/shipping");
+  };
+
+  const handleCredoCheckout = () => {
+    setPaymentMethod("CredoInstallment");
+    if (!user) {
       router.push("/login?redirect=/checkout/shipping");
       return;
     }
@@ -106,6 +119,21 @@ export function CartPage() {
               <button className="checkout-button" onClick={handleCheckout}>
                 {t("cart.checkout")}
               </button>
+              {subtotal >= 100 && (
+                <button
+                  className="cart-credo-button"
+                  onClick={handleCredoCheckout}
+                >
+                  <Image
+                    src="/dayavi.webp"
+                    alt="Credo განვადება"
+                    width={88}
+                    height={24}
+                    className="cart-credo-logo"
+                  />
+                  <span>განვადება 0%</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

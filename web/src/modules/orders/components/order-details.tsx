@@ -11,6 +11,7 @@ import { Order, OrderItem } from "@/types/order";
 import { PayPalButton } from "./paypal-button";
 import { StripeButton } from "./stripe-button";
 import { BOGButton } from "./bog-button";
+import { CredoInstallmentButton } from "./credo-installment-button";
 import "./order-details.css";
 import { useEffect } from "react";
 
@@ -47,9 +48,13 @@ export function OrderDetails({ order }: OrderDetailsProps) {
     },
   });
 
-  // Check payment status on mount if order is not paid and has externalOrderId
+  // Check BOG payment status on mount if order is not paid and has externalOrderId
   useEffect(() => {
-    if (!order.isPaid && order.externalOrderId) {
+    if (
+      !order.isPaid &&
+      order.externalOrderId &&
+      order.paymentMethod === "BOG"
+    ) {
       console.log("Checking payment status for order:", order._id);
       // Check after 2 seconds to allow user to see the page first
       const timer = setTimeout(() => {
@@ -65,7 +70,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
       return () => clearTimeout(timer);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order._id, order.isPaid, order.externalOrderId]);
+  }, [order._id, order.isPaid, order.externalOrderId, order.paymentMethod]);
 
   // Check if stock reservation has expired
   const isStockExpired = order.stockReservationExpires
@@ -443,6 +448,19 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                     orderId={order._id}
                     orderNumber={order.orderNumber}
                     amount={order.totalPrice}
+                  />
+                ) : order.paymentMethod === "CredoInstallment" ? (
+                  <CredoInstallmentButton
+                    orderId={order._id}
+                    items={order.orderItems.map((item) => ({
+                      productId: item.productId,
+                      name:
+                        language === "en" && item.nameEn
+                          ? item.nameEn
+                          : item.name,
+                      qty: item.qty,
+                      price: item.price,
+                    }))}
                   />
                 ) : (
                   <StripeButton orderId={order._id} amount={totalPriceInUSD} />

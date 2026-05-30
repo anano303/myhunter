@@ -66,7 +66,9 @@ export class StockReservationService {
             freshOrder.set('status', 'cancelled');
             freshOrder.set(
               'statusReason',
-              'Stock reservation expired after 30 minutes',
+              freshOrder.paymentMethod === 'CredoInstallment'
+                ? 'განვადება არ დამტკიცდა - რეზერვაცია გაუქმდა'
+                : 'Stock reservation expired - payment not completed in time',
             );
             freshOrder.set('cancelledAt', new Date());
             await freshOrder.save({ session });

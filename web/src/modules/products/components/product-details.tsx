@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { X, Bell } from "lucide-react"; // Added X icon for close button
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import "./productDetails.css";
 import "./videoTabs.css"; // Import new tabs styles
@@ -18,6 +19,7 @@ import { Loader2 } from "lucide-react";
 
 import { ProductCard } from "./product-card";
 import { useCart } from "@/modules/cart/context/cart-context";
+import { useCheckout } from "@/modules/checkout/context/checkout-context";
 import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
 import ProductSchema from "@/components/ProductSchema";
@@ -349,9 +351,11 @@ function StockSubscriptionForm({
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
+  const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [isCredoProcessing, setIsCredoProcessing] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
@@ -496,6 +500,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       ? product.descriptionEn
       : product.description;
   const isOutOfStock = availableQuantity === 0;
+  const { addToCart } = useCart();
+  const { setPaymentMethod } = useCheckout();
 
   // Initialize default selections based on product data
   useEffect(() => {
@@ -523,6 +529,34 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   // Function to close fullscreen image
   const closeFullscreen = () => {
     setIsFullscreenOpen(false);
+  };
+
+  const isSelectionDisabled =
+    availableQuantity <= 0 ||
+    (product.sizes && product.sizes.length > 0 && !selectedSize) ||
+    (product.colors && product.colors.length > 0 && !selectedColor) ||
+    (product.ageGroups && product.ageGroups.length > 0 && !selectedAgeGroup);
+
+  const handleCredoProductCheckout = async () => {
+    if (isCredoProcessing || isSelectionDisabled) return;
+
+    setIsCredoProcessing(true);
+    try {
+      await addToCart(
+        product._id,
+        quantity,
+        selectedSize,
+        selectedColor,
+        selectedAgeGroup,
+        finalPrice,
+      );
+      setPaymentMethod("CredoInstallment");
+      router.push("/checkout/shipping");
+    } catch (error) {
+      console.error("Credo product checkout error:", error);
+    } finally {
+      setIsCredoProcessing(false);
+    }
   };
 
   return (
@@ -826,17 +860,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               selectedAgeGroup={selectedAgeGroup}
               quantity={quantity}
               price={finalPrice}
-              disabled={
-                availableQuantity <= 0 ||
-                (product.sizes && product.sizes.length > 0 && !selectedSize) ||
-                (product.colors &&
-                  product.colors.length > 0 &&
-                  !selectedColor) ||
-                (product.ageGroups &&
-                  product.ageGroups.length > 0 &&
-                  !selectedAgeGroup)
-              }
+              disabled={isSelectionDisabled}
             />
+            {!isOutOfStock && finalPrice >= 100 && (
+              <button
+                className="product-credo-button"
+                onClick={handleCredoProductCheckout}
+                disabled={isCredoProcessing || isSelectionDisabled}
+              >
+                <Image
+                  src="/dayavi.webp"
+                  alt="Credo განვადება"
+                  width={88}
+                  height={24}
+                  className="product-credo-logo"
+                />
+                <span>
+                  {isCredoProcessing ? "იტვირთება..." : "განვადება 0%"}
+                </span>
+              </button>
+            )}
           </div>
           {/* Fullscreen Image Modal */}
           {isFullscreenOpen && (

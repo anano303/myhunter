@@ -67,6 +67,147 @@
   text-align: right;
 }
 
+.footer-installment {
+  display: block;
+  width: calc(100% - 80px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0 20px;
+  background: transparent;
+  border: 0;
+  color: #e6cd9f;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: left;
+  cursor: pointer;
+}
+
+.footer-installment-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.footer-installment:hover .footer-installment-brand {
+  color: #64b5f6;
+}
+
+.footer-installment-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+}
+
+.footer-installment-text {
+  display: block;
+  max-width: 760px;
+}
+
+.installment-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.installment-modal {
+  position: relative;
+  width: min(680px, 100%);
+  max-height: min(740px, 90vh);
+  overflow-y: auto;
+  background: #fff;
+  color: #142033;
+  border-radius: 8px;
+  padding: 28px 24px 32px;
+  font-family: "FiraGo", "Noto Sans Georgian", sans-serif;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+.installment-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: #536274;
+  cursor: pointer;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.installment-modal-close:hover {
+  color: #0d47a1;
+}
+
+.installment-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 44px;
+  margin-bottom: 28px;
+}
+
+.installment-modal-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.installment-modal h2 {
+  margin: 0;
+  color: #142033;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.installment-modal h3 {
+  margin: 28px 0 12px;
+  color: #142033;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.installment-modal p,
+.installment-modal li {
+  color: #26364c;
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+.installment-modal ul {
+  margin: 0;
+  padding-left: 26px;
+}
+
+.installment-modal li {
+  margin-bottom: 8px;
+}
+
+.installment-highlight {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 22px;
+  margin-bottom: 22px;
+  border: 1px solid #8ee6be;
+  border-radius: 999px;
+  background: #edfff6;
+  color: #009a73;
+  font-size: 18px;
+  font-weight: 800;
+}
+
 .contact-info {
   display: flex;
   flex-direction: column;
@@ -135,6 +276,16 @@
     width: 100%;
   }
 
+  .footer-installment {
+    width: calc(100% - 40px);
+    padding: 0 0 24px;
+    text-align: center;
+  }
+
+  .footer-installment-brand {
+    justify-content: center;
+  }
+
   .contact-info {
     align-items: center;
   }
@@ -170,6 +321,40 @@
 
   .contact-info p {
     font-size: 13px;
+  }
+
+  .footer-installment {
+    font-size: 12px;
+  }
+
+  .installment-modal-backdrop {
+    padding: 12px;
+  }
+
+  .installment-modal {
+    max-height: 88vh;
+    padding: 24px 18px 28px;
+  }
+
+  .installment-modal-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .installment-modal h2 {
+    font-size: 24px;
+  }
+
+  .installment-modal p,
+  .installment-modal li,
+  .installment-highlight {
+    font-size: 15px;
+  }
+
+  .installment-highlight {
+    border-radius: 18px;
+    padding: 12px 14px;
   }
 }
 

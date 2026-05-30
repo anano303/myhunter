@@ -10,22 +10,24 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
+import Image from "next/image";
 // import { FaPaypal } from "react-icons/fa";
 // import { CreditCard } from "lucide-react";
 import "./payment-form.css";
 
 const formSchema = z.object({
-  paymentMethod: z.enum(["PayPal", "Stripe", "BOG"], {
+  paymentMethod: z.enum(["PayPal", "Stripe", "BOG", "CredoInstallment"], {
     required_error: "Please select a payment method.",
   }),
 });
 
 export function PaymentForm() {
-  const { setPaymentMethod } = useCheckout();
+  const { setPaymentMethod, paymentMethod: currentPaymentMethod } =
+    useCheckout();
   const router = useRouter();
   const { toast } = useToast();
   const { user, isLoading } = useUser();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -43,9 +45,20 @@ export function PaymentForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      paymentMethod: "BOG",
+      paymentMethod:
+        (currentPaymentMethod as z.infer<typeof formSchema>["paymentMethod"]) ||
+        "BOG",
     },
   });
+
+  useEffect(() => {
+    if (currentPaymentMethod) {
+      form.setValue(
+        "paymentMethod",
+        currentPaymentMethod as z.infer<typeof formSchema>["paymentMethod"],
+      );
+    }
+  }, [currentPaymentMethod, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (isLoading) {
@@ -184,6 +197,40 @@ export function PaymentForm() {
                         </svg>
                         <span className="text-sm font-medium">
                           {t("checkout.cardPayment")}
+                        </span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="form-item">
+                  <div className="form-control">
+                    <label
+                      htmlFor="CredoInstallment"
+                      className="border rounded-lg p-4 cursor-pointer hover:border-primary block credo-payment-option"
+                      style={{
+                        fontFamily: '"ALK Life", "Georgia", serif',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value="CredoInstallment"
+                        id="CredoInstallment"
+                        className="sr-only"
+                        {...form.register("paymentMethod")}
+                      />
+                      <div className="flex flex-col items-center space-y-2">
+                        <Image
+                          src="/dayavi.webp"
+                          alt="Credo განვადება"
+                          width={110}
+                          height={30}
+                          className="credo-payment-logo"
+                        />
+                        <span className="text-sm font-medium">
+                          {language === "en"
+                            ? "Credo Installment"
+                            : "კრედო განვადება"}
                         </span>
                       </div>
                     </label>

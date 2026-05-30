@@ -80,6 +80,12 @@ export function OrderReview() {
   // const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
   const taxPrice = 0; // საკომისიო დროებით გამორთული
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
+  const paymentMethodLabel =
+    paymentMethod === "CredoInstallment"
+      ? language === "en"
+        ? "Credo Installment"
+        : "კრედო განვადება"
+      : paymentMethod;
 
   // Helper to check for duplicate order submission
   const checkDuplicateOrder = (): boolean => {
@@ -246,8 +252,13 @@ export function OrderReview() {
           <h2 className="section-title">{t("checkout.payment")}</h2>
           <p className="payment-method">
             <strong>{t("checkout.method")}: </strong>
-            {paymentMethod}
+            {paymentMethodLabel}
           </p>
+          {paymentMethod === "CredoInstallment" && (
+            <p className="payment-method">
+              განვადების განაცხადი შეივსება შეკვეთის შექმნის შემდეგ.
+            </p>
+          )}
         </div>
 
         {/* Order Items */}

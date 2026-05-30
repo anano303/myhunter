@@ -246,6 +246,25 @@ input[type="radio"].sr-only {
   opacity: 0.8;
 }
 
+.credo-payment-option {
+  background: linear-gradient(135deg, #202b36, #24384c);
+  border-color: #1565c0;
+}
+
+.credo-payment-option:hover,
+.credo-payment-option:has(input:checked) {
+  background: linear-gradient(135deg, #0d47a1, #1565c0);
+  border-color: #64b5f6;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(13, 71, 161, 0.35);
+}
+
+.credo-payment-logo {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .card {

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ShoppingCart, X, Plus, Minus } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
+import { useCheckout } from "@/modules/checkout/context/checkout-context";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -16,6 +17,7 @@ const isCloudinaryImage = (src: string | undefined) =>
 export function FloatingCart() {
   const [isOpen, setIsOpen] = useState(false);
   const { items, removeItem, updateQuantity, totalItems } = useCart();
+  const { setPaymentMethod } = useCheckout();
   const { t, language } = useLanguage();
   const router = useRouter();
 
@@ -149,6 +151,13 @@ export function FloatingCart() {
   };
 
   const handleGoToCheckout = () => {
+    setPaymentMethod("BOG");
+    router.push("/checkout/shipping");
+    setIsOpen(false);
+  };
+
+  const handleGoToCredoCheckout = () => {
+    setPaymentMethod("CredoInstallment");
     router.push("/checkout/shipping");
     setIsOpen(false);
   };
@@ -326,6 +335,22 @@ export function FloatingCart() {
                   {t("cart.checkout")}
                 </button>
               </div>
+
+              {totalPrice >= 100 && (
+                <button
+                  className="floating-credo-btn"
+                  onClick={handleGoToCredoCheckout}
+                >
+                  <Image
+                    src="/dayavi.webp"
+                    alt="Credo განვადება"
+                    width={80}
+                    height={22}
+                    className="floating-credo-logo"
+                  />
+                  <span>განვადება 0%</span>
+                </button>
+              )}
             </div>
           </div>
         </>

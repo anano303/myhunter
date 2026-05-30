@@ -311,7 +311,10 @@ export class OrdersService {
               totalPrice,
               externalOrderId,
               orderNumber,
-              stockReservationExpires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes from now
+              stockReservationExpires:
+                paymentMethod === 'CredoInstallment'
+                  ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                  : new Date(Date.now() + 10 * 60 * 1000),
             },
           ],
           { session },
