@@ -23,6 +23,19 @@ interface CreateCredoInstallmentDto {
   }>;
 }
 
+interface NormalizedCredoProduct {
+  id: string;
+  title: string;
+  amount: number;
+  price: number;
+}
+
+interface CredoProductUnit {
+  id: string;
+  title: string;
+  priceInCents: number;
+}
+
 @Controller('payments/credo')
 export class CredoInstallmentController {
   private readonly logger = new Logger(CredoInstallmentController.name);
@@ -66,14 +79,57 @@ export class CredoInstallmentController {
         }
       }
 
+      const order = await this.ordersService.findById(orderId);
+      const orderProducts: NormalizedCredoProduct[] =
+        order.orderItems?.map((item: any) => ({
+          id: item.productId,
+          title: item.name,
+          amount: item.qty,
+          price: item.price,
+        })) || [];
+      const normalizedProducts = orderProducts.length
+        ? orderProducts
+        : products;
+      const productUnits: CredoProductUnit[] = normalizedProducts.flatMap(
+        (product) =>
+          Array.from({ length: product.amount }, (_, index) => ({
+            id:
+              product.amount > 1
+                ? `${product.id}-${index + 1}`
+                : product.id,
+            title: product.title,
+            priceInCents: Math.round(product.price * 100),
+          })),
+      );
+      const productsTotalInCents = productUnits.reduce(
+        (total, product) => total + product.priceInCents,
+        0,
+      );
+      const orderTotalInCents = Math.round(Number(order.totalPrice || 0) * 100);
+      const adjustmentInCents = orderTotalInCents - productsTotalInCents;
+      const adjustmentSign = Math.sign(adjustmentInCents);
+      const perUnitAdjustment =
+        productUnits.length > 0
+          ? Math.trunc(adjustmentInCents / productUnits.length)
+          : 0;
+      const remainingAdjustment =
+        productUnits.length > 0
+          ? Math.abs(adjustmentInCents % productUnits.length)
+          : 0;
+
       const orderCode = `MH_${orderId}_${Date.now()}`;
-      const credoProducts: CredoProduct[] = products.map((product) => ({
-        id: product.id,
-        title: product.title,
-        amount: product.amount,
-        price: Math.round(product.price * 100),
-        type: '0',
-      }));
+      const credoProducts: CredoProduct[] = productUnits.map(
+        (product, index) => ({
+          id: product.id,
+          title: product.title,
+          amount: 1,
+          price:
+            product.priceInCents +
+            perUnitAdjustment +
+            (index < remainingAdjustment ? adjustmentSign : 0),
+          type: '0',
+        }),
+      );
 
       const result =
         await this.credoInstallmentService.createInstallmentOrder(
@@ -82,7 +138,6 @@ export class CredoInstallmentController {
         );
 
       try {
-        const order = await this.ordersService.findById(orderId);
         order.externalOrderId = orderCode;
         order.paymentResult = {
           id: orderCode,

@@ -163,6 +163,19 @@ export function OrderDetails({ order }: OrderDetailsProps) {
 
   // ლარის დოლარში გადაყვანა გადახდისთვის
   const totalPriceInUSD = +(order.totalPrice / GEL_TO_USD_RATE).toFixed(2);
+  const installmentFee = Math.max(
+    0,
+    +(
+      order.totalPrice -
+      order.itemsPrice -
+      order.shippingPrice -
+      order.taxPrice
+    ).toFixed(2),
+  );
+  const installmentFeeLabel =
+    language === "en"
+      ? "Installment commission (3%)"
+      : "განვადების საკომისიო (3%)";
 
   // Helper function to get display name based on language
   const getDisplayName = (item: OrderItem) => {
@@ -391,6 +404,13 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                 <span>{order.taxPrice.toFixed(2)} ₾</span>
               </div>
               */}
+              {order.paymentMethod === "CredoInstallment" &&
+                installmentFee > 0 && (
+                  <div className="summary-item">
+                    <span>{installmentFeeLabel}</span>
+                    <span>{installmentFee.toFixed(2)} ₾</span>
+                  </div>
+                )}
               <hr />
               <div className="summary-total">
                 <span>{t("order.total")}</span>

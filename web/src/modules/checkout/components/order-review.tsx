@@ -28,6 +28,9 @@ export function OrderReview() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
+  const roundCurrency = (value: number) =>
+    Math.round((value + Number.EPSILON) * 100) / 100;
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -79,7 +82,16 @@ export function OrderReview() {
   const shippingPrice: number = calculateShippingPrice();
   // const taxPrice = Number((itemsPrice * TAX_RATE).toFixed(2));
   const taxPrice = 0; // საკომისიო დროებით გამორთული
-  const totalPrice = itemsPrice + shippingPrice + taxPrice;
+  const baseTotalPrice = roundCurrency(itemsPrice + shippingPrice + taxPrice);
+  const installmentFee =
+    paymentMethod === "CredoInstallment"
+      ? roundCurrency(baseTotalPrice * 0.03)
+      : 0;
+  const totalPrice = roundCurrency(baseTotalPrice + installmentFee);
+  const installmentFeeLabel =
+    language === "en"
+      ? "Installment commission (3%)"
+      : "განვადების საკომისიო (3%)";
   const paymentMethodLabel =
     paymentMethod === "CredoInstallment"
       ? language === "en"
@@ -328,6 +340,14 @@ export function OrderReview() {
               <span>{taxPrice.toFixed(2)} ₾</span>
             </div>
             */}
+            {installmentFee > 0 && (
+              <div className="summary-row flex justify-between">
+                <span className="summary-label text-muted-foreground">
+                  {installmentFeeLabel}
+                </span>
+                <span>{installmentFee.toFixed(2)} ₾</span>
+              </div>
+            )}
             <div className="separator" />
             <div className="summary-row flex justify-between font-medium">
               <span>{t("checkout.total")}</span>

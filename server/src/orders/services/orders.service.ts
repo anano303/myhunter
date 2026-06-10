@@ -99,6 +99,29 @@ export class OrdersService {
     )}`;
   }
 
+  private roundCurrency(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
+
+  private calculateOrderTotal(
+    paymentMethod: string | undefined,
+    itemsPrice: number | undefined,
+    taxPrice: number | undefined,
+    shippingPrice: number | undefined,
+    totalPrice: number | undefined,
+  ): number | undefined {
+    if (paymentMethod !== 'CredoInstallment') {
+      return totalPrice;
+    }
+
+    const baseTotal = this.roundCurrency(
+      (itemsPrice || 0) + (taxPrice || 0) + (shippingPrice || 0),
+    );
+    const installmentFee = this.roundCurrency(baseTotal * 0.03);
+
+    return this.roundCurrency(baseTotal + installmentFee);
+  }
+
   async create(
     orderAttrs: Partial<Order>,
     userId: string,
@@ -113,6 +136,13 @@ export class OrdersService {
       shippingPrice,
       totalPrice,
     } = orderAttrs;
+    const finalTotalPrice = this.calculateOrderTotal(
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+    );
 
     if (orderItems && orderItems.length < 1)
       throw new BadRequestException('No order items received.');
@@ -121,7 +151,7 @@ export class OrdersService {
     const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
     const existingOrder = await this.orderModel.findOne({
       user: userId,
-      totalPrice,
+      totalPrice: finalTotalPrice,
       createdAt: { $gte: twoMinutesAgo },
     });
 
@@ -308,7 +338,7 @@ export class OrdersService {
               itemsPrice,
               taxPrice,
               shippingPrice,
-              totalPrice,
+              totalPrice: finalTotalPrice,
               externalOrderId,
               orderNumber,
               stockReservationExpires:
