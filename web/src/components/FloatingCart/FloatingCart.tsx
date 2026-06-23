@@ -348,7 +348,7 @@ export function FloatingCart() {
                     height={22}
                     className="floating-credo-logo"
                   />
-                  <span>განვადება 0%</span>
+                  <span>განვადება </span>
                 </button>
               )}
             </div>

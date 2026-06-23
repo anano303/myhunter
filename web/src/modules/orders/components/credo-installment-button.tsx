@@ -87,7 +87,7 @@ export function CredoInstallmentButton({
         height={24}
         className="credo-installment-logo"
       />
-      <span>{isProcessing ? "იტვირთება..." : "განვადება 0%"}</span>
+      <span>{isProcessing ? "იტვირთება..." : "განვადება "}</span>
     </button>
   );
 }

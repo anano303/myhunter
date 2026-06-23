@@ -876,7 +876,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   className="product-credo-logo"
                 />
                 <span>
-                  {isCredoProcessing ? "იტვირთება..." : "განვადება 0%"}
+                  {isCredoProcessing ? "იტვირთება..." : "განვადება "}
                 </span>
               </button>
             )}
