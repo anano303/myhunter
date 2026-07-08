@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Enable Next.js Image Optimization
-    formats: ["image/webp", "image/avif"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Disable Next.js/Vercel Image Optimization.
+    // Images are already optimized by Cloudinary at upload time
+    // (q_auto,f_auto,w_1024 / w_1920), so re-optimizing on Vercel is
+    // redundant, burns the Vercel image quota (causes 402 Payment Required),
+    // and does NOT increase Cloudinary usage — the pre-generated variant is
+    // served directly from the Cloudinary CDN.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
