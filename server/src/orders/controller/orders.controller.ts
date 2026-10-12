@@ -14,6 +14,8 @@ import { StockReservationService } from '../services/stock-reservation.service';
 import { UserDocument } from '@/users/schemas/user.schema';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
+import { Roles } from '@/decorators/roles.decorator';
+import { Role } from '@/types/role.enum';
 
 @Controller('orders')
 export class OrdersController {
@@ -64,7 +66,8 @@ export class OrdersController {
     return this.ordersService.updatePaid(id, paymentResult);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Put(':id/deliver')
   async updateOrderDelivery(@Param('id') id: string) {
     return this.ordersService.updateDelivered(id);

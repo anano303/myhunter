@@ -496,17 +496,22 @@ export class OrdersService {
     if (!Types.ObjectId.isValid(id))
       throw new BadRequestException('Invalid order ID.');
 
-    const order = await this.orderModel
-      .findById(id)
+    const updatedOrder = await this.orderModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            isDelivered: true,
+            deliveredAt: new Date().toISOString(),
+            status: 'delivered',
+          },
+          $unset: { stockReservationExpires: 1 },
+        },
+        { new: true, runValidators: true },
+      )
       .populate('user', 'name email');
 
-    if (!order) throw new NotFoundException('No order with given ID.');
-
-    order.isDelivered = true;
-    order.deliveredAt = Date();
-    order.status = 'delivered'; // Update status to delivered
-
-    const updatedOrder = await order.save();
+    if (!updatedOrder) throw new NotFoundException('No order with given ID.');
 
     // Send delivery confirmation email with review request
     try {
