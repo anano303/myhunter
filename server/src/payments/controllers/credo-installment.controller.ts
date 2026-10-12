@@ -131,28 +131,22 @@ export class CredoInstallmentController {
         }),
       );
 
+      // Persist the merchant orderCode before redirecting the customer to Credo.
+      // This is the key used later to reconcile the installment application status.
+      order.externalOrderId = orderCode;
+      order.paymentResult = {
+        id: orderCode,
+        status: 'credo_installment_pending',
+        update_time: new Date().toISOString(),
+        email_address: order.shippingDetails?.email || '',
+      };
+      await order.save();
+
       const result =
         await this.credoInstallmentService.createInstallmentOrder(
           orderCode,
           credoProducts,
         );
-
-      try {
-        order.externalOrderId = orderCode;
-        order.paymentResult = {
-          id: orderCode,
-          status: 'credo_installment_pending',
-          update_time: new Date().toISOString(),
-          email_address: order.shippingDetails?.email || '',
-        };
-        await order.save();
-      } catch (error) {
-        this.logger.error(
-          `Failed to update order with Credo info: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        );
-      }
 
       return {
         success: true,
