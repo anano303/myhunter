@@ -48,6 +48,24 @@ export function OrderDetails({ order }: OrderDetailsProps) {
     },
   });
 
+  const checkCredoPaymentMutation = useMutation({
+    mutationFn: async (externalOrderId: string) => {
+      const response = await fetchWithAuth(
+        `/payments/credo/installment/status/${encodeURIComponent(externalOrderId)}`,
+      );
+      if (!response.ok) {
+        throw new Error("Failed to check Credo installment status");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.success && (data.isSuccessful || data.isReadyForShipment)) {
+        queryClient.invalidateQueries({ queryKey: ["order", order._id] });
+        window.location.reload();
+      }
+    },
+  });
+
   // Check BOG payment status on mount if order is not paid and has externalOrderId
   useEffect(() => {
     if (
@@ -64,6 +82,25 @@ export function OrderDetails({ order }: OrderDetailsProps) {
           checkPaymentMutation.mutate(order._id);
         } else {
           console.warn("No access token found, skipping payment check");
+        }
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order._id, order.isPaid, order.externalOrderId, order.paymentMethod]);
+
+  // Check Credo installment status on mount so confirmed installments update the order.
+  useEffect(() => {
+    if (
+      !order.isPaid &&
+      order.externalOrderId &&
+      order.paymentMethod === "CredoInstallment"
+    ) {
+      const timer = setTimeout(() => {
+        const token = localStorage.getItem("myhunter_access_token");
+        if (token) {
+          checkCredoPaymentMutation.mutate(order.externalOrderId!);
         }
       }, 2000);
 
